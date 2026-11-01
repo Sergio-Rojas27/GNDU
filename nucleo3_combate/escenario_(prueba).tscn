@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://dfslx3836snif"]
+
+[ext_resource type="PackedScene" uid="uid://w5ixhbiumgws" path="res://jugador(porsia).tscn" id="1_n823b"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+size = Vector2(1152, 33)
+
+[node name="Escenario (Prueba)" type="Node2D" unique_id=1323861093]
+position = Vector2(1, 0)
+
+[node name="ColisionEscenario" type="StaticBody2D" parent="." unique_id=2063510594]
+
+[node name="HitboxSuelo" type="CollisionShape2D" parent="ColisionEscenario" unique_id=1904051117]
+position = Vector2(576, 630)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="HitboxParedIzquierda" type="CollisionShape2D" parent="ColisionEscenario" unique_id=696151883]
+position = Vector2(17, 570)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="HitboxParedDerecha" type="CollisionShape2D" parent="ColisionEscenario" unique_id=839437775]
+position = Vector2(1135, 568)
+rotation = -1.5707964
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Jugador" parent="." unique_id=655716964 instance=ExtResource("1_n823b")]
+position = Vector2(200, -14)
+
+[node name="Jugador2" parent="." unique_id=1991135801 instance=ExtResource("1_n823b")]
+position = Vector2(955, -14)
+scale = Vector2(-1, 1)

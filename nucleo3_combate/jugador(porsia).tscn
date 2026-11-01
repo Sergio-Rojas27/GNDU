@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://w5ixhbiumgws"]
+
+[ext_resource type="Script" uid="uid://bssuo6pawqvax" path="res://jugador(porsia).gd" id="1_h4r5d"]
+[ext_resource type="Texture2D" uid="uid://b7sidyo0xyr02" path="res://30860.png" id="1_ys7hf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+size = Vector2(150, 250)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
+size = Vector2(150, 250)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
+size = Vector2(150, 250)
+
+[node name="Jugador" type="CharacterBody2D" unique_id=655716964]
+position = Vector2(33, 17)
+script = ExtResource("1_h4r5d")
+
+[node name="Pushbox" type="CollisionShape2D" parent="." unique_id=914391845]
+position = Vector2(237, 499)
+shape = SubResource("RectangleShape2D_g4v7s")
+debug_color = Color(0, 1, 0.63529414, 0.38039216)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=128148203]
+position = Vector2(233, 499)
+scale = Vector2(0.47674417, 0.51114345)
+texture = ExtResource("1_ys7hf")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=283507046]
+position = Vector2(0, 3)
+
+[node name="HurtboxArea" type="CollisionShape2D" parent="Hurtbox" unique_id=1859270240]
+position = Vector2(237, 497)
+rotation = -3.1415925
+shape = SubResource("RectangleShape2D_yf5fn")
+debug_color = Color(0.9843137, 0, 0.33333334, 0.101960786)
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1655027874]
+
+[node name="HitboxArea" type="CollisionShape2D" parent="Hitbox" unique_id=4613849]
+position = Vector2(237, 500)
+shape = SubResource("RectangleShape2D_57qmd")
+debug_color = Color(0, 0.5596874, 0.8895528, 0.41960785)
