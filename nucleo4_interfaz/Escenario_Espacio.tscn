@@ -1,0 +1,125 @@
+[gd_scene format=3 uid="uid://sabreonvl1e4"]
+
+[ext_resource type="Texture2D" path="res://Fondo_Espacio.jpg" id="1_ou7qk"]
+[ext_resource type="Texture2D" path="res://planeta1_Espacio.png" id="2_mjryk"]
+[ext_resource type="Texture2D" path="res://Platena2_Espacio.png" id="3_1drwp"]
+[ext_resource type="Texture2D" path="res://Piso_Espacio.png" id="3_btgda"]
+[ext_resource type="Texture2D" path="res://piedra2_Espacio.png" id="4_1drwp"]
+[ext_resource type="Texture2D" path="res://Planeta3_Espacio.png" id="6_7mve4"]
+[ext_resource type="Texture2D" path="res://piedra1_Espacio.png" id="6_sw0lt"]
+[ext_resource type="Texture2D" path="res://Estrella_Espacio/Estrella4_Espacio.png" id="8_hdg7b"]
+[ext_resource type="Texture2D" path="res://Estrella_Espacio/Estrella3_Espacio.png" id="9_mrs51"]
+[ext_resource type="Texture2D" path="res://Estrella_Espacio/Estrella2_Espacio.png" id="10_q36pn"]
+[ext_resource type="Texture2D" path="res://Estrella_Espacio/Estrella1_Espacio.png" id="11_v87bc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t0fkw"]
+size = Vector2(1170, 58)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cwfhf"]
+animations = [{
+"frames": [],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_hdg7b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_mrs51")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_q36pn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_v87bc")
+}],
+"loop": 1,
+"name": &"estrella",
+"speed": 8.0
+}]
+
+[node name="EscenarioEspacio" type="Node2D" unique_id=41620211]
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=395686515]
+repeat_size = Vector2(853, 0)
+autoscroll = Vector2(1, 0)
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Parallax2D" unique_id=1633675043]
+motion_scale = Vector2(0.1, 0.1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D/ParallaxLayer" unique_id=1604202270]
+texture_repeat = 2
+position = Vector2(569, 318)
+scale = Vector2(1.1127273, 0.6872727)
+texture = ExtResource("1_ou7qk")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=252502035]
+position = Vector2(925, 313)
+scale = Vector2(0.69218326, 0.70289457)
+texture = ExtResource("2_mjryk")
+
+[node name="Sprite2D3" type="Sprite2D" parent="." unique_id=346721715]
+position = Vector2(104, 243.99997)
+scale = Vector2(1.0934579, 1.1260777)
+texture = ExtResource("3_1drwp")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1278477132]
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=1222731288]
+position = Vector2(575.00006, 497.625)
+scale = Vector2(1.1513672, 1.0150001)
+texture = ExtResource("3_btgda")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1552286168]
+position = Vector2(584, 651)
+shape = SubResource("RectangleShape2D_t0fkw")
+
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=248481240]
+position = Vector2(531, 464)
+scale = Vector2(0.4246033, 0.5019999)
+texture = ExtResource("4_1drwp")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D2" unique_id=654702164]
+position = Vector2(506.35498, -545.81683)
+scale = Vector2(1.0434109, 0.90538883)
+texture = ExtResource("6_sw0lt")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D2/Sprite2D2" unique_id=1394930914]
+position = Vector2(-933.75037, 353.1468)
+scale = Vector2(0.6882284, 0.549782)
+texture = ExtResource("6_sw0lt")
+
+[node name="Sprite2D4" type="Sprite2D" parent="." unique_id=490522664]
+position = Vector2(479, 198)
+scale = Vector2(1.2049999, 1.2147062)
+texture = ExtResource("6_7mve4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=861426765]
+position = Vector2(266, 172)
+sprite_frames = SubResource("SpriteFrames_cwfhf")
+animation = &"estrella"
+autoplay = "estrella"
+frame_progress = 0.63549566
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AnimatedSprite2D" unique_id=1308429815]
+position = Vector2(373, 147)
+sprite_frames = SubResource("SpriteFrames_cwfhf")
+animation = &"estrella"
+autoplay = "estrella"
+frame_progress = 0.82130563
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AnimatedSprite2D/AnimatedSprite2D" unique_id=1115684716]
+position = Vector2(432, -159)
+sprite_frames = SubResource("SpriteFrames_cwfhf")
+animation = &"estrella"
+autoplay = "estrella"
+frame_progress = 0.8612555
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AnimatedSprite2D/AnimatedSprite2D/AnimatedSprite2D" unique_id=549402832]
+position = Vector2(-309, 315)
+sprite_frames = SubResource("SpriteFrames_cwfhf")
+animation = &"estrella"
+autoplay = "estrella"
+frame_progress = 0.99457526
