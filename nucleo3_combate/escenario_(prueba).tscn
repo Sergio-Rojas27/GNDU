@@ -1,12 +1,58 @@
 [gd_scene format=3 uid="uid://dfslx3836snif"]
 
 [ext_resource type="PackedScene" uid="uid://w5ixhbiumgws" path="res://jugador(porsia).tscn" id="1_n823b"]
+[ext_resource type="Script" uid="uid://7ty2lsuor6vi" path="res://escenario_(prueba).gd" id="1_wkpad"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_wddc5"]
+font_size = 60
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(1152, 33)
 
-[node name="Escenario (Prueba)" type="Node2D" unique_id=1323861093]
+[node name="Escenario (Prueba)" type="Node2D" unique_id=1323861093 node_paths=PackedStringArray("jugador1", "jugador2", "texto_tiempo", "reloj_combate", "barra_vida_j1", "barra_vida_j2")]
 position = Vector2(1, 0)
+script = ExtResource("1_wkpad")
+jugador1 = NodePath("Jugador")
+jugador2 = NodePath("Jugador2")
+texto_tiempo = NodePath("CanvasLayer/Control/Label_tiempo")
+reloj_combate = NodePath("CanvasLayer/Control/Timer")
+barra_vida_j1 = NodePath("CanvasLayer/Control/Vida_P1")
+barra_vida_j2 = NodePath("CanvasLayer/Control/Vida_P2")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1085862283]
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=2027575258]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Timer" type="Timer" parent="CanvasLayer/Control" unique_id=2104609647]
+autostart = true
+
+[node name="Label_tiempo" type="Label" parent="CanvasLayer/Control" unique_id=186222231]
+layout_mode = 0
+offset_left = 545.0
+offset_top = 59.0
+offset_right = 614.0
+offset_bottom = 142.0
+text = "99"
+label_settings = SubResource("LabelSettings_wddc5")
+
+[node name="Vida_P1" type="ProgressBar" parent="CanvasLayer/Control" unique_id=1109378328]
+layout_mode = 0
+offset_left = 113.0
+offset_top = 90.0
+offset_right = 477.0
+offset_bottom = 117.0
+
+[node name="Vida_P2" type="ProgressBar" parent="CanvasLayer/Control" unique_id=1255850235]
+layout_mode = 0
+offset_left = 675.0
+offset_top = 92.0
+offset_right = 1047.0
+offset_bottom = 119.0
+fill_mode = 1
 
 [node name="ColisionEscenario" type="StaticBody2D" parent="." unique_id=2063510594]
 
@@ -30,3 +76,7 @@ position = Vector2(200, -14)
 [node name="Jugador2" parent="." unique_id=1991135801 instance=ExtResource("1_n823b")]
 position = Vector2(955, -14)
 scale = Vector2(-1, 1)
+accion_izquierda = &"p2_izquierda"
+accion_derecha = &"p2_derecha"
+accion_salto = &"p2_salto"
+accion_golpe = &"p2_golpe"

@@ -15,6 +15,10 @@ size = Vector2(150, 250)
 [node name="Jugador" type="CharacterBody2D" unique_id=655716964]
 position = Vector2(33, 17)
 script = ExtResource("1_h4r5d")
+accion_izquierda = &"p1_izquierda"
+accion_derecha = &"p1_derecha"
+accion_salto = &"p1_salto"
+accion_golpe = &"p1_golpe"
 
 [node name="Pushbox" type="CollisionShape2D" parent="." unique_id=914391845]
 position = Vector2(237, 499)
@@ -38,6 +42,6 @@ debug_color = Color(0.9843137, 0, 0.33333334, 0.101960786)
 [node name="Hitbox" type="Area2D" parent="." unique_id=1655027874]
 
 [node name="HitboxArea" type="CollisionShape2D" parent="Hitbox" unique_id=4613849]
-position = Vector2(237, 500)
+position = Vector2(291, 501)
 shape = SubResource("RectangleShape2D_57qmd")
 debug_color = Color(0, 0.5596874, 0.8895528, 0.41960785)
