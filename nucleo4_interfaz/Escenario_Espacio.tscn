@@ -1,16 +1,16 @@
 [gd_scene format=3 uid="uid://sabreonvl1e4"]
 
-[ext_resource type="Texture2D" path="res://Fondo_Espacio.jpg" id="1_ou7qk"]
-[ext_resource type="Texture2D" path="res://planeta1_Espacio.png" id="2_mjryk"]
-[ext_resource type="Texture2D" path="res://Platena2_Espacio.png" id="3_1drwp"]
-[ext_resource type="Texture2D" path="res://Piso_Espacio.png" id="3_btgda"]
-[ext_resource type="Texture2D" path="res://piedra2_Espacio.png" id="4_1drwp"]
-[ext_resource type="Texture2D" path="res://Planeta3_Espacio.png" id="6_7mve4"]
-[ext_resource type="Texture2D" path="res://piedra1_Espacio.png" id="6_sw0lt"]
-[ext_resource type="Texture2D" path="res://Estrella_Espacio/Estrella4_Espacio.png" id="8_hdg7b"]
-[ext_resource type="Texture2D" path="res://Estrella_Espacio/Estrella3_Espacio.png" id="9_mrs51"]
-[ext_resource type="Texture2D" path="res://Estrella_Espacio/Estrella2_Espacio.png" id="10_q36pn"]
-[ext_resource type="Texture2D" path="res://Estrella_Espacio/Estrella1_Espacio.png" id="11_v87bc"]
+[ext_resource type="Texture2D" uid="uid://d0yl6x4jajj3t" path="res://assets/Escenario_Espacio/Fondo_Espacio.jpg" id="1_sw0lt"]
+[ext_resource type="Texture2D" uid="uid://c3luk7ppxg84e" path="res://assets/Escenario_Espacio/planeta1_Espacio.png" id="2_hdg7b"]
+[ext_resource type="Texture2D" uid="uid://db0muu5ynfccc" path="res://assets/Escenario_Espacio/Platena2_Espacio.png" id="3_mrs51"]
+[ext_resource type="Texture2D" uid="uid://cr84p82fh3gih" path="res://assets/Escenario_Espacio/Piso_Espacio.png" id="4_q36pn"]
+[ext_resource type="Texture2D" uid="uid://dhtmdtcmf51qg" path="res://assets/Escenario_Espacio/piedra2_Espacio.png" id="5_v87bc"]
+[ext_resource type="Texture2D" uid="uid://0d46w8kacre4" path="res://assets/Escenario_Espacio/piedra1_Espacio.png" id="6_ffkqx"]
+[ext_resource type="Texture2D" uid="uid://4s8yn7ov3sqn" path="res://assets/Escenario_Espacio/Planeta3_Espacio.png" id="7_etjug"]
+[ext_resource type="Texture2D" uid="uid://b2udj4ssbyjx" path="res://assets/Escenario_Espacio/Estrella_Espacio/Estrella4_Espacio.png" id="8_xhhrc"]
+[ext_resource type="Texture2D" uid="uid://j7npv71hcass" path="res://assets/Escenario_Espacio/Estrella_Espacio/Estrella3_Espacio.png" id="9_upq8k"]
+[ext_resource type="Texture2D" uid="uid://dpnlaqhruf1tq" path="res://assets/Escenario_Espacio/Estrella_Espacio/Estrella2_Espacio.png" id="10_vscoa"]
+[ext_resource type="Texture2D" uid="uid://d1s5a1b3yxko2" path="res://assets/Escenario_Espacio/Estrella_Espacio/Estrella1_Espacio.png" id="11_d4xav"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_t0fkw"]
 size = Vector2(1170, 58)
@@ -24,16 +24,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("8_hdg7b")
+"texture": ExtResource("8_xhhrc")
 }, {
 "duration": 1.0,
-"texture": ExtResource("9_mrs51")
+"texture": ExtResource("9_upq8k")
 }, {
 "duration": 1.0,
-"texture": ExtResource("10_q36pn")
+"texture": ExtResource("10_vscoa")
 }, {
 "duration": 1.0,
-"texture": ExtResource("11_v87bc")
+"texture": ExtResource("11_d4xav")
 }],
 "loop": 1,
 "name": &"estrella",
@@ -44,7 +44,7 @@ animations = [{
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=395686515]
 repeat_size = Vector2(853, 0)
-autoscroll = Vector2(1, 0)
+autoscroll = Vector2(3, 0)
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="Parallax2D" unique_id=1633675043]
 motion_scale = Vector2(0.1, 0.1)
@@ -53,24 +53,24 @@ motion_scale = Vector2(0.1, 0.1)
 texture_repeat = 2
 position = Vector2(569, 318)
 scale = Vector2(1.1127273, 0.6872727)
-texture = ExtResource("1_ou7qk")
+texture = ExtResource("1_sw0lt")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=252502035]
 position = Vector2(925, 313)
 scale = Vector2(0.69218326, 0.70289457)
-texture = ExtResource("2_mjryk")
+texture = ExtResource("2_hdg7b")
 
 [node name="Sprite2D3" type="Sprite2D" parent="." unique_id=346721715]
 position = Vector2(104, 243.99997)
 scale = Vector2(1.0934579, 1.1260777)
-texture = ExtResource("3_1drwp")
+texture = ExtResource("3_mrs51")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1278477132]
 
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=1222731288]
 position = Vector2(575.00006, 497.625)
 scale = Vector2(1.1513672, 1.0150001)
-texture = ExtResource("3_btgda")
+texture = ExtResource("4_q36pn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1552286168]
 position = Vector2(584, 651)
@@ -79,22 +79,22 @@ shape = SubResource("RectangleShape2D_t0fkw")
 [node name="Sprite2D2" type="Sprite2D" parent="." unique_id=248481240]
 position = Vector2(531, 464)
 scale = Vector2(0.4246033, 0.5019999)
-texture = ExtResource("4_1drwp")
+texture = ExtResource("5_v87bc")
 
 [node name="Sprite2D2" type="Sprite2D" parent="Sprite2D2" unique_id=654702164]
 position = Vector2(506.35498, -545.81683)
 scale = Vector2(1.0434109, 0.90538883)
-texture = ExtResource("6_sw0lt")
+texture = ExtResource("6_ffkqx")
 
 [node name="Sprite2D2" type="Sprite2D" parent="Sprite2D2/Sprite2D2" unique_id=1394930914]
 position = Vector2(-933.75037, 353.1468)
 scale = Vector2(0.6882284, 0.549782)
-texture = ExtResource("6_sw0lt")
+texture = ExtResource("6_ffkqx")
 
 [node name="Sprite2D4" type="Sprite2D" parent="." unique_id=490522664]
 position = Vector2(479, 198)
 scale = Vector2(1.2049999, 1.2147062)
-texture = ExtResource("6_7mve4")
+texture = ExtResource("7_etjug")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=861426765]
 position = Vector2(266, 172)
