@@ -17,6 +17,7 @@ const JUMP_VELOCITY = -400.0
 @export var accion_golpe: StringName = "ui_select" # Asignar una tecla para golpear
 
 # Referencias a nodos de colisión
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var hitbox: Area2D = $Hitbox
 @onready var hitbox_collision: CollisionShape2D = $Hitbox/HitboxArea
@@ -39,14 +40,20 @@ func _ready() -> void:
 	# Conectamos la señal de detección de golpe
 	if hitbox:
 		hitbox.area_entered.connect(_on_hitbox_area_entered)
+		
+	# Conectamos las señales del AnimatedSprite2D para sincronizar fotogramas
+	if sprite:
+		sprite.frame_changed.connect(_on_sprite_frame_changed)
+		sprite.animation_finished.connect(_on_sprite_animation_finished)
 
 # Gravedad para los personajes (Viene default al crear el script gracias a dios)
 func _physics_process(delta: float) -> void:
 	# 1. Aplicar Gravedad y detectar caída
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-		if velocity.y > 0 and not estado_actual.begins_with("golpe") and estado_actual != "dano":
-			estado_actual = "salto_caida"
+		if estado_actual != "golpe" and estado_actual != "dano":
+			estado_actual = "saltar"
+			actualizar_animacion("Saltar")
 
 	# Bloqueo de Acciones: Si ataca, recibe daño o perdió, no procesa movimientos
 	if estado_actual.begins_with("golpe") or estado_actual in ["dano", "derrota"]:
@@ -62,6 +69,7 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed(accion_salto) and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 		estado_actual = "salto_subida"
+		actualizar_animacion("Saltar")
 
 	# 4. Dirección horizontal: Usamos las variables exportadas sin comillas
 	var direction := Input.get_axis(accion_izquierda, accion_derecha)
@@ -69,45 +77,56 @@ func _physics_process(delta: float) -> void:
 	if direction != 0:
 		velocity.x = direction * SPEED
 		if is_on_floor():
-			estado_actual = "caminar_adelante"
+			# Determinar si camina hacia adelante o hacia atrás según su orientación
+			var esta_mirando_izquierda = sprite.flip_h
+			var se_mueve_izquierda = (direction < 0)
+			
+			# Voltear sprite según el movimiento
+			sprite.flip_h = se_mueve_izquierda
+			
+			# Ajustar posición de la Hitbox según hacia dónde mira
+			if hitbox_collision:
+				var offset_x = abs(hitbox_collision.position.x)
+				hitbox_collision.position.x = -offset_x if sprite.flip_h else offset_x
+
+			estado_actual = "caminar"
+			actualizar_animacion("Caminar")
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
-		if is_on_floor() and not estado_actual.begins_with("golpe"):
+		if is_on_floor():
 			estado_actual = "reposo"
+			actualizar_animacion("Reposo")
 
 	#4. Ejecución del arbitro de físicas (Una sola llamada)
 	move_and_slide()
 	
-	
-	# --- Lógica de las 3 fases de golpear ---
+	# --- CAMBIAR ANIMACIÓN SEGÚN EL ESTADO ---
+func actualizar_animacion(nombre_anim: String) -> void:
+	if sprite and sprite.animation != nombre_anim:
+		sprite.play(nombre_anim)
+
+# --- INICIAR ATAQUE ---
 func ejecutar_golpe() -> void:
 	velocity.x = 0
-	
-	# FASE 1: Iniciar el Golpe (Startup)
-	estado_actual = "golpe_inicio"
-	if hitbox_collision:
-		hitbox_collision.disabled = true
-	await get_tree().create_timer(Tiempo_Inicio).timeout
-	
-	if estado_actual == "dano":
-		return
+	estado_actual = "golpe"
+	actualizar_animacion("Golpear")
 
-	# FASE 2: Golpe ya Activo (Active) - Enciende Hitbox
-	estado_actual = "golpe_activo"
-	if hitbox_collision:
-		hitbox_collision.disabled = false
-	await get_tree().create_timer(Tiempo_Activo).timeout
-	
-	# FASE 3: Recuperación del Golpe (Recovery) - Apaga Hitbox
-	estado_actual = "golpe_recuperacion"
-	if hitbox_collision:
-		hitbox_collision.disabled = true
-	await get_tree().create_timer(Tiempo_Recuperacion).timeout
+# --- CONTROL DE HITBOX SEGÚN EL FOTOGRAMA EXACTO ---
+func _on_sprite_frame_changed() -> void:
+	if estado_actual == "golpe" and sprite.animation == "Golpear":
+		# La Hitbox SÓLO se activa en el Fotograma 2 (impacto del puño)
+		if hitbox_collision:
+			hitbox_collision.disabled = (sprite.frame != 2)
 
-	if estado_actual == "golpe_recuperacion":
+# --- AL FINALIZAR LA ANIMACIÓN DE GOLPE ---
+func _on_sprite_animation_finished() -> void:
+	if estado_actual == "golpe":
+		if hitbox_collision:
+			hitbox_collision.disabled = true
 		estado_actual = "reposo"
+		actualizar_animacion("Reposo")
 
-# (Detección de impacto en el oponente)
+# --- DETECCIÓN DE IMPACTO Y EVENTOS ---
 func _on_hitbox_area_entered(area_rival: Area2D) -> void:
 	if area_rival.name == "Hurtbox" and area_rival.get_parent() != self:
 		var rival = area_rival.get_parent()
@@ -115,7 +134,6 @@ func _on_hitbox_area_entered(area_rival: Area2D) -> void:
 			var direccion_empuje = 1 if global_position.x < rival.global_position.x else -1
 			rival.recibir_dano(fuerza_golpe, direccion_empuje, player_id)
 
-# (Reacción al recibir daño)
 func recibir_dano(cantidad: int, direccion_empuje: int, atacante_id: int) -> void:
 	current_hp = max(0, current_hp - cantidad)
 	estado_actual = "dano"
@@ -124,7 +142,6 @@ func recibir_dano(cantidad: int, direccion_empuje: int, atacante_id: int) -> voi
 		hitbox_collision.disabled = true
 	
 	velocity.x = direccion_empuje * 150.0
-	
 	imprimir_evento_combate("HIT", atacante_id, player_id, cantidad)
 	
 	if current_hp <= 0:
@@ -134,8 +151,8 @@ func recibir_dano(cantidad: int, direccion_empuje: int, atacante_id: int) -> voi
 		await get_tree().create_timer(0.3).timeout
 		if estado_actual == "dano":
 			estado_actual = "reposo"
+			actualizar_animacion("Reposo")
 
-# [Reportes y Eventos con JSON Oficiales (Contrato Núcleo 3)]
 func imprimir_evento_combate(tipo_evento: String, atacante: int, defensor: int, dano: int) -> void:
 	var evento_json = {
 		"event_name": "on_combat_event",
