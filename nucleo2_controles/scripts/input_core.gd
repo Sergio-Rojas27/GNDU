@@ -7,7 +7,7 @@ const InputBufferScript = preload("res://scripts/input_buffer.gd")
 const RecognizerScript = preload("res://scripts/command_recognizer.gd")
 
 const PLAYERS := [1, 2]
-const ACTIONS := ["left", "right", "up", "down", "punch", "kick", "block", "pause", "jump"]
+const ACTIONS := ["left", "right", "up", "down", "punch", "kick", "block", "pause"]
 
 const JOY_BUTTONS := {
 	"a": JOY_BUTTON_A,
@@ -219,8 +219,7 @@ func _build_report(player_id: int, frame: int, held: Dictionary, command: Varian
 			"punch": bool(held.get("punch", false)),
 			"kick": bool(held.get("kick", false)),
 			"block": bool(held.get("block", false)),
-			"pause": bool(held.get("pause", false)),
-			"jump": bool(held.get("jump", false))
+			"pause": bool(held.get("pause", false))
 		},
 		"command_detected": command if command is String else null
 	}

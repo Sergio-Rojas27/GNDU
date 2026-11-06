@@ -4,7 +4,7 @@ signal config_reloaded
 signal config_error(message: String)
 
 const CONFIG_PATH := "res://controls_config.json"
-const ACTIONS := ["left", "right", "up", "down", "punch", "kick", "block", "pause", "jump"]
+const ACTIONS := ["left", "right", "up", "down", "punch", "kick", "block", "pause"]
 
 var data: Dictionary = {}
 var last_error: String = ""
@@ -65,7 +65,7 @@ func _fail(message: String) -> void:
 func _validate(raw: Dictionary) -> Dictionary:
 	var out := _default_config()
 	out["version"] = int(raw.get("version", 1))
-	out["buffer_size_frames"] = clampi(int(raw.get("buffer_size_frames", 30)), 10, 60)
+	out["buffer_size_frames"] = clampi(int(raw.get("buffer_size_frames", 30)), 15, 30)
 	out["global_cooldown_frames"] = clampi(int(raw.get("global_cooldown_frames", 2)), 0, 30)
 
 	var players = raw.get("players", {})
@@ -165,7 +165,7 @@ func get_binding_summary(player_id: int) -> String:
 
 func _default_config() -> Dictionary:
 	return {
-		"version": 2,
+		"version": 3,
 		"buffer_size_frames": 30,
 		"global_cooldown_frames": 2,
 		"players": {
@@ -184,18 +184,16 @@ func _default_config() -> Dictionary:
 					],
 					"up": [
 						{"type": "key", "code": "W"},
+						{"type": "key", "code": "Space"},
 						{"type": "joy_button", "button": "dpad_up"},
+						{"type": "joy_button", "button": "x"},
+						{"type": "joy_button", "button": "y"},
 						{"type": "joy_axis", "axis": "left_y", "direction": -1, "deadzone": 0.35}
 					],
 					"down": [
 						{"type": "key", "code": "S"},
 						{"type": "joy_button", "button": "dpad_down"},
 						{"type": "joy_axis", "axis": "left_y", "direction": 1, "deadzone": 0.35}
-					],
-					"jump": [
-						{"type": "key", "code": "Space"},
-						{"type": "joy_button", "button": "x"},
-						{"type": "joy_button", "button": "y"}
 					],
 					"punch": [
 						{"type": "key", "code": "F"},
@@ -228,15 +226,13 @@ func _default_config() -> Dictionary:
 					],
 					"up": [
 						{"type": "joy_button", "button": "dpad_up"},
+						{"type": "joy_button", "button": "x"},
+						{"type": "joy_button", "button": "y"},
 						{"type": "joy_axis", "axis": "left_y", "direction": -1, "deadzone": 0.35}
 					],
 					"down": [
 						{"type": "joy_button", "button": "dpad_down"},
 						{"type": "joy_axis", "axis": "left_y", "direction": 1, "deadzone": 0.35}
-					],
-					"jump": [
-						{"type": "joy_button", "button": "x"},
-						{"type": "joy_button", "button": "y"}
 					],
 					"punch": [{"type": "joy_button", "button": "a"}],
 					"kick": [{"type": "joy_button", "button": "b"}],

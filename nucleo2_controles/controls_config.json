@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "buffer_size_frames": 30,
   "global_cooldown_frames": 2,
   "players": {
@@ -21,18 +21,16 @@
         ],
         "up": [
           { "type": "key", "code": "W" },
+          { "type": "key", "code": "Space" },
           { "type": "joy_button", "button": "dpad_up" },
+          { "type": "joy_button", "button": "x" },
+          { "type": "joy_button", "button": "y" },
           { "type": "joy_axis", "axis": "left_y", "direction": -1, "deadzone": 0.35 }
         ],
         "down": [
           { "type": "key", "code": "S" },
           { "type": "joy_button", "button": "dpad_down" },
           { "type": "joy_axis", "axis": "left_y", "direction": 1, "deadzone": 0.35 }
-        ],
-        "jump": [
-          { "type": "key", "code": "Space" },
-          { "type": "joy_button", "button": "x" },
-          { "type": "joy_button", "button": "y" }
         ],
         "punch": [
           { "type": "key", "code": "F" },
@@ -68,15 +66,13 @@
         ],
         "up": [
           { "type": "joy_button", "button": "dpad_up" },
+          { "type": "joy_button", "button": "x" },
+          { "type": "joy_button", "button": "y" },
           { "type": "joy_axis", "axis": "left_y", "direction": -1, "deadzone": 0.35 }
         ],
         "down": [
           { "type": "joy_button", "button": "dpad_down" },
           { "type": "joy_axis", "axis": "left_y", "direction": 1, "deadzone": 0.35 }
-        ],
-        "jump": [
-          { "type": "joy_button", "button": "x" },
-          { "type": "joy_button", "button": "y" }
         ],
         "punch": [
           { "type": "joy_button", "button": "a" }
