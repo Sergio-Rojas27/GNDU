@@ -25,12 +25,19 @@ func _on_report(report: Dictionary) -> void:
 			command
 		])
 
+const REPORT_KEYS := ["player_id", "frame", "state", "command_detected"]
+const STATE_KEYS := ["move_x", "move_y", "punch", "kick", "block", "pause"]
+const STATE_BOOL_KEYS := ["punch", "kick", "block", "pause"]
+
 func _validate(report: Dictionary) -> String:
 	if report.is_empty():
 		return "reporte vacio"
-	for key in ["player_id", "frame", "state", "command_detected"]:
+	for key in REPORT_KEYS:
 		if not report.has(key):
 			return "falta la clave '%s'" % key
+	for key in report.keys():
+		if not REPORT_KEYS.has(key):
+			return "clave no permitida en el reporte: '%s'" % key
 
 	if not (typeof(report["player_id"]) == TYPE_INT):
 		return "player_id debe ser entero"
@@ -48,9 +55,12 @@ func _validate(report: Dictionary) -> String:
 	if not (report["state"] is Dictionary):
 		return "state debe ser un objeto"
 	var state: Dictionary = report["state"]
-	for key in ["move_x", "move_y", "punch", "kick", "block", "pause", "jump"]:
+	for key in STATE_KEYS:
 		if not state.has(key):
 			return "state.%s falta" % key
+	for key in state.keys():
+		if not STATE_KEYS.has(key):
+			return "clave no permitida en state: '%s'" % key
 
 	for key in ["move_x", "move_y"]:
 		if not (typeof(state[key]) == TYPE_INT):
@@ -59,7 +69,7 @@ func _validate(report: Dictionary) -> String:
 		if value != -1 and value != 0 and value != 1:
 			return "state.%s fuera de [-1, 0, 1]" % key
 
-	for key in ["punch", "kick", "block", "pause", "jump"]:
+	for key in STATE_BOOL_KEYS:
 		if not (typeof(state[key]) == TYPE_BOOL):
 			return "state.%s debe ser booleano" % key
 

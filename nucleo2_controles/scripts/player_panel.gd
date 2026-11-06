@@ -2,7 +2,7 @@ class_name N2PlayerPanel
 extends PanelContainer
 
 const DIR_ACTIONS := ["left", "right", "up", "down"]
-const BTN_ACTIONS := ["punch", "kick", "jump", "block", "pause"]
+const BTN_ACTIONS := ["punch", "kick", "block", "pause"]
 const TAPE_SIZE := 30
 
 const ACTION_TEXT := {
@@ -13,16 +13,14 @@ const ACTION_TEXT := {
 	"punch": "PUNO",
 	"kick": "PATADA",
 	"block": "BLOQUEO",
-	"pause": "PAUSA",
-	"jump": "SALTO"
+	"pause": "PAUSA"
 }
 
 const ACTION_SHORT := {
 	"punch": "P",
 	"kick": "K",
 	"block": "B",
-	"pause": "II",
-	"jump": "S"
+	"pause": "II"
 }
 
 var player_id: int = 1
@@ -138,7 +136,7 @@ func _build() -> void:
 		_tape_cells.append({"rect": rect, "label": label})
 
 	var legend := Label.new()
-	legend.text = "<- -> ^ v    P=puñetazo  K=patada  S=salto  B=bloqueo  II=pausa"
+	legend.text = "<- -> ^ v (^ = salto)    P=puñetazo  K=patada  B=bloqueo  II=pausa"
 	legend.add_theme_font_size_override("font_size", 9)
 	legend.add_theme_color_override("font_color", Color(0.45, 0.52, 0.65))
 	legend.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
