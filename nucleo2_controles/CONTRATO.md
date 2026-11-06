@@ -4,8 +4,9 @@ Este documento es la definición **oficial y ejecutable** del contrato del
 Núcleo 2, porque no hubo confirmación del Núcleo 3. Si el N3 necesita algo
 distinto, este archivo es el punto único de cambio.
 
-Versión actual: **2** (la 2 añade `state.jump`; el resto del contrato no
-cambia respecto a la 1).
+Versión actual: **3** (la 3 alinea el contrato exacto del PDF: elimina la
+extensión `state.jump` de la v2. El salto se expresa con `move_y = +1`, tal
+como pide el enunciado).
 
 El Núcleo 2 **emite un reporte por jugador en cada fotograma de física**
 (60 Hz). Con dos jugadores son **dos reportes por frame**, uno con
@@ -30,8 +31,7 @@ El Núcleo 2 **emite un reporte por jugador en cada fotograma de física**
     "punch": false,
     "kick": true,
     "block": false,
-    "pause": false,
-    "jump": false
+    "pause": false
   },
   "command_detected": "SPECIAL_ATTACK_1"
 }
@@ -58,7 +58,6 @@ No se agregan ni renombran claves sin actualizar este archivo y el validador.
 | `kick` | `bool` | — | Patada mantenida. |
 | `block` | `bool` | — | Bloqueo mantenido. |
 | `pause` | `bool` | — | Pausa mantenida. |
-| `jump` | `bool` | — | Salto mantenido (botón oeste o norte del mando, o `Espacio`). |
 
 Notas:
 
@@ -67,17 +66,18 @@ Notas:
 - El signo de `move_y` sigue la convención del enunciado del proyecto:
   `-1` = abajo/agachado y `+1` = arriba/salto. **No** es el signo de pantalla
   de Godot (donde la Y crece hacia abajo); el N3 no debe invertirlo.
+- El **salto** se expresa con `move_y = +1`. `Espacio`, `X` y `Y` del mando
+  están mapeados a la acción `up`, igual que `W`, el D-pad arriba y el stick
+  hacia arriba. No hay una clave `jump` separada.
 - Si izquierda y derecha están pulsadas a la vez, `move_x = 0`
   (`derecha - izquierda`). Para `move_y` la fórmula es `arriba - abajo`, así
   que si ambas están pulsadas da `0`.
 - La diagonal se representa con `move_x` y `move_y` no nulos a la vez.
-- `jump` es un **botón independiente**; no se deduce de `move_y`. Mantener
-  arriba da `move_y = +1` pero no activa `jump` por sí solo.
-- Los booleanos (`punch`, `kick`, `block`, `pause`, `jump`) son **estado
-  mantenido**, no eventos. Para detectar "se acaba de pulsar" el N3 compara
-  con el reporte anterior del mismo jugador. Para el salto, el flanco de
-  subida de `jump` es el momento de iniciar el salto; la altura o duración
-  las decide el N3.
+- Los booleanos (`punch`, `kick`, `block`, `pause`) son **estado mantenido**,
+  no eventos. Para detectar "se acaba de pulsar" el N3 compara con el reporte
+  anterior del mismo jugador. Para el salto, el flanco de subida de
+  `move_y` es el momento de iniciar el salto; la altura o duración las decide
+  el N3.
 
 ---
 
@@ -173,20 +173,22 @@ solo debe confiar en la forma del reporte.
 `scripts/mock_consumer.gd` implementa el validador y es la referencia
 ejecutable. Comprueba:
 
-1. Claves presentes: `player_id`, `frame`, `state`, `command_detected`.
+1. Claves presentes y permitidas: `player_id`, `frame`, `state`,
+   `command_detected`. Cualquier clave extra se rechaza.
 2. `player_id` entero y en `{1, 2}`.
 3. `frame` entero y mayor que el anterior de ese jugador.
-4. `state` es objeto con las siete claves.
+4. `state` es objeto con exactamente las seis claves oficiales.
 5. `move_x`/`move_y` enteros en `{-1, 0, 1}`.
-6. `punch`/`kick`/`block`/`pause`/`jump` booleanos.
+6. `punch`/`kick`/`block`/`pause` booleanos.
 7. `command_detected` es `null` o un `string` no vacío.
 
 Si algo falla, imprime `CONTRATO N2: …` con `push_error` y emite
 `contract_error`.
 
 Estas comprobaciones están cubiertas por `_test_contract()` en
-`tests/run_tests.gd`: un reporte v2 válido pasa, y se rechazan la falta de
-`state.jump`, un `command_detected` vacío y un `move_y` fuera de rango.
+`tests/run_tests.gd`: un reporte v3 válido pasa, y se rechazan una clave
+extra en `state`, una clave extra de primer nivel, un `command_detected`
+vacío y un `move_y` fuera de rango.
 
 ---
 
@@ -197,11 +199,11 @@ Estas comprobaciones están cubiertas por `_test_contract()` en
 3. Agregar o ajustar la prueba correspondiente en `tests/run_tests.gd`.
 4. Avisar al N3/N4 con la versión nueva.
 
-La versión (**2**) es la del **documento**, no un campo del reporte. El JSON
+La versión (**3**) es la del **documento**, no un campo del reporte. El JSON
 emitido no lleva `contract_version`; quien integre debe fijar la versión de
 este archivo. Si en el futuro se necesita detectar la versión en tiempo de
 ejecución, habría que agregar ese campo al reporte y al validador (sería una
-versión 3).
+versión 4).
 
 ---
 

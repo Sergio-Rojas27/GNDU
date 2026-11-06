@@ -1,12 +1,15 @@
 # Núcleo 2 — Controles (GNDU)
 
 Demo aislada y autocontenida del **Núcleo 2** de un juego de pelea 2D.
-Captura teclado y mandos, guarda los últimos **30 fotogramas** de entrada,
-reconoce comandos (↓→+puño, ↓←+puño, doble toque) y emite un **reporte JSON
-por jugador en cada fotograma de física a 60 Hz**.
+Captura teclado y mandos, guarda los últimos **15 a 30 fotogramas** de entrada
+(30 por defecto), reconoce comandos (↓→+puño, ↓←+puño, doble toque) y emite
+un **reporte JSON por jugador en cada fotograma de física a 60 Hz**.
 
 No depende de los Núcleos 1, 3 ni 4. Funciona solo, con datos simulados
 (incluye un consumidor falso del N3 que valida el contrato).
+
+- Formato de datos: [CONTRATO.md](CONTRATO.md)
+- Matriz de cumplimiento contra el PDF: [VERIFICACION.md](VERIFICACION.md)
 
 ---
 
@@ -55,22 +58,25 @@ La ventana está pensada para **1280×720** y el motor corre la física a
 |--------|---------|-------|
 | Izquierda | `A` | D-pad izq. / stick izq. ← |
 | Derecha   | `D` | D-pad der. / stick izq. → |
-| Arriba    | `W` | D-pad arr. / stick izq. ↑ |
+| Arriba / Salto | `W` / `Espacio` | D-pad arr. / stick izq. ↑ / `X` (oeste) / `Y` (norte) |
 | Abajo     | `S` | D-pad aba. / stick izq. ↓ |
 | Puño      | `F` | `A` (sur) |
 | Patada    | `G` | `B` (este) |
-| Salto     | `Espacio` | `X` (oeste) / `Y` (norte) |
 | Bloqueo   | `H` | `RB` |
 | Pausa     | `Esc` | `Start` |
+
+> El salto no tiene una acción separada: `Espacio`, `X` y `Y` están mapeados
+> a `up`, así que emiten `move_y = +1` igual que `W`, el D-pad arriba o el
+> stick hacia arriba. Es lo que exige el contrato del PDF.
 
 ### Jugador 2 (solo mando 1)
 
 | Acción | Mando |
 |--------|-------|
 | Direcciones | D-pad / stick izquierdo |
+| Arriba / Salto | D-pad arr. / stick izq. ↑ / `X` (oeste) / `Y` (norte) |
 | Puño   | `A` |
 | Patada | `B` |
-| Salto  | `X` (oeste) / `Y` (norte) |
 | Bloqueo| `RB` |
 | Pausa  | `Start` |
 
@@ -106,9 +112,10 @@ Notación: **A = puño**, **B = patada** (los mismos botones `a`/`b` del
 mando y las teclas `F`/`G` del teclado). Las flechas son direcciones
 absolutas de pantalla.
 
-El **salto** no es un comando de esta lista: se emite como `state.jump` y el
-N3 decide qué hacer con su flanco de subida. Mantener arriba cambia
-`move_y`, pero no activa `jump`.
+El **salto** no es un comando de esta lista: se emite como `move_y = +1`
+(acción `up`) y el N3 decide qué hacer con su flanco de subida. `Espacio`,
+`X` y `Y` del mando también están mapeados a `up`, así que producen el mismo
+`move_y = +1`. No existe una clave `state.jump` separada.
 
 | Comando | Secuencia | Ventana | Hueco máx. | Enfriamiento |
 |---------|-----------|---------|-----------|--------------|
@@ -160,15 +167,16 @@ nucleo2_controles/
 ├── controls_config.json       # mapeo y comandos (editable en caliente)
 ├── leeme.md                   # este documento
 ├── CONTRATO.md                # contrato de datos para N3/N4
+├── VERIFICACION.md            # matriz de cumplimiento contra el PDF
 ├── README.md                  # entrada rápida al repositorio
-├── .gitignore                 # excluye .godot/ y el .docx de la cátedra
+├── .gitignore                 # excluye caché de Godot y documentos de cátedra
 ├── icon.svg                   # icono del proyecto
 ├── scenes/
 │   └── diagnostic.tscn        # escena principal (raíz vacía + script)
 ├── scripts/
 │   ├── controls_config.gd     # autoload N2ControlsConfig: carga/valida/recarga
 │   ├── input_core.gd          # autoload N2InputCore: lectura, búfer, reportes
-│   ├── input_buffer.gd        # N2InputBuffer: búfer circular de 30 frames
+│   ├── input_buffer.gd        # N2InputBuffer: búfer circular de 15-30 frames
 │   ├── command_recognizer.gd  # N2CommandRecognizer: coincidencia de patrones
 │   ├── player_panel.gd        # panel visual de un jugador
 │   ├── diagnostic.gd          # escena de diagnóstico completa
@@ -206,7 +214,7 @@ El resto de la API de los autoloads (`get_last_report`, `get_last_snapshot`,
    - botones con `Input.is_joy_button_pressed`,
    - ejes con `Input.get_joy_axis` aplicando zona muerta.
 3. Por cada jugador arma un *snapshot* `{frame, held, pressed, released}` y lo
-   empuja al búfer circular de 30 frames.
+   empuja al búfer circular (30 frames por defecto, configurable entre 15 y 30).
 4. El reconocedor recorre los patrones y devuelve el comando detectado o
    `null`.
 5. Se construye el reporte y se emite la señal `report_emitted`.
@@ -224,7 +232,7 @@ diagnóstico.
 
 ```json
 {
-  "version": 2,
+  "version": 3,
   "buffer_size_frames": 30,
   "global_cooldown_frames": 2,
   "players": {
@@ -260,7 +268,8 @@ además nunca le quita un mando a otro jugador.
 
 - `version` es **informativa**: se copia al estado interno, pero no cambia el
   comportamiento ni bloquea la carga.
-- `buffer_size_frames` se limita a **10–60** (por defecto 30).
+- `buffer_size_frames` se limita a **15–30** (por defecto 30), el rango que
+  pide el PDF.
 - `global_cooldown_frames` se limita a **0–30** (por defecto 2).
 - Solo se leen los jugadores `"1"` y `"2"`; si falta uno, se usa su
   configuración interna por defecto.
@@ -352,18 +361,18 @@ mantienes un ataque si estás midiendo combos.
 - **Panel por jugador**:
   - dispositivo asignado (teclado, mando con número y nombre),
   - indicadores de dirección (se iluminan al mantener, borde blanco al pulsar),
-  - indicadores de puño/patada/**salto**/bloqueo/pausa con la tecla o botón
+  - indicadores de puño/patada/bloqueo/pausa con la tecla o botón
     configurado,
-  - `move_x` / `move_y` calculados (`move_y`: `+1` arriba, `-1` abajo),
-  - **cinta del búfer de 30 frames**: `<` `>` `^` `v` dirección mantenida,
-    `P` `K` `S` `B` `II` pulsación, minúscula si solo está mantenido,
+  - `move_x` / `move_y` calculados (`move_y`: `+1` arriba/salto, `-1` abajo),
+  - **cinta del búfer** (30 frames por defecto): `<` `>` `^` `v` dirección
+    mantenida, `P` `K` `B` `II` pulsación, minúscula si solo está mantenido,
   - últimos eventos con su frame.
 
 > En la cinta se dibuja **una sola dirección y un solo botón por celda**,
 > en este orden de prioridad: izquierda, derecha, arriba, abajo; y
-> puño, patada, salto, bloqueo, pausa. En una diagonal se ve solo la
+> puño, patada, bloqueo, pausa. En una diagonal se ve solo la
 > dirección de mayor prioridad; el estado completo está en `move_x`,
-> `move_y` y en los indicadores.
+> `move_y` y en los indicadores. La dirección arriba (`^`) es el salto.
 - **Banner central**: nombre del comando detectado durante ~0,9 s.
 - **Registro**: últimas 20 líneas JSON de reportes.
 
@@ -382,9 +391,10 @@ flatpak run org.godotengine.Godot --headless \
 Salida esperada: `OK: todas las pruebas pasaron` y código de salida 0.
 Si algo falla, imprime `FALLARON N pruebas` y devuelve código 1.
 
-Las **41 pruebas** cubren:
+Las **53 pruebas** cubren:
 
-- JSON válido, raíz de objeto, `players` y `commands`.
+- JSON válido, raíz de objeto, `players`, `commands`, versión 3 y rango del
+  búfer (15–30).
 - Búfer circular: capacidad, orden viejo→nuevo y `get_last` con pocos frames.
 - Doble toque derecha/izquierda, cooldown, doble toque lento y doble toque
   con dirección contraria.
@@ -397,9 +407,12 @@ Las **41 pruebas** cubren:
 - Que las pulsaciones consumidas no se reutilizan: `AAA` + `B` no dispara
   `AAB`; el combo 6 no dispara también el combo 8; `AAA` y `AAB` se
   encadenan solo con pulsaciones nuevas.
-- Que `Space` existe y que J1/J2 tienen salto con `x` y con `y`.
-- Que un reporte v2 válido pasa el validador y que este rechaza la falta de
-  `state.jump`, un `command_detected` vacío y un `move_y` fuera de rango.
+- Que `Space` existe, que J1/J2 no exponen la acción `jump` y que el salto
+  se activa con `Space`, `x` y `y` mediante `up`/`move_y`.
+- Que un reporte v3 válido pasa el validador y que este rechaza `state.jump`,
+  claves extra de primer nivel, un `command_detected` vacío y un `move_y`
+  fuera de rango.
+- Que `state` tiene exactamente las seis claves del PDF.
 - Que `move_y` es `+1` al pulsar arriba y `-1` al pulsar abajo, como dice
   el contrato (no el signo de pantalla de Godot).
 
@@ -493,12 +506,13 @@ flatpak run org.godotengine.Godot --headless \
 - [x] J1 responde con teclado y con mando 0 (asignación híbrida).
 - [x] J2 responde con mando 1.
 - [x] El salto responde con `Espacio`, con `X` (oeste) y con `Y` (norte) en
-      J1 y J2; probado con Switch Pro y DualShock 4.
+      J1 y J2; ahora esos botones están mapeados a `up` y emiten
+      `move_y = +1`. Probado con Switch Pro y DualShock 4.
 - [x] `COMBO_AAA`, `COMBO_BBB`, `COMBO_AAB` y `SPECIAL_ATTACK_1` se
       reconocieron con pulsaciones reales en el mando de J2.
-- [x] Las 41 pruebas automáticas terminan en `OK`.
-- [x] `CONTRATO.md` coincide con lo que emite `input_core.gd` (incluido
-      `state.jump` y el signo de `move_y`).
+- [x] Las pruebas automáticas terminan en `OK`.
+- [x] `CONTRATO.md` v3 coincide con lo que emite `input_core.gd`: seis claves
+      en `state`, sin `jump`, y el signo de `move_y` del PDF.
 
 ### Pendiente o no verificado en físico
 
@@ -513,9 +527,11 @@ flatpak run org.godotengine.Godot --headless \
       segundos, sin interferencias.
 - [ ] Decidir si hace falta un ejecutable exportado para la entrega. Hoy no
       está generado; se ejecuta con Godot.
-- [ ] Decidir licencia del repositorio (no hay archivo `LICENSE`).
-- [ ] Confirmar con el N3/N4 que el contrato v2 (incluido `jump` y el signo
-      de `move_y`) es el que van a consumir.
+- [ ] Decidir licencia del repositorio (no hay archivo `LICENSE`; por ahora
+      se decidió no agregarla).
+- [ ] Confirmar con el N3/N4 que el contrato v3 exacto del PDF (seis claves
+      en `state`, salto vía `move_y = +1` y sin `jump`) es el que van a
+      consumir.
 
 ---
 
