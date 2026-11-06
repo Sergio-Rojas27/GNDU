@@ -1,0 +1,285 @@
+[gd_scene format=3 uid="uid://bbtyqjwhstrjl"]
+
+[ext_resource type="Texture2D" uid="uid://dfg1unqmqy17p" path="res://assets/Escenario_playa/White clouds in blue sky_ _ Premium Photo.jpg" id="1_10ca4"]
+[ext_resource type="Texture2D" uid="uid://byd6qx24u7y6o" path="res://assets/Escenario_playa/Mar_Playa.png" id="3_alnng"]
+[ext_resource type="Texture2D" uid="uid://g7gs6vfjyta2" path="res://assets/Escenario_playa/Arena_Playa.jpg" id="3_ubxj5"]
+[ext_resource type="Texture2D" uid="uid://bwjkjbmj5mmt0" path="res://assets/Escenario_playa/Piedra_playa1.png" id="4_alnng"]
+[ext_resource type="Texture2D" uid="uid://t2w5kjgs0k08" path="res://assets/Escenario_playa/palmera1.png" id="5_8lro2"]
+[ext_resource type="Texture2D" uid="uid://b8m7rfqc1j5xq" path="res://assets/Escenario_playa/palmera2.png" id="6_3miu0"]
+[ext_resource type="Texture2D" uid="uid://cv4meqvop4ii1" path="res://assets/Escenario_playa/Piedra_playa5.png" id="6_57tc8"]
+[ext_resource type="Texture2D" uid="uid://jnue7l2e8wal" path="res://assets/Escenario_playa/estrella_playa.png" id="7_8lro2"]
+[ext_resource type="Texture2D" uid="uid://dyc1w821vji0j" path="res://assets/Escenario_playa/guacuco1.png" id="8_3miu0"]
+
+[sub_resource type="Animation" id="Animation_qq1sx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(956, 700.5)]
+}
+
+[sub_resource type="Animation" id="Animation_fawei"]
+resource_name = "oleaje"
+length = 5.1666665
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"update": 1,
+"values": []
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1, 2, 3, 4, 5, 6, 7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(956, 710.5), Vector2(956, 715.5), Vector2(956, 720.5), Vector2(956, 725), Vector2(956, 720.5), Vector2(956, 715.5), Vector2(956, 710.5)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yrwnx"]
+_data = {
+&"RESET": SubResource("Animation_qq1sx"),
+&"oleaje": SubResource("Animation_fawei")
+}
+
+[sub_resource type="Animation" id="Animation_10ca4"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimationPlayer2/palmera2:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.017453292]
+}
+
+[sub_resource type="Animation" id="Animation_6fq4l"]
+resource_name = "viento_palmera2"
+length = 6.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimationPlayer2/palmera2:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(-0.033333335, 0, 1, 2, 3, 4, 5, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-3.1922072018976286, 0.34906584, 0.3228859, 0.2879793265790644, 0.2530727415391778, 0.2879793265790644, 0.32288591161895097, 0.3490658503988659]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qq1sx"]
+_data = {
+&"RESET": SubResource("Animation_10ca4"),
+&"viento_palmera2": SubResource("Animation_6fq4l")
+}
+
+[sub_resource type="Animation" id="Animation_8lro2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimationPlayer/palmera1:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_3miu0"]
+resource_name = "viento"
+length = 6.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimationPlayer/palmera1:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2, 3, 4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.017453292519943295, 0.03490658503988659, 0.05235987755982989, 0.06981317007977318]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_10ca4"]
+_data = {
+&"RESET": SubResource("Animation_8lro2"),
+&"viento": SubResource("Animation_3miu0")
+}
+
+[node name="Escenario_Playa" type="Node2D" unique_id=757112609]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1371522566]
+z_index = -2
+position = Vector2(953, 112)
+scale = Vector2(3.2799287, 1.8223778)
+texture = ExtResource("1_10ca4")
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=2133733956]
+visible = false
+autoscroll = Vector2(3, 0)
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Parallax2D" unique_id=84813451]
+motion_scale = Vector2(0.1, 0.1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D/ParallaxLayer" unique_id=1020757159]
+z_index = -1
+position = Vector2(854.99994, -123.99997)
+scale = Vector2(1.9241903, 2.3411317)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=2017503905]
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=936161542]
+z_index = -1
+position = Vector2(384, 1196)
+scale = Vector2(1.4899613, 1.7922208)
+texture = ExtResource("3_ubxj5")
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/Sprite2D" unique_id=1060179738]
+z_index = -1
+position = Vector2(1276.7941, -1.4830685)
+scale = Vector2(1.4975007, 0.9948911)
+texture = ExtResource("3_ubxj5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=64012437]
+
+[node name="AnimationPlayer3" type="AnimationPlayer" parent="." unique_id=1896992224]
+root_node = NodePath("mar")
+libraries/ = SubResource("AnimationLibrary_yrwnx")
+autoplay = &"oleaje"
+
+[node name="mar" type="Sprite2D" parent="AnimationPlayer3" unique_id=1555299162]
+z_index = -1
+position = Vector2(956, 700.5)
+scale = Vector2(2.631, 2.1)
+texture = ExtResource("3_alnng")
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="." unique_id=501619056]
+libraries/ = SubResource("AnimationLibrary_qq1sx")
+autoplay = &"viento_palmera2"
+
+[node name="palmera2" type="Sprite2D" parent="AnimationPlayer2" unique_id=113461941]
+z_index = -1
+position = Vector2(1730.0002, 546.0001)
+rotation = -0.017453292
+scale = Vector2(3.0550883, 3.3015556)
+texture = ExtResource("6_3miu0")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1176730363]
+libraries/ = SubResource("AnimationLibrary_10ca4")
+autoplay = &"viento"
+
+[node name="palmera1" type="Sprite2D" parent="AnimationPlayer" unique_id=43837967]
+position = Vector2(158.49435, 588.98413)
+scale = Vector2(3.4621212, 3.8124197)
+texture = ExtResource("5_8lro2")
+
+[node name="estrella1" type="Sprite2D" parent="." unique_id=2047168626]
+position = Vector2(1683, 768)
+scale = Vector2(1.3005749, 1.1426934)
+skew = 0.35602343
+texture = ExtResource("7_8lro2")
+
+[node name="piedra6" type="Sprite2D" parent="." unique_id=1663864691]
+z_index = 2
+position = Vector2(51.999992, 814)
+scale = Vector2(0.7129588, 0.6659296)
+skew = 0.19579852
+texture = ExtResource("4_alnng")
+
+[node name="piedra1" type="Sprite2D" parent="." unique_id=1275982738]
+position = Vector2(1803.4902, 779.3269)
+rotation = 0.052359883
+scale = Vector2(1.1560241, 1.0138476)
+texture = ExtResource("4_alnng")
+
+[node name="piedra8" type="Sprite2D" parent="." unique_id=183819597]
+z_index = 2
+position = Vector2(140.80315, 826.28595)
+scale = Vector2(0.40794876, 0.40210056)
+skew = 0.18600798
+texture = ExtResource("4_alnng")
+
+[node name="piedra4" type="Sprite2D" parent="." unique_id=827346559]
+position = Vector2(1911.9999, 866)
+scale = Vector2(1.0979594, 0.56718326)
+skew = 0.032890916
+texture = ExtResource("4_alnng")
+
+[node name="piedra2" type="Sprite2D" parent="." unique_id=2009662918]
+position = Vector2(1765, 857)
+scale = Vector2(1.0478356, 0.7529832)
+skew = 0.013756156
+texture = ExtResource("4_alnng")
+
+[node name="piedra5" type="Sprite2D" parent="." unique_id=182721439]
+z_index = 1
+position = Vector2(118.3344, 781.8882)
+scale = Vector2(0.51490486, 0.41873914)
+skew = 0.096331716
+texture = ExtResource("4_alnng")
+
+[node name="piedra7" type="Sprite2D" parent="." unique_id=18738565]
+position = Vector2(1766, 982.00006)
+scale = Vector2(1.4150562, 1.5490307)
+skew = 0.18600798
+texture = ExtResource("6_57tc8")
+
+[node name="estrella2" type="Sprite2D" parent="." unique_id=1201522559]
+position = Vector2(179.00002, 884)
+scale = Vector2(1.7381556, 1.6158211)
+skew = 0.26179934
+texture = ExtResource("7_8lro2")
+
+[node name="piedra9" type="Sprite2D" parent="." unique_id=1714554524]
+position = Vector2(95, 950)
+scale = Vector2(1.1807715, 1.4252511)
+skew = -0.03141593
+texture = ExtResource("6_57tc8")
+
+[node name="guacuco1" type="Sprite2D" parent="." unique_id=1595662955]
+position = Vector2(359, 766.00006)
+scale = Vector2(1.0216024, 1.2686675)
+skew = -0.30543262
+texture = ExtResource("8_3miu0")
+
+[node name="guacuco2" type="Sprite2D" parent="." unique_id=200700159]
+position = Vector2(1584.7498, 1037.1687)
+scale = Vector2(1.0106633, 1.3727602)
+skew = -0.02617994
+texture = ExtResource("8_3miu0")
+
+[node name="guacuco3" type="Sprite2D" parent="." unique_id=1602031540]
+position = Vector2(1787, 755)
+scale = Vector2(1.2722106, 1.1428459)
+skew = -0.045440078
+texture = ExtResource("8_3miu0")
