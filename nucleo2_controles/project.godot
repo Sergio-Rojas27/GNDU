@@ -10,18 +10,27 @@ config_version=5
 
 [application]
 
-config/name="Controls for game"
+config/name="GNDU - Nucleo 2 Controles"
+run/main_scene="res://scenes/diagnostic.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+N2ControlsConfig="*res://scripts/controls_config.gd"
+N2InputCore="*res://scripts/input_core.gd"
+
 [display]
 
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
 [physics]
 
 3d/physics_engine="Jolt Physics"
+common/physics_ticks_per_second=60
 
 [rendering]
 
