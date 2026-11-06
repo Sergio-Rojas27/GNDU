@@ -1,0 +1,8 @@
+.godot/
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# Documento de la cátedra: no forma parte del entregable
+*.docx
