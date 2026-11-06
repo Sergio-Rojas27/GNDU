@@ -99,6 +99,17 @@ func _test_config_json() -> void:
 	if parser.data is Dictionary:
 		_check(parser.data.has("players"), "la config tiene players")
 		_check(parser.data.has("commands"), "la config tiene commands")
+		_check(int(parser.data.get("version", 0)) == 3, "la config usa version 3")
+		var buffer_size := int(parser.data.get("buffer_size_frames", 0))
+		_check(buffer_size >= 15 and buffer_size <= 30, "el buffer configurado esta entre 15 y 30")
+
+	var Config = load("res://scripts/controls_config.gd")
+	var config = Config.new()
+	var low_buffer: Dictionary = config._validate({"buffer_size_frames": 5})
+	var high_buffer: Dictionary = config._validate({"buffer_size_frames": 100})
+	_check(int(low_buffer["buffer_size_frames"]) == 15, "el buffer se limita a 15 frames")
+	_check(int(high_buffer["buffer_size_frames"]) == 30, "el buffer se limita a 30 frames")
+	config.free()
 
 func _test_buffer() -> void:
 	var buffer = N2InputBuffer.new(5)
@@ -242,21 +253,32 @@ func _test_combos() -> void:
 
 	var file := FileAccess.open("res://controls_config.json", FileAccess.READ)
 	if file == null:
-		_check(false, "controls_config.json legible para jump")
+		_check(false, "controls_config.json legible para salto")
 		return
 	var parser := JSON.new()
 	parser.parse(file.get_as_text())
 	file.close()
 	var players: Dictionary = parser.data.get("players", {})
+	var expected_up := {
+		"1": ["Space", "x", "y"],
+		"2": ["x", "y"]
+	}
 	for pid in ["1", "2"]:
 		var bindings: Dictionary = players.get(pid, {}).get("bindings", {})
-		var jump: Array = bindings.get("jump", [])
-		_check(not jump.is_empty(), "J%s tiene salto configurado" % pid)
-		var has_y := false
-		for src in jump:
-			if src is Dictionary and str(src.get("type", "")) == "joy_button" and str(src.get("button", "")) == "y":
-				has_y = true
-		_check(has_y, "J%s salta tambien con Y (norte)" % pid)
+		var up: Array = bindings.get("up", [])
+		_check(not up.is_empty(), "J%s tiene la accion up configurada" % pid)
+		_check(not bindings.has("jump"), "J%s ya no expone la accion jump" % pid)
+		for wanted in expected_up[pid]:
+			var found := false
+			for src in up:
+				if not (src is Dictionary):
+					continue
+				var stype := str(src.get("type", ""))
+				if wanted == "Space" and stype == "key" and str(src.get("code", "")) == "Space":
+					found = true
+				elif stype == "joy_button" and str(src.get("button", "")) == wanted:
+					found = true
+			_check(found, "J%s salta con %s mediante up/move_y" % [pid, wanted])
 
 func _combo_events(script: Dictionary, frames: int) -> Array:
 	var buffer = N2InputBuffer.new(40)
@@ -299,20 +321,25 @@ func _test_contract() -> void:
 			"punch": false,
 			"kick": true,
 			"block": false,
-			"pause": false,
-			"jump": false
+			"pause": false
 		},
 		"command_detected": "SPECIAL_ATTACK_1"
 	}
 	var ok_validator = MockConsumer.new()
-	_check(ok_validator._validate(report) == "", "un reporte v2 valido pasa el contrato")
+	_check(ok_validator._validate(report) == "", "un reporte v3 valido pasa el contrato")
 	ok_validator.free()
 
-	var no_jump := report.duplicate(true)
-	no_jump["state"].erase("jump")
-	var jump_validator = MockConsumer.new()
-	_check(jump_validator._validate(no_jump) != "", "el validador exige state.jump")
-	jump_validator.free()
+	var extra_state := report.duplicate(true)
+	extra_state["state"]["jump"] = false
+	var state_validator = MockConsumer.new()
+	_check(state_validator._validate(extra_state) != "", "el validador rechaza state.jump extra")
+	state_validator.free()
+
+	var extra_top := report.duplicate(true)
+	extra_top["extra"] = 1
+	var top_validator = MockConsumer.new()
+	_check(top_validator._validate(extra_top) != "", "el validador rechaza claves de primer nivel extra")
+	top_validator.free()
 
 	var empty_command := report.duplicate(true)
 	empty_command["command_detected"] = ""
@@ -336,4 +363,6 @@ func _test_report_sign() -> void:
 	_check(int(up_report["state"]["move_y"]) == 1, "move_y = +1 al pulsar arriba (salto)")
 	var down_report: Dictionary = core._build_report(1, 1, {"up": false, "down": true}, null)
 	_check(int(down_report["state"]["move_y"]) == -1, "move_y = -1 al pulsar abajo (agachado)")
+	_check(not up_report["state"].has("jump"), "el reporte no incluye state.jump")
+	_check(up_report["state"].size() == 6, "state tiene exactamente las 6 claves del PDF")
 	core.free()
