@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://db0muu5ynfccc"
-path="res://.godot/imported/Platena2_Espacio.png-90a8a69747fa470a46c576b85f6f0392.ctex"
+uid="uid://wc2hlpas8w2r"
+path="res://.godot/imported/Planeta2_Espacio.png-2fb5f062db8c0c6235a3ca16b182cd02.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenario_Espacio/Platena2_Espacio.png"
-dest_files=["res://.godot/imported/Platena2_Espacio.png-90a8a69747fa470a46c576b85f6f0392.ctex"]
+source_file="res://assets/Escenario_Espacio/Planeta2_Espacio.png"
+dest_files=["res://.godot/imported/Planeta2_Espacio.png-2fb5f062db8c0c6235a3ca16b182cd02.ctex"]
 
 [params]
 

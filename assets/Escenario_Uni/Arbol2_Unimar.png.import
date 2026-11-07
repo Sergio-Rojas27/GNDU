@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d0yl6x4jajj3t"
-path="res://.godot/imported/Fondo_Espacio.jpg-43d72506d1328cd621778f89549f6ee6.ctex"
+uid="uid://deg1f0qslesje"
+path="res://.godot/imported/Arbol2_Unimar.png-f20ad5c8e6d065302ecdcc6b517a9d40.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenario_Espacio/Fondo_Espacio.jpg"
-dest_files=["res://.godot/imported/Fondo_Espacio.jpg-43d72506d1328cd621778f89549f6ee6.ctex"]
+source_file="res://assets/Escenario_Uni/Arbol2_Unimar.png"
+dest_files=["res://.godot/imported/Arbol2_Unimar.png-f20ad5c8e6d065302ecdcc6b517a9d40.ctex"]
 
 [params]
 

@@ -13,10 +13,10 @@ script = ExtResource("1_7n441")
 
 [node name="Button" type="Button" parent="." unique_id=177951381]
 layout_mode = 0
-offset_left = 475.0
-offset_top = 453.0
-offset_right = 644.0
-offset_bottom = 506.0
+offset_left = 824.0
+offset_top = 626.0
+offset_right = 1201.0
+offset_bottom = 782.0
 text = "Comenzar"
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
