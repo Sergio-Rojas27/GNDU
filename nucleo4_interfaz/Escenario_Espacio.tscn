@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://d1s5a1b3yxko2" path="res://assets/Escenario_Espacio/Estrella_Espacio/Estrella1_Espacio.png" id="11_d4xav"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_t0fkw"]
-size = Vector2(1170, 58)
+size = Vector2(2327, 58)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_cwfhf"]
 animations = [{
@@ -51,29 +51,35 @@ motion_scale = Vector2(0.1, 0.1)
 
 [node name="Sprite2D" type="Sprite2D" parent="Parallax2D/ParallaxLayer" unique_id=1604202270]
 texture_repeat = 2
-position = Vector2(569, 318)
-scale = Vector2(1.1127273, 0.6872727)
+position = Vector2(942.5, 718.9999)
+scale = Vector2(1.7918183, 1.4163635)
 texture = ExtResource("1_sw0lt")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=252502035]
-position = Vector2(925, 313)
-scale = Vector2(0.69218326, 0.70289457)
+position = Vector2(1567, 383)
+scale = Vector2(1.5768636, 1.5692283)
 texture = ExtResource("2_hdg7b")
 
 [node name="Sprite2D3" type="Sprite2D" parent="." unique_id=346721715]
-position = Vector2(104, 243.99997)
-scale = Vector2(1.0934579, 1.1260777)
+position = Vector2(533, 242.99998)
+scale = Vector2(1.7797893, 1.7503369)
 texture = ExtResource("3_mrs51")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1278477132]
 
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=1222731288]
-position = Vector2(575.00006, 497.625)
+position = Vector2(592.5, 874.625)
 scale = Vector2(1.1513672, 1.0150001)
 texture = ExtResource("4_q36pn")
 
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/Sprite2D" unique_id=2040465401]
+position = Vector2(1100.4312, -1.6010742)
+scale = Vector2(1.1513672, 1.0150001)
+texture = ExtResource("4_q36pn")
+flip_h = true
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1552286168]
-position = Vector2(584, 651)
+position = Vector2(1167.5, 1023)
 shape = SubResource("RectangleShape2D_t0fkw")
 
 [node name="Sprite2D2" type="Sprite2D" parent="." unique_id=248481240]
@@ -86,39 +92,44 @@ position = Vector2(506.35498, -545.81683)
 scale = Vector2(1.0434109, 0.90538883)
 texture = ExtResource("6_ffkqx")
 
-[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D2/Sprite2D2" unique_id=1394930914]
-position = Vector2(-933.75037, 353.1468)
-scale = Vector2(0.6882284, 0.549782)
+[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D2/Sprite2D2" unique_id=1067612552]
+position = Vector2(-1424.2645, 189.2168)
+scale = Vector2(1.0434109, 0.90538883)
+texture = ExtResource("6_ffkqx")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D2/Sprite2D2/Sprite2D2" unique_id=2068525155]
+position = Vector2(253.0999, -102.06468)
+scale = Vector2(1.864412, 2.065785)
 texture = ExtResource("6_ffkqx")
 
 [node name="Sprite2D4" type="Sprite2D" parent="." unique_id=490522664]
-position = Vector2(479, 198)
-scale = Vector2(1.2049999, 1.2147062)
+position = Vector2(980, 259)
+scale = Vector2(2.1712496, 2.1213238)
 texture = ExtResource("7_etjug")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=861426765]
-position = Vector2(266, 172)
+position = Vector2(354, 297)
 sprite_frames = SubResource("SpriteFrames_cwfhf")
 animation = &"estrella"
 autoplay = "estrella"
 frame_progress = 0.63549566
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AnimatedSprite2D" unique_id=1308429815]
-position = Vector2(373, 147)
+position = Vector2(451, 140)
 sprite_frames = SubResource("SpriteFrames_cwfhf")
 animation = &"estrella"
 autoplay = "estrella"
 frame_progress = 0.82130563
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AnimatedSprite2D/AnimatedSprite2D" unique_id=1115684716]
-position = Vector2(432, -159)
+position = Vector2(455, -176)
 sprite_frames = SubResource("SpriteFrames_cwfhf")
 animation = &"estrella"
 autoplay = "estrella"
 frame_progress = 0.8612555
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AnimatedSprite2D/AnimatedSprite2D/AnimatedSprite2D" unique_id=549402832]
-position = Vector2(-309, 315)
+position = Vector2(-103, 157)
 sprite_frames = SubResource("SpriteFrames_cwfhf")
 animation = &"estrella"
 autoplay = "estrella"
