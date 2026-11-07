@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="JUEGO_SF"
-run/main_scene="uid://bm2dr064oxxd0"
+run/main_scene="uid://sabreonvl1e4"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
