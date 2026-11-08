@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://rnfusq1wpvqs"]
 
 [ext_resource type="Texture2D" uid="uid://dklpxx0kvs74k" path="res://assets/Escenario_Uni/Fondo_Unimar.jpeg" id="1_2yqrj"]
+[ext_resource type="Script" uid="uid://hnsxsu1ayr53" path="res://nucleo4_interfaz/escenario_uni.gd" id="1_uocl5"]
 [ext_resource type="Texture2D" uid="uid://drbywiwb6danr" path="res://assets/Escenario_Uni/Pasto_Unimar.png" id="2_16ae4"]
 [ext_resource type="Texture2D" uid="uid://blwarujir20fh" path="res://assets/Escenario_Uni/Montanas_Unimar.png" id="2_sd1vh"]
 [ext_resource type="Texture2D" uid="uid://b3ld3irmptumb" path="res://assets/Escenario_Uni/Flor1_Unimar.png" id="3_4t5dw"]
@@ -11,6 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://doyfjjxk0mdnd" path="res://assets/Escenario_Uni/Sendero1_Unimar.png" id="6_f6all"]
 [ext_resource type="Texture2D" uid="uid://deg1f0qslesje" path="res://assets/Escenario_Uni/Arbol2_Unimar.png" id="6_giq3x"]
 [ext_resource type="Texture2D" uid="uid://bhspb1ikhs7a1" path="res://assets/Escenario_Uni/Arbusto2_Unimar.png" id="10_f6all"]
+[ext_resource type="Script" uid="uid://ddfrhuci5yeij" path="res://nucleo4_interfaz/simulador_hud.gd" id="12_e7ya4"]
+[ext_resource type="PackedScene" uid="uid://byaqn8rqd3nbg" path="res://nucleo4_interfaz/HUD.tscn" id="14_cy4td"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_t0fkw"]
 size = Vector2(3870, 112)
@@ -20,6 +23,7 @@ size = Vector2(81, 1201)
 
 [node name="EscenarioUni" type="Node2D" unique_id=338503734]
 position = Vector2(-201, -4)
+script = ExtResource("1_uocl5")
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=1367652826]
 repeat_size = Vector2(1394, 0)
@@ -219,3 +223,8 @@ texture = ExtResource("3_4t5dw")
 position = Vector2(95.26443, -9.878034)
 scale = Vector2(0.7309266, 0.67561525)
 texture = ExtResource("3_4t5dw")
+
+[node name="SimuladorHUD" type="Node" parent="." unique_id=883878001]
+script = ExtResource("12_e7ya4")
+
+[node name="HUD" parent="." unique_id=365052251 instance=ExtResource("14_cy4td")]
