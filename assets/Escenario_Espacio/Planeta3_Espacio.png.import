@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://r16425opn850"
-path="res://.godot/imported/Planeta3_espacio.png-ad8397db573b34252047af3f14022453.ctex"
+path="res://.godot/imported/Planeta3_Espacio.png-fcf559863d36e206e7689cd17a5ef4ec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenario_Espacio/Planeta3_espacio.png"
-dest_files=["res://.godot/imported/Planeta3_espacio.png-ad8397db573b34252047af3f14022453.ctex"]
+source_file="res://assets/Escenario_Espacio/Planeta3_Espacio.png"
+dest_files=["res://.godot/imported/Planeta3_Espacio.png-fcf559863d36e206e7689cd17a5ef4ec.ctex"]
 
 [params]
 

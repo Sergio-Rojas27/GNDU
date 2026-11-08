@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://btq5g6p1wlbcx"]
+
+[ext_resource type="Texture2D" uid="uid://q856odc3kegn" path="res://assets/Pantalla_Desierto/Cielo_Desierto.jpg" id="1_3h1gd"]
+[ext_resource type="Texture2D" uid="uid://bobnepu8f0dlj" path="res://assets/Pantalla_Desierto/Suelo_Desierto.png" id="3_qmfc4"]
+
+[node name="Escenario_desierto" type="Node2D" unique_id=1627048202]
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=555504223]
+repeat_size = Vector2(3708, 0)
+autoscroll = Vector2(20, 0)
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Parallax2D" unique_id=2116793799]
+
+[node name="cielo" type="Sprite2D" parent="Parallax2D/ParallaxLayer" unique_id=218510232]
+position = Vector2(941.0795, 243.76662)
+scale = Vector2(1.3192738, 1.8103682)
+texture = ExtResource("1_3h1gd")
+
+[node name="cielo" type="Sprite2D" parent="Parallax2D/ParallaxLayer/cielo" unique_id=478288864]
+position = Vector2(1407.5322, -2.6329508)
+scale = Vector2(0.9920752, 0.99725085)
+texture = ExtResource("1_3h1gd")
+flip_h = true
+
+[node name="suelo" type="Sprite2D" parent="." unique_id=1095520723]
+position = Vector2(-39.00003, 882.7936)
+scale = Vector2(3.0308328, 4.757726)
+texture = ExtResource("3_qmfc4")
+
+[node name="Sprite2D2" type="Sprite2D" parent="suelo" unique_id=792239716]
+position = Vector2(218.795, 0.19023216)
+scale = Vector2(0.99290216, 1.0044237)
+texture = ExtResource("3_qmfc4")
+flip_h = true
+
+[node name="Sprite2D3" type="Sprite2D" parent="suelo" unique_id=1891636668]
+position = Vector2(439.14307, 0.043563128)
+scale = Vector2(1.0152762, 0.9984192)
+texture = ExtResource("3_qmfc4")
+
+[node name="Sprite2D2" type="Sprite2D" parent="suelo/Sprite2D3" unique_id=445310712]
+position = Vector2(218.54474, 0.19023216)
+scale = Vector2(0.99290216, 1.0044237)
+texture = ExtResource("3_qmfc4")
+flip_h = true
