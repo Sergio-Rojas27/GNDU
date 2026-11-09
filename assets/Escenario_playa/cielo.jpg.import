@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbglq0xwmtwwa"
-path="res://.godot/imported/cielo.jpg-bfb00361cfb9b89d2689dd1999ab10d7.ctex"
+path="res://.godot/imported/cielo.jpg-6baec7fc28a724559568004f142d5024.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenario_Playa/cielo.jpg"
-dest_files=["res://.godot/imported/cielo.jpg-bfb00361cfb9b89d2689dd1999ab10d7.ctex"]
+source_file="res://assets/Escenario_playa/cielo.jpg"
+dest_files=["res://.godot/imported/cielo.jpg-6baec7fc28a724559568004f142d5024.ctex"]
 
 [params]
 

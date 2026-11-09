@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://fkk57cap2xde"
-path="res://.godot/imported/Piedra_playa2.png-e731427bc89e91a0d70adecb0f4ef9c8.ctex"
+path="res://.godot/imported/Piedra_playa2.png-608dd7fd4a2fdf8fb2b450b6d16e0e78.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenario_Playa/Piedra_playa2.png"
-dest_files=["res://.godot/imported/Piedra_playa2.png-e731427bc89e91a0d70adecb0f4ef9c8.ctex"]
+source_file="res://assets/Escenario_playa/Piedra_playa2.png"
+dest_files=["res://.godot/imported/Piedra_playa2.png-608dd7fd4a2fdf8fb2b450b6d16e0e78.ctex"]
 
 [params]
 

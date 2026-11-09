@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://t2w5kjgs0k08"
-path="res://.godot/imported/palmera1.png-e2fe0c931f02b1d830efdc989d51d46c.ctex"
+path="res://.godot/imported/palmera1.png-4b5cf139b74f77349b695d911bdd64e4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenario_Playa/palmera1.png"
-dest_files=["res://.godot/imported/palmera1.png-e2fe0c931f02b1d830efdc989d51d46c.ctex"]
+source_file="res://assets/Escenario_playa/palmera1.png"
+dest_files=["res://.godot/imported/palmera1.png-4b5cf139b74f77349b695d911bdd64e4.ctex"]
 
 [params]
 
