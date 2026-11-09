@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://7ty2lsuor6vi" path="res://escenario_(prueba).gd" id="1_wkpad"]
 [ext_resource type="Texture2D" uid="uid://b6llimti5t3bd" path="res://Test_Background.jpg" id="2_8v6x3"]
 [ext_resource type="Texture2D" uid="uid://ociadvbfitqq" path="res://Test_Ground.png" id="3_np4jd"]
+[ext_resource type="Script" uid="uid://cft1m0fn21ily" path="res://Camara.gd" id="5_np4jd"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wddc5"]
 font_size = 60
@@ -15,7 +16,7 @@ bg_color = Color(0.6509804, 0.16078432, 0.2901961, 1)
 bg_color = Color(0.6509804, 0.16078432, 0.2901961, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
-size = Vector2(1152, 33)
+size = Vector2(2032, 33)
 
 [node name="Escenario (Prueba)" type="Node2D" unique_id=1323861093 node_paths=PackedStringArray("jugador1", "jugador2", "texto_tiempo", "reloj_combate", "barra_vida_j1", "barra_vida_j2", "texto_victoria")]
 position = Vector2(1, 0)
@@ -41,77 +42,95 @@ autostart = true
 
 [node name="Label_tiempo" type="Label" parent="CanvasLayer/Control" unique_id=186222231]
 layout_mode = 0
-offset_left = 545.0
-offset_top = 59.0
-offset_right = 614.0
-offset_bottom = 142.0
+offset_left = 940.0
+offset_top = 239.0
+offset_right = 1009.0
+offset_bottom = 322.0
 text = "99"
 label_settings = SubResource("LabelSettings_wddc5")
 
 [node name="Vida_P1" type="ProgressBar" parent="CanvasLayer/Control" unique_id=1109378328]
 layout_mode = 0
-offset_left = 113.0
-offset_top = 90.0
-offset_right = 477.0
-offset_bottom = 117.0
+offset_left = 508.0
+offset_top = 270.0
+offset_right = 872.0
+offset_bottom = 297.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_07kyl")
 
 [node name="Vida_P2" type="ProgressBar" parent="CanvasLayer/Control" unique_id=1255850235]
 layout_mode = 0
-offset_left = 675.0
-offset_top = 92.0
-offset_right = 1047.0
-offset_bottom = 119.0
+offset_left = 1070.0
+offset_top = 272.0
+offset_right = 1442.0
+offset_bottom = 299.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_777lm")
 fill_mode = 1
 
 [node name="Texto Victoria" type="Label" parent="CanvasLayer/Control" unique_id=1703664923]
 layout_mode = 0
-offset_left = 106.0
-offset_top = 235.0
-offset_right = 1067.0
-offset_bottom = 400.0
+offset_left = 501.0
+offset_top = 415.0
+offset_right = 1462.0
+offset_bottom = 580.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 80
 horizontal_alignment = 1
 
 [node name="Fondo" type="Sprite2D" parent="." unique_id=767365593]
-position = Vector2(543.49384, 30)
-scale = Vector2(1.3818479, 2.271083)
+position = Vector2(945.0001, 312)
+scale = Vector2(1.8955077, 2.4851918)
 texture = ExtResource("2_8v6x3")
 
 [node name="Fondo2" type="Sprite2D" parent="." unique_id=479482562]
-position = Vector2(538.7209, 606)
-scale = Vector2(2.3402936, 1.3986014)
+position = Vector2(944.3605, 989)
+scale = Vector2(3.1948586, 1.8555506)
 texture = ExtResource("3_np4jd")
 
 [node name="ColisionEscenario" type="StaticBody2D" parent="." unique_id=2063510594]
 
 [node name="HitboxSuelo" type="CollisionShape2D" parent="ColisionEscenario" unique_id=1904051117]
-position = Vector2(576, 630)
+position = Vector2(950, 1060)
 shape = SubResource("RectangleShape2D_g4v7s")
 
 [node name="HitboxParedIzquierda" type="CollisionShape2D" parent="ColisionEscenario" unique_id=696151883]
-position = Vector2(17, 570)
+position = Vector2(-22, 42)
 rotation = 1.5707964
 shape = SubResource("RectangleShape2D_g4v7s")
 
 [node name="HitboxParedDerecha" type="CollisionShape2D" parent="ColisionEscenario" unique_id=839437775]
-position = Vector2(1135, 568)
+position = Vector2(1932, 30)
 rotation = -1.5707964
 shape = SubResource("RectangleShape2D_g4v7s")
 
-[node name="Jugador" parent="." unique_id=655716964 instance=ExtResource("1_n823b")]
-position = Vector2(200, -14)
+[node name="Jugador" parent="." unique_id=655716964 node_paths=PackedStringArray("rival") instance=ExtResource("1_n823b")]
+position = Vector2(751, 919)
+rival = NodePath("../Jugador2")
 accion_izquierda = &"p1_izquierda"
 accion_derecha = &"p1_derecha"
+accion_arriba = &"p1_arriba"
+accion_abajo = &"p1_agachar"
 accion_salto = &"p1_salto"
-accion_golpe = &"p1_golpe"
+accion_golpe = &"p1_puno"
+accion_patada = &"p1_patada"
+accion_bloqueo = &"p1_bloquear"
+accion_agarre = &"p1_agarre"
 
-[node name="Jugador2" parent="." unique_id=1991135801 instance=ExtResource("1_n823b")]
-position = Vector2(955, -14)
-scale = Vector2(-1, 1)
+[node name="Jugador2" parent="." unique_id=1991135801 node_paths=PackedStringArray("rival") instance=ExtResource("1_n823b")]
+position = Vector2(1119, 915)
+rival = NodePath("../Jugador")
 accion_izquierda = &"p2_izquierda"
 accion_derecha = &"p2_derecha"
+accion_arriba = &"p2_arriba"
+accion_abajo = &"p2_agachar"
 accion_salto = &"p2_salto"
-accion_golpe = &"p2_golpe"
+accion_golpe = &"p2_puno"
+accion_patada = &"p2_patada"
+accion_bloqueo = &"p2_bloquear"
+accion_agarre = &"p2_agarre"
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=502597948 node_paths=PackedStringArray("jugador_1", "jugador_2")]
+position = Vector2(952, 631)
+zoom = Vector2(1.3, 1.3)
+script = ExtResource("5_np4jd")
+jugador_1 = NodePath("../Jugador")
+jugador_2 = NodePath("../Jugador2")
