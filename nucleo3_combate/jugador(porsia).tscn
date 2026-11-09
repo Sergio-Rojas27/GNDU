@@ -466,7 +466,7 @@ texture = ExtResource("1_ys7hf")
 position = Vector2(-4.999997, -27.784315)
 scale = Vector2(3.4045453, 3.1996799)
 sprite_frames = SubResource("SpriteFrames_wddc5")
-animation = &"Tumbar"
+animation = &"Reposo"
 
 [node name="Hurtbox" type="Area2D" parent="." unique_id=283507046]
 

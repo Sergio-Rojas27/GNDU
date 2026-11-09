@@ -174,7 +174,7 @@ func _physics_process(delta: float) -> void:
 				estado_actual = "reposo"
 				actualizar_animacion("Reposo")
 				rival_agarrado = null
-		
+				
 		move_and_slide()
 		return
 
