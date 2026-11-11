@@ -1,0 +1,237 @@
+{
+  "version": 3,
+  "buffer_size_frames": 30,
+  "global_cooldown_frames": 2,
+  "players": {
+    "1": {
+      "device": {
+        "type": "hybrid",
+        "joypad_index": 0
+      },
+      "bindings": {
+        "left": [
+          { "type": "key", "code": "A" },
+          { "type": "joy_button", "button": "dpad_left" },
+          { "type": "joy_axis", "axis": "left_x", "direction": -1, "deadzone": 0.35 }
+        ],
+        "right": [
+          { "type": "key", "code": "D" },
+          { "type": "joy_button", "button": "dpad_right" },
+          { "type": "joy_axis", "axis": "left_x", "direction": 1, "deadzone": 0.35 }
+        ],
+        "up": [
+          { "type": "key", "code": "W" },
+          { "type": "key", "code": "Space" },
+          { "type": "joy_button", "button": "dpad_up" },
+          { "type": "joy_button", "button": "x" },
+          { "type": "joy_button", "button": "y" },
+          { "type": "joy_axis", "axis": "left_y", "direction": -1, "deadzone": 0.35 }
+        ],
+        "down": [
+          { "type": "key", "code": "S" },
+          { "type": "joy_button", "button": "dpad_down" },
+          { "type": "joy_axis", "axis": "left_y", "direction": 1, "deadzone": 0.35 }
+        ],
+        "punch": [
+          { "type": "key", "code": "F" },
+          { "type": "joy_button", "button": "a" }
+        ],
+        "kick": [
+          { "type": "key", "code": "G" },
+          { "type": "joy_button", "button": "b" }
+        ],
+        "block": [
+          { "type": "key", "code": "H" },
+          { "type": "joy_button", "button": "right_shoulder" }
+        ],
+        "pause": [
+          { "type": "key", "code": "Escape" },
+          { "type": "joy_button", "button": "start" }
+        ]
+      }
+    },
+    "2": {
+      "device": {
+        "type": "joypad",
+        "joypad_index": 1
+      },
+      "bindings": {
+        "left": [
+          { "type": "joy_button", "button": "dpad_left" },
+          { "type": "joy_axis", "axis": "left_x", "direction": -1, "deadzone": 0.35 }
+        ],
+        "right": [
+          { "type": "joy_button", "button": "dpad_right" },
+          { "type": "joy_axis", "axis": "left_x", "direction": 1, "deadzone": 0.35 }
+        ],
+        "up": [
+          { "type": "joy_button", "button": "dpad_up" },
+          { "type": "joy_button", "button": "x" },
+          { "type": "joy_button", "button": "y" },
+          { "type": "joy_axis", "axis": "left_y", "direction": -1, "deadzone": 0.35 }
+        ],
+        "down": [
+          { "type": "joy_button", "button": "dpad_down" },
+          { "type": "joy_axis", "axis": "left_y", "direction": 1, "deadzone": 0.35 }
+        ],
+        "punch": [
+          { "type": "joy_button", "button": "a" }
+        ],
+        "kick": [
+          { "type": "joy_button", "button": "b" }
+        ],
+        "block": [
+          { "type": "joy_button", "button": "right_shoulder" }
+        ],
+        "pause": [
+          { "type": "joy_button", "button": "start" }
+        ]
+      }
+    }
+  },
+  "commands": [
+    {
+      "name": "SPECIAL_ATTACK_1",
+      "priority": 100,
+      "window_frames": 24,
+      "final_window": 2,
+      "cooldown": 10,
+      "steps": [
+        { "action": "down", "mode": "press", "max_gap": 10 },
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "punch", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "SPECIAL_ATTACK_2",
+      "priority": 100,
+      "window_frames": 24,
+      "final_window": 2,
+      "cooldown": 10,
+      "steps": [
+        { "action": "down", "mode": "press", "max_gap": 10 },
+        { "action": "left", "mode": "press", "max_gap": 10 },
+        { "action": "punch", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "DASH_RIGHT",
+      "priority": 50,
+      "window_frames": 18,
+      "final_window": 2,
+      "cooldown": 10,
+      "steps": [
+        { "action": "right", "mode": "press", "max_gap": 9 },
+        { "action": "right", "mode": "press", "max_gap": 9, "exclusive": true }
+      ]
+    },
+    {
+      "name": "DASH_LEFT",
+      "priority": 50,
+      "window_frames": 18,
+      "final_window": 2,
+      "cooldown": 10,
+      "steps": [
+        { "action": "left", "mode": "press", "max_gap": 9 },
+        { "action": "left", "mode": "press", "max_gap": 9, "exclusive": true }
+      ]
+    },
+    {
+      "name": "COMBO_AAA",
+      "priority": 80,
+      "window_frames": 30,
+      "final_window": 2,
+      "cooldown": 18,
+      "steps": [
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "punch", "mode": "press", "max_gap": 12 }
+      ]
+    },
+    {
+      "name": "COMBO_BBB",
+      "priority": 80,
+      "window_frames": 30,
+      "final_window": 2,
+      "cooldown": 18,
+      "steps": [
+        { "action": "kick", "mode": "press", "max_gap": 12 },
+        { "action": "kick", "mode": "press", "max_gap": 12 },
+        { "action": "kick", "mode": "press", "max_gap": 12 }
+      ]
+    },
+    {
+      "name": "COMBO_ABA",
+      "priority": 85,
+      "window_frames": 30,
+      "final_window": 2,
+      "cooldown": 18,
+      "steps": [
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "kick", "mode": "press", "max_gap": 12 },
+        { "action": "punch", "mode": "press", "max_gap": 12 }
+      ]
+    },
+    {
+      "name": "COMBO_AAB",
+      "priority": 85,
+      "window_frames": 30,
+      "final_window": 2,
+      "cooldown": 18,
+      "steps": [
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "kick", "mode": "press", "max_gap": 12 }
+      ]
+    },
+    {
+      "name": "COMBO_RIGHT_DOWN_RIGHT_B",
+      "priority": 95,
+      "window_frames": 32,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "down", "mode": "press", "max_gap": 10 },
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "kick", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "COMBO_DOWN_UP_A",
+      "priority": 90,
+      "window_frames": 24,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "down", "mode": "press", "max_gap": 10 },
+        { "action": "up", "mode": "press", "max_gap": 10 },
+        { "action": "punch", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "COMBO_DOWN_RIGHT_B",
+      "priority": 90,
+      "window_frames": 24,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "down", "mode": "press", "max_gap": 10 },
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "kick", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "COMBO_LEFT_RIGHT_A",
+      "priority": 90,
+      "window_frames": 24,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "left", "mode": "press", "max_gap": 10 },
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "punch", "mode": "press", "max_gap": 10 }
+      ]
+    }
+  ]
+}

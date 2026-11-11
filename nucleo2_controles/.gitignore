@@ -1,0 +1,34 @@
+# Godot 4: cache del editor, importaciones y temporales
+.godot/
+.import/
+*.translation
+*.tmp
+*.log
+*.shader_cache
+.shader_cache/
+.godot_old/
+
+# Mono / C#
+.mono/
+data_*/
+mono_crash.*.json
+
+# Exportaciones temporales
+export.cfg
+
+# Basura de editores y sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+*.bak
+*.orig
+.idea/
+.vscode/
+
+# Documento de la catedra: no forma parte del entregable
+*.docx
+requisitos.pdf
+
+# No ignorar *.uid ni *.import: Godot 4 los necesita y estan versionados
