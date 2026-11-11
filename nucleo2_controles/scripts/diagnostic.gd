@@ -84,6 +84,7 @@ func _build_ui() -> void:
 	header.add_child(_console_button)
 	_freeze_button = _make_button("Congelar: OFF (C)", _toggle_freeze)
 	header.add_child(_freeze_button)
+	header.add_child(_make_button("Visor JSON (V)", _open_viewer))
 	header.add_child(_make_button("Salir (F10)", func() -> void: get_tree().quit()))
 
 	_status = Label.new()
@@ -227,6 +228,9 @@ func _toggle_freeze() -> void:
 	for pid in _panels.keys():
 		_panels[pid].set_frozen(_frozen)
 
+func _open_viewer() -> void:
+	get_tree().change_scene_to_file("res://scenes/report_viewer.tscn")
+
 func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventKey) or not event.pressed or event.echo:
 		return
@@ -239,6 +243,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		KEY_C:
 			_toggle_freeze()
+			get_viewport().set_input_as_handled()
+		KEY_V:
+			_open_viewer()
 			get_viewport().set_input_as_handled()
 		KEY_F10:
 			get_tree().quit()
