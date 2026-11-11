@@ -18,6 +18,7 @@ extends Node2D
 @export var label_rounds_j1: Label
 @export var label_rounds_j2: Label
 @export var boton_hitboxes: Button
+@export var boton_reiniciar: Button
 
 const MAX_ROUNDS: int = 2
 
@@ -60,6 +61,10 @@ func _ready() -> void:
 	if boton_hitboxes:
 		boton_hitboxes.pressed.connect(_on_boton_hitboxes_pressed)
 		_actualizar_texto_boton_hitboxes()
+
+	if boton_reiniciar:
+		boton_reiniciar.visible = false
+		boton_reiniciar.pressed.connect(_on_boton_reiniciar_pressed)
 		
 	_actualizar_labels_rounds()
 
@@ -161,6 +166,50 @@ func finalizar_combate(mensaje: String) -> void:
 		reloj_combate.stop()
 	if texto_victoria:
 		texto_victoria.text = mensaje
+	if boton_reiniciar:
+		boton_reiniciar.visible = true
+
+func _on_boton_reiniciar_pressed() -> void:
+	reiniciar_combate_completo()
+
+func reiniciar_combate_completo() -> void:
+	combate_finalizado = false
+	round_terminado = false
+	round_actual = 1
+	rounds_j1 = 0
+	rounds_j2 = 0
+	tiempo_restante = 99
+	
+	if boton_reiniciar:
+		boton_reiniciar.visible = false
+		
+	if texto_tiempo:
+		texto_tiempo.text = str(tiempo_restante)
+		
+	_actualizar_labels_rounds()
+	
+	if jugador1 and jugador1.has_method("reiniciar_para_round"):
+		jugador1.reiniciar_para_round(pos_inicial_j1)
+	if jugador2 and jugador2.has_method("reiniciar_para_round"):
+		jugador2.reiniciar_para_round(pos_inicial_j2)
+		
+	if barra_vida_j1 and jugador1:
+		barra_vida_j1.value = jugador1.current_hp
+	if barra_vida_j2 and jugador2:
+		barra_vida_j2.value = jugador2.current_hp
+		
+	if texto_victoria:
+		texto_victoria.text = "¡ROUND 1!\n¡PELEEN!"
+		
+	await get_tree().create_timer(1.2).timeout
+	if combate_finalizado:
+		return
+		
+	if texto_victoria:
+		texto_victoria.text = ""
+		
+	if reloj_combate:
+		reloj_combate.start()
 
 func _on_reloj_combate_timeout() -> void:
 	if round_terminado or combate_finalizado:

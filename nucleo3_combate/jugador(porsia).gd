@@ -95,6 +95,10 @@ func activar_hitbox(altura: String) -> void:
 			if hitbox_baja_collision: hitbox_baja_collision.disabled = false
 
 func _actualizar_hurtbox() -> void:
+	if estado_actual in ["derrota", "en_suelo"]:
+		if hurtbox_estandar_collision: hurtbox_estandar_collision.disabled = true
+		if hurtbox_baja_collision: hurtbox_baja_collision.disabled = true
+		return
 	var esta_agachado = estado_actual in ["agachado", "bloqueo_bajo", "ataque_punio_abajo", "ataque_patada_abajo"]
 	if hurtbox_estandar_collision:
 		hurtbox_estandar_collision.disabled = esta_agachado
@@ -132,7 +136,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		mirando_derecha = (player_id == 1)
 
-	if estado_actual not in ["dano", "derrota", "agarrado", "lanzado"]:
+	if estado_actual not in ["dano", "derrota", "agarrado", "lanzado", "caida_rebote", "en_suelo"]:
 		sprite.flip_h = not mirando_derecha
 		var dir_x = 1.0 if mirando_derecha else -1.0
 		if hitbox_alta: hitbox_alta.scale.x = dir_x
@@ -142,10 +146,12 @@ func _physics_process(delta: float) -> void:
 	if estado_actual == "agarrado":
 		return
 
-	if estado_actual in ["dano", "derrota", "lanzado"]:
+	if estado_actual in ["dano", "derrota", "lanzado", "caida_rebote", "en_suelo"]:
 		var estaba_en_aire = not is_on_floor()
 		if not is_on_floor():
 			velocity += get_gravity() * delta
+		else:
+			velocity.x = move_toward(velocity.x, 0, 600.0 * delta)
 		
 		# Pushbox Suave pasiva
 		if rival:
@@ -153,30 +159,31 @@ func _physics_process(delta: float) -> void:
 			if abs(dist_x) < 40 and global_position.y < rival.global_position.y - 10:
 				velocity.x += (150.0 if dist_x > 0 else -150.0)
 				
-		# --- LÍMITE DE PANTALLA TIPO MORTAL KOMBAT ---
-		if rival and estado_actual not in ["dano", "derrota", "agarrado", "lanzado"]:
-			var distancia_al_rival = abs(global_position.x - rival.global_position.x)
-			
-			# Ajusta este número: es el ancho máximo que la cámara les permite separarse.
-			# Con un zoom de 1.3, el valor ideal ronda los 1200 o 1300 píxeles.
-			var distancia_maxima = 1300.0 
-			
-			if distancia_al_rival >= distancia_maxima:
-				var estoy_a_la_izquierda = global_position.x < rival.global_position.x
-				
-				# Si estoy a la izquierda e intento caminar más a la izquierda, me freno
-				if estoy_a_la_izquierda and velocity.x < 0:
-					velocity.x = 0
-				# Si estoy a la derecha e intento caminar más a la derecha, me freno
-				elif not estoy_a_la_izquierda and velocity.x > 0:
-					velocity.x = 0
-					
 		move_and_slide()
+		_aplicar_limites_camara()
 		
-		if estado_actual == "lanzado" and estaba_en_aire and is_on_floor():
-			velocity.y = -500 
-			velocity.x *= 0.5 
-			estado_actual = "dano" 
+		# Impacto contra el suelo al ser lanzado
+		if estado_actual == "lanzado" and is_on_floor():
+			if current_hp <= 0:
+				estado_actual = "derrota"
+				velocity = Vector2.ZERO
+				actualizar_animacion("Tumbar")
+			else:
+				velocity.y = -350.0
+				velocity.x *= 0.4
+				estado_actual = "caida_rebote"
+			return
+			
+		# Impacto tras el rebote: se frena y comienza a levantarse
+		if estado_actual == "caida_rebote" and is_on_floor() and velocity.y >= 0:
+			if current_hp <= 0:
+				estado_actual = "derrota"
+				velocity = Vector2.ZERO
+				actualizar_animacion("Tumbar")
+			else:
+				_iniciar_levantarse_del_suelo()
+			return
+			
 		return
 
 	# 3. LÓGICA DE AGARRE (Atacante)
@@ -217,12 +224,14 @@ func _physics_process(delta: float) -> void:
 				rival_agarrado = null
 				
 		move_and_slide()
+		_aplicar_limites_camara()
 		return
 
 	if estado_actual.begins_with("ataque_") or estado_actual == "intentar_agarre":
 		if is_on_floor():
 			velocity.x = 0
 			move_and_slide()
+			_aplicar_limites_camara()
 			return
 
 	# 4. MÁQUINA DE ESTADOS PRINCIPAL
@@ -357,6 +366,8 @@ func _physics_process(delta: float) -> void:
 					if empuje_dir == 0: empuje_dir = 1
 					global_position.x += empuje_dir * 10
 
+	_aplicar_limites_camara()
+
 
 # --- ANIMACIONES Y FOTOGRAMAS ---
 func actualizar_animacion(nombre_anim: String) -> void:
@@ -434,7 +445,7 @@ func _on_hitbox_area_entered(area_rival: Area2D) -> void:
 			rival_atacado.recibir_ataque(fuerza_golpe, direccion_empuje, player_id, altura_ataque, es_agarre)
 
 func recibir_ataque(cantidad: int, direccion_empuje: int, atacante_id: int, altura: String, es_agarre: bool) -> void:
-	if estado_actual in ["derrota", "lanzado"]:
+	if estado_actual in ["derrota", "lanzado", "caida_rebote", "en_suelo"]:
 		return
 
 	if es_agarre:
@@ -490,6 +501,70 @@ func ser_lanzado(fuerza_vector: Vector2) -> void:
 	if current_hp <= 0:
 		estado_actual = "derrota"
 		imprimir_evento_combate("KO", rival.player_id if rival else 0, player_id, 0)
+	else:
+		_seguridad_levantarse()
+
+func _seguridad_levantarse() -> void:
+	await get_tree().create_timer(1.8).timeout
+	if estado_actual in ["lanzado", "caida_rebote"]:
+		if current_hp > 0:
+			_iniciar_levantarse_del_suelo()
+
+func _iniciar_levantarse_del_suelo() -> void:
+	estado_actual = "en_suelo"
+	velocity = Vector2.ZERO
+	desactivar_todas_hitboxes()
+	actualizar_animacion("Tumbar")
+	
+	await get_tree().create_timer(0.5).timeout
+	if estado_actual != "en_suelo":
+		return
+		
+	estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
+	actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
+
+func _aplicar_limites_camara() -> void:
+	var cam = get_viewport().get_camera_2d()
+	var tam_vp = get_viewport_rect().size
+	var zoom_cam = cam.zoom.x if cam else 1.3
+	var mitad_ancho_cam = (tam_vp.x / 2.0) / zoom_cam
+	var margen = 80.0
+	
+	# 1. Muro invisible cuando los rivales van en direcciones opuestas
+	if rival:
+		var distancia_maxima = (mitad_ancho_cam - margen) * 2.0
+		var delta_x = global_position.x - rival.global_position.x
+		if abs(delta_x) > distancia_maxima:
+			var dir_desde_rival = 1.0 if delta_x > 0 else -1.0
+			global_position.x = rival.global_position.x + dir_desde_rival * distancia_maxima
+			if (dir_desde_rival > 0 and velocity.x > 0) or (dir_desde_rival < 0 and velocity.x < 0):
+				velocity.x = 0
+		elif abs(delta_x) >= distancia_maxima - 1.0:
+			if (delta_x > 0 and velocity.x > 0) or (delta_x < 0 and velocity.x < 0):
+				velocity.x = 0
+
+	# 2. Muro invisible para los bordes del visor de la cámara
+	var cam_x = cam.global_position.x if cam else 960.0
+	if rival:
+		var centro_estimado = (global_position.x + rival.global_position.x) / 2.0
+		var cam_tope_izq = 0.0 + mitad_ancho_cam
+		var cam_tope_der = 1920.0 - mitad_ancho_cam
+		cam_x = clamp(centro_estimado, cam_tope_izq, cam_tope_der)
+
+	var limite_izq = cam_x - mitad_ancho_cam + margen
+	var limite_der = cam_x + mitad_ancho_cam - margen
+	
+	limite_izq = max(limite_izq, 0.0 + margen)
+	limite_der = min(limite_der, 1920.0 - margen)
+	
+	if global_position.x < limite_izq:
+		global_position.x = limite_izq
+		if velocity.x < 0:
+			velocity.x = 0
+	elif global_position.x > limite_der:
+		global_position.x = limite_der
+		if velocity.x > 0:
+			velocity.x = 0
 
 func liberar_agarre() -> void:
 	estado_actual = "reposo"
