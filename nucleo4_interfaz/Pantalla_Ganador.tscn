@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://dfocvlcjkjiic"]
+
+[ext_resource type="Texture2D" uid="uid://2si1qo77b7wk" path="res://assets/Fighters/Prueba_1/Personaje1.png" id="1_jbwxd"]
+[ext_resource type="Texture2D" uid="uid://64y0dpyekeen" path="res://assets/Fighters/Prueba_1/winner.png" id="2_t0lwd"]
+[ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="3_n2co3"]
+
+[node name="PantallaGanador" type="Control" unique_id=554211726]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Personaje" type="TextureRect" parent="." unique_id=772533641]
+layout_mode = 0
+offset_left = -67.0
+offset_top = 5.0
+offset_right = 997.0
+offset_bottom = 1648.0
+texture = ExtResource("1_jbwxd")
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=227639489]
+layout_mode = 0
+offset_left = 830.0
+offset_top = 255.10167
+offset_right = 1856.0
+offset_bottom = 652.1017
+rotation = -0.1288415
+texture = ExtResource("2_t0lwd")
+
+[node name="TimerLabel" type="Label" parent="." unique_id=692548501]
+layout_mode = 0
+offset_left = 887.99994
+offset_top = 209.1017
+offset_right = 1709.0
+offset_bottom = 304.10168
+rotation = -0.12345797
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 12
+theme_override_fonts/font = ExtResource("3_n2co3")
+theme_override_font_sizes/font_size = 80
+text = "Nombre ganador"

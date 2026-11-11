@@ -1,13 +1,14 @@
 [gd_scene format=3 uid="uid://byaqn8rqd3nbg"]
 
 [ext_resource type="Script" uid="uid://bu7ctcyrj4qs2" path="res://nucleo4_interfaz/hud_manager.gd" id="1_314db"]
+[ext_resource type="PackedScene" uid="uid://rga86yfihlq7" path="res://nucleo4_interfaz/Menu_Pausa.tscn" id="1_wrn67"]
 [ext_resource type="Texture2D" uid="uid://72to7qxhmm7p" path="res://assets/States_Hud/Gema.png" id="2_wrn67"]
 [ext_resource type="Texture2D" uid="uid://cly8n86s6vpai" path="res://assets/States_Hud/Gema_Ganada.png" id="3_5gu17"]
 [ext_resource type="Texture2D" uid="uid://c0xchixcam7f8" path="res://assets/States_Hud/Gema_Perdida.png" id="4_fotul"]
 [ext_resource type="Texture2D" uid="uid://ci2r4koltso34" path="res://assets/States_Hud/Gema_Draw.png" id="5_gledi"]
 [ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="6_a3qfq"]
-[ext_resource type="Texture2D" path="res://assets/P1-Photoroom.png" id="7_wrn67"]
-[ext_resource type="Texture2D" path="res://assets/P2-Photoroom.png" id="8_5gu17"]
+[ext_resource type="Texture2D" uid="uid://b5yi342k6er5a" path="res://assets/Fighters/Prueba_1/portrait.png" id="7_a3qfq"]
+[ext_resource type="Texture2D" uid="uid://4o7qes568cqw" path="res://assets/Fighters/Prueba_2/portrait.png" id="8_wrn67"]
 [ext_resource type="Texture2D" uid="uid://ctddmy7gv4v1t" path="res://assets/States_Hud/barra.png" id="10_gu30e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8h62i"]
@@ -38,6 +39,9 @@ gem = ExtResource("2_wrn67")
 gem_Verde = ExtResource("3_5gu17")
 gem_Roja = ExtResource("4_fotul")
 gem_Amarilla = ExtResource("5_gledi")
+
+[node name="Menu_Pausa" parent="Control" unique_id=616283500 instance=ExtResource("1_wrn67")]
+layout_mode = 1
 
 [node name="RedDamageBarP1" type="ProgressBar" parent="Control" unique_id=1994480774]
 layout_mode = 0
@@ -103,7 +107,7 @@ offset_left = 51.0
 offset_top = 49.0
 offset_right = 151.0
 offset_bottom = 149.0
-texture = ExtResource("7_wrn67")
+texture = ExtResource("7_a3qfq")
 expand_mode = 1
 
 [node name="PortraitP2" type="TextureRect" parent="Control" unique_id=1777896359]
@@ -112,7 +116,7 @@ offset_left = 1777.0
 offset_top = 48.0
 offset_right = 1877.0
 offset_bottom = 148.0
-texture = ExtResource("8_5gu17")
+texture = ExtResource("8_wrn67")
 expand_mode = 1
 
 [node name="StatusAnnouncementTexture" type="TextureRect" parent="Control" unique_id=1358344973]
@@ -122,13 +126,28 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -275.0
-offset_top = -124.0
-offset_right = 276.0
+offset_left = -376.0
+offset_top = -100.0
+offset_right = 377.0
 offset_bottom = 128.0
 grow_horizontal = 2
 grow_vertical = 2
-expand_mode = 1
+expand_mode = 3
+
+[node name="StatusAnnouncementTexture2" type="TextureRect" parent="Control" unique_id=1648050426]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -376.0
+offset_top = -100.0
+offset_right = 377.0
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 4
 
 [node name="NombreP1" type="Label" parent="Control" unique_id=1875958565]
 layout_mode = 0
@@ -157,28 +176,28 @@ horizontal_alignment = 2
 
 [node name="GemasP1" type="HBoxContainer" parent="Control" unique_id=88284891]
 layout_mode = 0
-offset_left = 726.0
-offset_top = 3.0
-offset_right = 878.0
-offset_bottom = 144.0
+offset_left = 785.0
+offset_top = 6.0
+offset_right = 877.0
+offset_bottom = 147.0
 theme_override_constants/separation = 1
 
 [node name="GemaP1R1" type="TextureRect" parent="Control/GemasP1" unique_id=1251906233]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_vertical = 4
 texture = ExtResource("2_wrn67")
 expand_mode = 1
 
 [node name="GemaP1R2" type="TextureRect" parent="Control/GemasP1" unique_id=939267353]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_vertical = 4
 texture = ExtResource("2_wrn67")
 expand_mode = 1
 
 [node name="GemaP1R3" type="TextureRect" parent="Control/GemasP1" unique_id=1735694217]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_vertical = 4
 texture = ExtResource("2_wrn67")
@@ -186,28 +205,28 @@ expand_mode = 1
 
 [node name="GemasP2" type="HBoxContainer" parent="Control" unique_id=974847827]
 layout_mode = 0
-offset_left = 1047.0
-offset_top = 5.0
-offset_right = 1199.0
-offset_bottom = 146.0
+offset_left = 1049.0
+offset_top = 7.0
+offset_right = 1141.0
+offset_bottom = 148.0
 theme_override_constants/separation = 1
 
 [node name="GemaP2R1" type="TextureRect" parent="Control/GemasP2" unique_id=1531605597]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_vertical = 4
 texture = ExtResource("2_wrn67")
 expand_mode = 1
 
 [node name="GemaP2R2" type="TextureRect" parent="Control/GemasP2" unique_id=1316982250]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_vertical = 4
 texture = ExtResource("2_wrn67")
 expand_mode = 1
 
 [node name="GemaP2R3" type="TextureRect" parent="Control/GemasP2" unique_id=530834964]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_vertical = 4
 texture = ExtResource("2_wrn67")
@@ -215,20 +234,52 @@ expand_mode = 1
 
 [node name="ComboLabelP1" type="Label" parent="Control" unique_id=2026776657]
 layout_mode = 0
-offset_left = 70.0
-offset_top = 322.0
-offset_right = 270.0
-offset_bottom = 391.0
-theme_override_constants/shadow_outline_size = 5
+offset_left = 204.0
+offset_top = 444.0
+offset_right = 404.0
+offset_bottom = 488.0
+theme_override_constants/outline_size = 7
+theme_override_constants/shadow_outline_size = 3
 theme_override_fonts/font = ExtResource("6_a3qfq")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 50
+
+[node name="NumHitP1" type="Label" parent="Control/ComboLabelP1" unique_id=1383422028]
+layout_mode = 0
+offset_left = -57.0
+offset_top = -22.0
+offset_right = -10.0
+offset_bottom = 123.0
+theme_override_constants/outline_size = 7
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = ExtResource("6_a3qfq")
+theme_override_font_sizes/font_size = 80
+text = "
+"
 
 [node name="ComboLabelP2" type="Label" parent="Control" unique_id=1966838693]
 layout_mode = 0
-offset_left = 1569.0
-offset_top = 289.0
-offset_right = 1769.0
-offset_bottom = 358.0
+offset_left = 1684.0
+offset_top = 454.0
+offset_right = 1772.0
+offset_bottom = 545.0
+theme_override_constants/outline_size = 7
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = ExtResource("6_a3qfq")
+theme_override_font_sizes/font_size = 50
+text = "
+"
+
+[node name="NumHitP2" type="Label" parent="Control/ComboLabelP2" unique_id=1418857217]
+layout_mode = 0
+offset_left = -59.0
+offset_top = -25.0
+offset_right = -12.0
+offset_bottom = 46.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 7
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = ExtResource("6_a3qfq")
+theme_override_font_sizes/font_size = 80
 
 [node name="MarcoBarra" type="TextureRect" parent="Control" unique_id=682536830]
 layout_mode = 0
@@ -248,7 +299,7 @@ offset_bottom = 111.0
 texture = ExtResource("10_gu30e")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Control" unique_id=626979645]
+[node name="LabelP" type="Label" parent="Control" unique_id=626979645]
 layout_mode = 0
 offset_left = 163.0
 offset_top = 62.0
@@ -259,7 +310,7 @@ theme_override_fonts/font = ExtResource("6_a3qfq")
 theme_override_font_sizes/font_size = 30
 text = "P1 - "
 
-[node name="Label2" type="Label" parent="Control" unique_id=1019503410]
+[node name="Label2P" type="Label" parent="Control" unique_id=1019503410]
 layout_mode = 0
 offset_left = 1693.0
 offset_top = 64.0

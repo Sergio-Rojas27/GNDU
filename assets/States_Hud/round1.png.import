@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://biu4es4botgj4"
-path="res://.godot/imported/P1.png-6bbb49fc243d17d3c709946673a213be.ctex"
+uid="uid://wvg2ajvf0sfp"
+path="res://.godot/imported/round1.png-a3bb2e42abfe405e8fd8ebec2ff51d01.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Fighters/Portraits/P1.png"
-dest_files=["res://.godot/imported/P1.png-6bbb49fc243d17d3c709946673a213be.ctex"]
+source_file="res://assets/States_Hud/round1.png"
+dest_files=["res://.godot/imported/round1.png-a3bb2e42abfe405e8fd8ebec2ff51d01.ctex"]
 
 [params]
 
