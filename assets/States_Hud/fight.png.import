@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cr6at2pvs8oer"
-path="res://.godot/imported/fight.jpg-1e6d4702bf089d96578e5c9290d52271.ctex"
+uid="uid://n63o7r5dmpyu"
+path="res://.godot/imported/fight.png-69a800f491dca493a6a864762ab98ab2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/States_Hud/fight.jpg"
-dest_files=["res://.godot/imported/fight.jpg-1e6d4702bf089d96578e5c9290d52271.ctex"]
+source_file="res://assets/States_Hud/fight.png"
+dest_files=["res://.godot/imported/fight.png-69a800f491dca493a6a864762ab98ab2.ctex"]
 
 [params]
 

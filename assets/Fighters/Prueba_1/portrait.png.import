@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d0vdllnur0j8c"
-path="res://.godot/imported/Cielo_Desierto.png-5986d2ca54b7bd30253c5b067ad6e0c0.ctex"
+uid="uid://b5yi342k6er5a"
+path="res://.godot/imported/portrait.png-b85e475188c8f03e67101ecd30c6f773.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Pantalla_Desierto/Cielo_Desierto.png"
-dest_files=["res://.godot/imported/Cielo_Desierto.png-5986d2ca54b7bd30253c5b067ad6e0c0.ctex"]
+source_file="res://assets/Fighters/Prueba_1/portrait.png"
+dest_files=["res://.godot/imported/portrait.png-b85e475188c8f03e67101ecd30c6f773.ctex"]
 
 [params]
 

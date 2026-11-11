@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-DatosGlobales="*uid://b1cd2pjlw4wmd"
+EventBus="*uid://cpjy2nggk7ibg"
 
 [display]
 
