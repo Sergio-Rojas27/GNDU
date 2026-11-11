@@ -1,0 +1,6 @@
+{"player_id":1,"frame":1040,"state":{"move_x":1,"move_y":0,"punch":false,"kick":false,"block":false,"pause":false},"command_detected":null}
+{"player_id":2,"frame":1040,"state":{"move_x":-1,"move_y":0,"punch":false,"kick":false,"block":true,"pause":false},"command_detected":null}
+{"player_id":1,"frame":1041,"state":{"move_x":1,"move_y":0,"punch":true,"kick":false,"block":false,"pause":false},"command_detected":null}
+{"player_id":2,"frame":1041,"state":{"move_x":0,"move_y":1,"punch":false,"kick":false,"block":false,"pause":false},"command_detected":null}
+{"player_id":1,"frame":1042,"state":{"move_x":1,"move_y":0,"punch":true,"kick":false,"block":false,"pause":false},"command_detected":"SPECIAL_ATTACK_1"}
+{"player_id":2,"frame":1042,"state":{"move_x":1,"move_y":0,"punch":false,"kick":false,"block":false,"pause":false},"command_detected":"DASH_RIGHT"}
