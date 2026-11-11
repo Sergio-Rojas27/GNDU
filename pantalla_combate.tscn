@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cg71rpx4j4c77"]
+
+[ext_resource type="Script" uid="uid://ltelhr2lqtkl" path="res://pantalla_combate.gd" id="1_3epg2"]
+[ext_resource type="PackedScene" uid="uid://byaqn8rqd3nbg" path="res://nucleo4_interfaz/HUD.tscn" id="2_l6w4h"]
+
+[node name="pantalla_combate" type="Node2D" unique_id=1830093890]
+script = ExtResource("1_3epg2")
+
+[node name="StageContainer" type="Node2D" parent="." unique_id=776408755]
+
+[node name="SpawnP1" type="Marker2D" parent="." unique_id=1523834856]
+
+[node name="SpawnP2" type="Marker2D" parent="." unique_id=902583143]
+
+[node name="HUDLayer" parent="." unique_id=365052251 instance=ExtResource("2_l6w4h")]

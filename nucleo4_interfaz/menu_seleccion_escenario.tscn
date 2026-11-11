@@ -2,7 +2,17 @@
 
 [ext_resource type="Script" uid="uid://bfh36ce05t4hx" path="res://nucleo4_interfaz/menu_seleccion_escenario.gd" id="1_moyvw"]
 [ext_resource type="Texture2D" uid="uid://bn3d4xgh77fdx" path="res://assets/Menu_Principal/Fondo_menu.jpg" id="2_a4qr0"]
+[ext_resource type="Texture2D" uid="uid://courd0hgbtlup" path="res://assets/Menu_Principal/shade.png" id="3_1mhp0"]
+[ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="3_8qgpw"]
 [ext_resource type="Texture2D" uid="uid://dklpxx0kvs74k" path="res://assets/Escenario_Uni/Fondo_Unimar.jpeg" id="3_a4qr0"]
+[ext_resource type="Texture2D" uid="uid://dwju7cle7oi2u" path="res://assets/Menu_Principal/btn.png" id="4_ldn2g"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ffvw0"]
+texture = ExtResource("4_ldn2g")
+expand_margin_left = 30.0
+expand_margin_top = 20.0
+expand_margin_right = 30.0
+expand_margin_bottom = 20.0
 
 [node name="Menu_Seleccion_Escenario" type="Control" unique_id=747227759]
 layout_mode = 3
@@ -18,53 +28,169 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 5.0
-offset_bottom = 3.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_a4qr0")
 
-[node name="Label" type="Label" parent="." unique_id=1421180590]
-layout_mode = 0
-offset_left = 758.0
-offset_top = 891.0
-offset_right = 1087.0
-offset_bottom = 984.0
-theme_override_font_sizes/font_size = 60
-text = "Press enter"
-
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=740487259]
+[node name="TextureRect" type="TextureRect" parent="TextureRect" unique_id=1602097609]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 232.0
-offset_top = 215.0
-offset_right = -215.0
-offset_bottom = -156.0
+offset_top = 713.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_1mhp0")
+expand_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=740487259]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -653.0
+offset_right = -12.0
+offset_bottom = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 60
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1813783076]
 layout_mode = 2
-alignment = 1
+theme_override_constants/separation = 4
+alignment = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=767203582]
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer" unique_id=143244717]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer" unique_id=705432711]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=492749811]
 layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/h_separation = 20
-columns = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxTexture_ffvw0")
 
-[node name="TextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=904010060]
-custom_minimum_size = Vector2(20, 20)
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer" unique_id=767203582]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("3_8qgpw")
+theme_override_font_sizes/font_size = 55
+text = "Escenarios"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer" unique_id=1998981420]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_bottom = 15
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/MarginContainer" unique_id=705432711]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-texture_normal = ExtResource("3_a4qr0")
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 15
+columns = 5
 
-[node name="TextureButton2" type="TextureButton" parent="MarginContainer/VBoxContainer/GridContainer" unique_id=353867870]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=904010060]
+custom_minimum_size = Vector2(300, 180)
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_vertical = 6
 texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton2" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=550635427]
+custom_minimum_size = Vector2(300, 180)
+layout_mode = 2
+size_flags_vertical = 6
+texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton3" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=822654710]
+custom_minimum_size = Vector2(300, 180)
+layout_mode = 2
+size_flags_vertical = 6
+texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton4" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=1220284621]
+custom_minimum_size = Vector2(300, 180)
+layout_mode = 2
+size_flags_vertical = 6
+texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton5" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=835861239]
+custom_minimum_size = Vector2(300, 180)
+layout_mode = 2
+size_flags_vertical = 6
+texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton6" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=713273882]
+custom_minimum_size = Vector2(300, 180)
+layout_mode = 2
+size_flags_vertical = 6
+texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton7" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=662926719]
+custom_minimum_size = Vector2(300, 180)
+layout_mode = 2
+size_flags_vertical = 6
+texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton8" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=1639299965]
+custom_minimum_size = Vector2(300, 180)
+layout_mode = 2
+size_flags_vertical = 6
+texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton9" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=2081637824]
+custom_minimum_size = Vector2(300, 180)
+layout_mode = 2
+size_flags_vertical = 6
+texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton10" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=535692612]
+custom_minimum_size = Vector2(300, 180)
+layout_mode = 2
+size_flags_vertical = 6
+texture_normal = ExtResource("3_a4qr0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="label_instruccion" type="Label" parent="MarginContainer/VBoxContainer" unique_id=910410989]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_8qgpw")
+theme_override_font_sizes/font_size = 30
+text = "Presione enter para seleccionar un escenario"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="." unique_id=1261061884]
+layout_mode = 0
+offset_right = 1911.0
+offset_bottom = 203.0
+theme_override_fonts/font = ExtResource("3_8qgpw")
+theme_override_font_sizes/font_size = 60
+text = "Seleccione un escenario"
+horizontal_alignment = 1
+vertical_alignment = 1

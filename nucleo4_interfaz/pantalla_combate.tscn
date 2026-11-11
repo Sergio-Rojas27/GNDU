@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://o0yef810enra"]
+
+[ext_resource type="Script" uid="uid://by4u1vnp7tjmr" path="res://pantalla_combate.gd" id="1_3epg2"]
+
+[node name="pantalla_combate" type="Node2D" unique_id=1830093890]
+script = ExtResource("1_3epg2")
+
+[node name="StageContainer" type="Node2D" parent="." unique_id=776408755]
+
+[node name="SpawnP1" type="Marker2D" parent="." unique_id=1523834856]
+
+[node name="SpawnP2" type="Marker2D" parent="." unique_id=902583143]
+
+[node name="HUDLayer" type="CanvasLayer" parent="." unique_id=966288321]
+
+[node name="HUD" type="Control" parent="HUDLayer" unique_id=290630591]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
