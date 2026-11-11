@@ -16,13 +16,17 @@ flatpak run org.godotengine.Godot --headless --path . --import
 flatpak run org.godotengine.Godot --headless --path . \
   --script res://tests/run_tests.gd
 flatpak run org.godotengine.Godot --headless --path . --quit-after 120
+flatpak run org.godotengine.Godot --headless --path . \
+  res://scenes/report_viewer.tscn --quit-after 120
 ```
 
 Resultado de esta revisión:
 
-- **53 pruebas automáticas**: `OK: todas las pruebas pasaron`.
+- **88 pruebas automáticas**: `OK: todas las pruebas pasaron`.
 - Arranque de `scenes/diagnostic.tscn` sin errores de script.
+- Arranque de `scenes/report_viewer.tscn` sin errores de script.
 - Contrato v3 validado por `scripts/mock_consumer.gd`.
+- Esquema JSON y ejemplos validados por las pruebas automáticas.
 
 ## 1. Objetivos específicos del Núcleo 2
 
@@ -55,6 +59,10 @@ Resultado de esta revisión:
 | `punch`, `kick`, `block`, `pause` booleanos | `_build_report()` y `mock_consumer.gd`. | Cumple. |
 | `command_detected` string o `null` | `command_recognizer.gd` y `mock_consumer.gd`. | Cumple. |
 | **Sin claves extra** | Contrato v3 exacto: `mock_consumer.gd` rechaza `state.jump` y claves de primer nivel extra. Pruebas incluidas. | Cumple. |
+| Esquema formal del reporte | `contracts/input_report.schema.json`; las pruebas verifican claves obligatorias, `additionalProperties: false`, seis claves de `state`, ausencia de `jump` y `move_y` en `{-1, 0, 1}`. | Cumple. |
+| Ejemplos JSON y JSONL | `contracts/input_report.example.json` y `.jsonl`; cada línea pasa el validador, los frames crecen por jugador y hay comandos. | Cumple. |
+| Visor de reportes en vivo | `scenes/report_viewer.tscn` y `scripts/report_viewer.gd`; filtros J1/J2, solo comandos, pausa, copia, carga de ejemplo y exportación JSONL. | Cumple; falta prueba visual con ventana real. |
+| Guía de integración para principiantes | `INTEGRACION.md` con copia de archivos, autoloads, receptor N3 y lectura de flancos. | Cumple. |
 
 ## 4. Demostración para la primera entrega
 
@@ -64,7 +72,7 @@ Resultado de esta revisión:
 | Reconocimiento en vivo de doble toque y técnica especial con tolerancia | `command_recognizer.gd`; pruebas automáticas de `DASH_*` y `SPECIAL_ATTACK_*`. | Cumple en automático; falta demo física de todos. |
 | Multijugador simultáneo sin bloqueo ni interferencias | Dos jugadores con estado, búfer y reconocedor independientes. | Implementado; **falta prueba física**. |
 | Configuración dinámica sin tocar código | Editar `controls_config.json` + `R`; `controls_config.gd` conserva la última configuración válida si falla. | Implementado; **falta prueba física**. |
-| Emisión estructurada del reporte en consola o pantalla | Registro JSON de 20 líneas en el diagnóstico; `J` activa `print()` por frame. | Cumple. |
+| Emisión estructurada del reporte en consola o pantalla | Registro JSON de 20 líneas en el diagnóstico; `J` activa `print()` por frame; `V` abre el visor con filtros, copia y exportación JSONL. | Cumple; falta prueba visual con ventana real. |
 
 ## 5. Archivos obligatorios
 
@@ -74,6 +82,7 @@ Resultado de esta revisión:
 | Escena ejecutable de diagnóstico | Sí | `scenes/diagnostic.tscn`. |
 | `controls_config.json` | Sí | Mapeo de J1/J2 y 12 comandos. |
 | `leeme.md` con instrucciones y mapeo | Sí | Incluye ejecución, controles, solución de problemas y pendientes. |
+| Material de integración | Sí | `INTEGRACION.md`, `contracts/` y el visor de reportes. No reemplaza el contrato ni el `leeme.md`. |
 
 ## 6. Reglas generales y protocolo de pruebas
 
@@ -88,6 +97,7 @@ Resultado de esta revisión:
 ## 7. Pendientes que no se pueden cerrar solo con código
 
 - [ ] Probar el combo 6 (`→, ↓, →, B`) y los 12 comandos con mando real.
+- [ ] Probar el visor con ventana real: layout, copiar y abrir la carpeta.
 - [ ] Probar hot-plug: desconectar/conectar un mando sin robar el del otro jugador.
 - [ ] Probar a J1 y J2 pulsando a la vez durante varios segundos.
 - [ ] Probar `R` con un JSON válido y con uno roto en la ventana real.
@@ -98,6 +108,8 @@ Resultado de esta revisión:
 ## 8. Conclusión
 
 Con el contrato v3, el Núcleo 2 **cumple los requisitos funcionales y los
-archivos obligatorios del PDF**. Lo que resta no es código faltante: son
-pruebas físicas, la confirmación del contrato con N3/N4 y dos decisiones
-explícitas del equipo (licencia e inyector sintético).
+archivos obligatorios del PDF**. Además entrega material de integración
+reproducible: esquema JSON, ejemplos, guía paso a paso y visor de reportes.
+Lo que resta no es código faltante: son pruebas físicas y visuales, la
+confirmación del contrato con N3/N4 y dos decisiones explícitas del equipo
+(licencia e inyector sintético).

@@ -9,6 +9,8 @@ No depende de los Núcleos 1, 3 ni 4. Funciona solo, con datos simulados
 (incluye un consumidor falso del N3 que valida el contrato).
 
 - Formato de datos: [CONTRATO.md](CONTRATO.md)
+- Guía de integración paso a paso: [INTEGRACION.md](INTEGRACION.md)
+- Esquema y ejemplos: [contracts/](contracts/)
 - Matriz de cumplimiento contra el PDF: [VERIFICACION.md](VERIFICACION.md)
 
 ---
@@ -43,10 +45,11 @@ La ventana está pensada para **1280×720** y el motor corre la física a
 | `R`   | Recargar `controls_config.json` **en caliente** |
 | `J`   | Mostrar/ocultar la consola de reportes JSON |
 | `C`   | Congelar/descongelar la cinta del búfer |
+| `V`   | Abrir/volver del visor de reportes JSON |
 | `F10` | Salir |
 
-> `R`, `J`, `C` y `F10` son teclas del **diagnóstico**, no del juego, y no
-> forman parte del mapeo configurable.
+> `R`, `J`, `C`, `V` y `F10` son teclas del **diagnóstico**, no del juego, y
+> no forman parte del mapeo configurable.
 
 ---
 
@@ -167,12 +170,18 @@ nucleo2_controles/
 ├── controls_config.json       # mapeo y comandos (editable en caliente)
 ├── leeme.md                   # este documento
 ├── CONTRATO.md                # contrato de datos para N3/N4
+├── INTEGRACION.md             # guía paso a paso para el proyecto final
 ├── VERIFICACION.md            # matriz de cumplimiento contra el PDF
 ├── README.md                  # entrada rápida al repositorio
 ├── .gitignore                 # excluye caché de Godot y documentos de cátedra
 ├── icon.svg                   # icono del proyecto
+├── contracts/
+│   ├── input_report.schema.json   # esquema formal del reporte
+│   ├── input_report.example.json  # un reporte de ejemplo
+│   └── input_report.example.jsonl # varios reportes, uno por línea
 ├── scenes/
-│   └── diagnostic.tscn        # escena principal (raíz vacía + script)
+│   ├── diagnostic.tscn        # escena principal (raíz vacía + script)
+│   └── report_viewer.tscn     # visor de reportes (tecla V)
 ├── scripts/
 │   ├── controls_config.gd     # autoload N2ControlsConfig: carga/valida/recarga
 │   ├── input_core.gd          # autoload N2InputCore: lectura, búfer, reportes
@@ -180,6 +189,7 @@ nucleo2_controles/
 │   ├── command_recognizer.gd  # N2CommandRecognizer: coincidencia de patrones
 │   ├── player_panel.gd        # panel visual de un jugador
 │   ├── diagnostic.gd          # escena de diagnóstico completa
+│   ├── report_viewer.gd       # visor JSON en vivo + exportación JSONL
 │   └── mock_consumer.gd       # N3 simulado + validador del contrato
 └── tests/
     ├── run_tests.gd           # pruebas automáticas sin ventana
@@ -345,9 +355,10 @@ Al recargar se reconstruyen el búfer y el reconocedor de cada jugador, pero
 como `pressed` un botón que ya estaba mantenido: no pulses `R` mientras
 mantienes un ataque si estás midiendo combos.
 
-> `R`, `J`, `C` y `F10` están reservadas para el diagnóstico. No las uses
-> como teclas de juego en el JSON: la acción se ejecutaría y además se
-> recargaría, cambiaría la consola, congelaría o cerraría la demo.
+> `R`, `J`, `C`, `V` y `F10` están reservadas para el diagnóstico. No las
+> uses como teclas de juego en el JSON: la acción se ejecutaría y además se
+> recargaría, cambiaría la consola, congelaría, abriría el visor o cerraría
+> la demo.
 
 ---
 
@@ -376,6 +387,30 @@ mantienes un ataque si estás midiendo combos.
 - **Banner central**: nombre del comando detectado durante ~0,9 s.
 - **Registro**: últimas 20 líneas JSON de reportes.
 
+### Visor de reportes (tecla V)
+
+El visor es una escena aparte (`scenes/report_viewer.tscn`) que se abre con
+`V` o con el botón **Visor JSON (V)**; `V` o `Esc` vuelven al diagnóstico.
+Muestra una línea por reporte, con J1 en cian y J2 en naranja.
+
+- **Pausar vista**: congela la pantalla; los reportes se siguen guardando en
+  memoria.
+- **Filtro**: Todos, Solo J1 o Solo J2.
+- **Solo comandos**: deja únicamente los frames con `command_detected`.
+- **Copiar visibles**: copia al portapapeles los reportes filtrados.
+- **Guardar JSONL**: escribe los reportes filtrados en
+  `user://n2_reports/reports_<fecha>.jsonl`.
+- **Grabar en vivo**: escribe cada reporte a
+  `user://n2_reports/live_<fecha>.jsonl` mientras está activo.
+- **Abrir carpeta**: abre `user://n2_reports/` en el explorador del sistema.
+- **Cargar ejemplo**: carga `contracts/input_report.example.jsonl` para ver el
+  visor sin mandos.
+- **Volver (Esc o V)**: regresa al diagnóstico.
+
+El visor conserva hasta 2000 reportes y dibuja los últimos 400 visibles. El
+`.jsonl` es un registro/replay para depurar; el transporte oficial entre
+núcleos sigue siendo la señal `N2InputCore.report_emitted`.
+
 ---
 
 ## 9. Pruebas automáticas
@@ -391,7 +426,7 @@ flatpak run org.godotengine.Godot --headless \
 Salida esperada: `OK: todas las pruebas pasaron` y código de salida 0.
 Si algo falla, imprime `FALLARON N pruebas` y devuelve código 1.
 
-Las **53 pruebas** cubren:
+Las **88 pruebas** cubren:
 
 - JSON válido, raíz de objeto, `players`, `commands`, versión 3 y rango del
   búfer (15–30).
@@ -415,6 +450,12 @@ Las **53 pruebas** cubren:
 - Que `state` tiene exactamente las seis claves del PDF.
 - Que `move_y` es `+1` al pulsar arriba y `-1` al pulsar abajo, como dice
   el contrato (no el signo de pantalla de Godot).
+- El esquema JSON: claves obligatorias, `state` con seis claves, sin
+  `state.jump` y `move_y` con `-1` y `+1`.
+- El ejemplo JSON y cada línea del ejemplo JSONL: pasan el contrato, los
+  frames crecen por jugador, aparecen J1/J2 y hay al menos un comando.
+- Que el script y la escena del visor se pueden cargar; también se comprueba
+  que la escena de diagnóstico sigue existiendo.
 
 Prueba manual de mandos (requiere ventana, no `--headless`):
 
@@ -486,6 +527,10 @@ flatpak run org.godotengine.Godot --headless \
   son secuenciales).
 - El reporte es una **foto por frame**, no una cola de eventos: el N3 debe
   derivar sus propios flancos (ver `CONTRATO.md`).
+- El visor conserva hasta 2000 reportes en memoria y dibuja los últimos 400
+  visibles. Para sesiones largas, usa **Grabar en vivo** o **Guardar JSONL**.
+- El visor no dibuja cambios de flanco ni estadísticas de combos: muestra el
+  reporte crudo. El análisis fino se hace sobre el `.jsonl`.
 - Por defecto J2 es solo mando; no tiene teclado. Si se quiere teclado para
   J2, hay que cambiar `device.type` y sus bindings en el JSON (dos personas
   en un mismo teclado pueden sufrir *ghosting*; no es el caso probado).
@@ -513,6 +558,12 @@ flatpak run org.godotengine.Godot --headless \
 - [x] Las pruebas automáticas terminan en `OK`.
 - [x] `CONTRATO.md` v3 coincide con lo que emite `input_core.gd`: seis claves
       en `state`, sin `jump`, y el signo de `move_y` del PDF.
+- [x] El esquema JSON, el ejemplo JSON y el ejemplo JSONL pasan las pruebas
+      del contrato.
+- [x] El visor JSON carga la escena sin errores; las pruebas cargan el
+      ejemplo y filtran por jugador/comandos.
+- [x] Guardar y grabar `.jsonl` se validaron en un smoke headless; crean
+      archivos en `user://n2_reports/`.
 
 ### Pendiente o no verificado en físico
 
@@ -525,6 +576,8 @@ flatpak run org.godotengine.Godot --headless \
       roba el mando del otro jugador.
 - [ ] Probar a dos jugadores pulsando a la vez (J1 y J2) durante varios
       segundos, sin interferencias.
+- [ ] Probar el visor con ventana real: layout, botones, copiar y abrir la
+      carpeta en el explorador.
 - [ ] Decidir si hace falta un ejecutable exportado para la entrega. Hoy no
       está generado; se ejecuta con Godot.
 - [ ] Decidir licencia del repositorio (no hay archivo `LICENSE`; por ahora
@@ -544,7 +597,9 @@ flatpak run org.godotengine.Godot --headless \
 | El JSON nuevo no se aplica | Guardar el archivo y pulsar `R`; revisar la franja de estado en rojo. La recarga no es automática. |
 | Error de configuración | El mensaje queda en `N2ControlsConfig.last_error`; se conserva la última configuración válida. |
 | No se detecta un combo | Revisar el ritmo (huecos de ~4–8 frames), el orden y que las pulsaciones sean nuevas; el combo 6 puede caer en el 8 si va muy lento. |
+| El visor está vacío | No hay entradas ni mandos. Usa el teclado o pulsa **Cargar ejemplo**. |
+| No se puede guardar el JSONL | Revisar permisos de `user://n2_reports/`; el visor muestra la ruta y el error en la franja inferior. |
 | Las clases globales no existen al copiar el proyecto | Abrir una vez el editor o ejecutar `--import` para que Godot registre `N2InputBuffer`, `N2CommandRecognizer` y `N2PlayerPanel`. |
 | La ventana no abre por Vulkan/Forward+ | Cambiar temporalmente el renderizador a **Compatibility** en Ajustes del proyecto; la demo es 2D y no necesita Forward+. |
 | Dos personas en el mismo teclado | La configuración por defecto no separa el teclado por jugador: J1 lo usa y J2 necesita mando. Para dos jugadores usa dos mandos. |
-| `R`, `J`, `C` o `F10` hacen cosas raras | Están reservadas al diagnóstico; no las uses como bindings de juego. |
+| `R`, `J`, `C`, `V` o `F10` hacen cosas raras | Están reservadas al diagnóstico; no las uses como bindings de juego. |

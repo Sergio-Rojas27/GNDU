@@ -16,6 +16,14 @@ El Núcleo 2 **emite un reporte por jugador en cada fotograma de física**
 - Consumidor de ejemplo: `scripts/mock_consumer.gd` (valida y simula al N3).
 - No hay acoplamiento: cualquier nodo puede conectarse a la señal, o leer
   `N2InputCore.get_last_report(player_id)`.
+- Esquema formal: [`contracts/input_report.schema.json`](contracts/input_report.schema.json).
+- Ejemplos: [`contracts/input_report.example.json`](contracts/input_report.example.json)
+  y [`contracts/input_report.example.jsonl`](contracts/input_report.example.jsonl).
+- Guía de integración: [`INTEGRACION.md`](INTEGRACION.md).
+
+> El JSON es la representación serializada del `Dictionary`. El Núcleo 2 **no
+> escribe un archivo JSON por fotograma**; la señal es el transporte oficial.
+> Los archivos de `contracts/` son ejemplos y material de prueba.
 
 ---
 
@@ -190,14 +198,23 @@ Estas comprobaciones están cubiertas por `_test_contract()` en
 extra en `state`, una clave extra de primer nivel, un `command_detected`
 vacío y un `move_y` fuera de rango.
 
+El esquema de `contracts/input_report.schema.json` declara la misma forma de
+manera formal. `_test_contract_artifacts()` comprueba que el esquema no admita
+claves extra, que `state` tenga seis claves y que `move_y` acepte `-1` y
+`+1`; además valida el ejemplo JSON y cada línea del ejemplo JSONL con
+`mock_consumer.gd`. Los números leídos de JSON se normalizan a `int` en la
+prueba porque `JSON.parse_string()` devuelve números como `float`.
+
 ---
 
 ## 7. Cómo evolucionar el contrato
 
 1. Cambiar `input_core.gd` (`_build_report`) y/o `mock_consumer.gd`.
 2. Actualizar este documento en el mismo cambio.
-3. Agregar o ajustar la prueba correspondiente en `tests/run_tests.gd`.
-4. Avisar al N3/N4 con la versión nueva.
+3. Actualizar `contracts/input_report.schema.json`, el ejemplo JSON y el
+   ejemplo JSONL.
+4. Agregar o ajustar la prueba correspondiente en `tests/run_tests.gd`.
+5. Avisar al N3/N4 con la versión nueva.
 
 La versión (**3**) es la del **documento**, no un campo del reporte. El JSON
 emitido no lleva `contract_version`; quien integre debe fijar la versión de
