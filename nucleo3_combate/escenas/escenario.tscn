@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://dfslx3836snif"]
 
-[ext_resource type="PackedScene" uid="uid://w5ixhbiumgws" path="res://jugador(porsia).tscn" id="1_n823b"]
-[ext_resource type="Script" uid="uid://7ty2lsuor6vi" path="res://escenario_(prueba).gd" id="1_wkpad"]
-[ext_resource type="Texture2D" uid="uid://b6llimti5t3bd" path="res://Test_Background.jpg" id="2_8v6x3"]
-[ext_resource type="Texture2D" uid="uid://ociadvbfitqq" path="res://Test_Ground.png" id="3_np4jd"]
-[ext_resource type="Script" uid="uid://cft1m0fn21ily" path="res://Camara.gd" id="5_np4jd"]
+[ext_resource type="Script" uid="uid://7ty2lsuor6vi" path="res://script/escenario.gd" id="1_5uytk"]
+[ext_resource type="Texture2D" uid="uid://b6llimti5t3bd" path="res://assets/background/Test_Background.jpg" id="2_wynv6"]
+[ext_resource type="Texture2D" uid="uid://ociadvbfitqq" path="res://assets/background/Test_Ground.png" id="3_okbv4"]
+[ext_resource type="PackedScene" uid="uid://w5ixhbiumgws" path="res://escenas/jugador.tscn" id="4_1isoa"]
+[ext_resource type="Script" uid="uid://cft1m0fn21ily" path="res://script/Camara.gd" id="5_y8iie"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wddc5"]
 font_size = 60
@@ -44,7 +44,7 @@ size = Vector2(2032, 33)
 
 [node name="Escenario (Prueba)" type="Node2D" unique_id=1323861093 node_paths=PackedStringArray("jugador1", "jugador2", "texto_tiempo", "reloj_combate", "barra_vida_j1", "barra_vida_j2", "texto_victoria", "label_rounds_j1", "label_rounds_j2", "boton_hitboxes", "boton_reiniciar")]
 position = Vector2(1, 0)
-script = ExtResource("1_wkpad")
+script = ExtResource("1_5uytk")
 jugador1 = NodePath("Jugador")
 jugador2 = NodePath("Jugador2")
 texto_tiempo = NodePath("CanvasLayer/Control/Label_tiempo")
@@ -158,12 +158,12 @@ text = "REINICIAR COMBATE"
 [node name="Fondo" type="Sprite2D" parent="." unique_id=767365593]
 position = Vector2(954.2501, 514.38245)
 scale = Vector2(1.9135741, 1.7775611)
-texture = ExtResource("2_8v6x3")
+texture = ExtResource("2_wynv6")
 
 [node name="Fondo2" type="Sprite2D" parent="." unique_id=479482562]
 position = Vector2(944.3605, 989.9668)
 scale = Vector2(3.1948586, 1.8756921)
-texture = ExtResource("3_np4jd")
+texture = ExtResource("3_okbv4")
 
 [node name="ColisionEscenario" type="StaticBody2D" parent="." unique_id=2063510594]
 
@@ -181,7 +181,7 @@ position = Vector2(1932, 30)
 rotation = -1.5707964
 shape = SubResource("RectangleShape2D_g4v7s")
 
-[node name="Jugador" parent="." unique_id=655716964 node_paths=PackedStringArray("rival") instance=ExtResource("1_n823b")]
+[node name="Jugador" parent="." unique_id=655716964 node_paths=PackedStringArray("rival") instance=ExtResource("4_1isoa")]
 position = Vector2(751, 919)
 rival = NodePath("../Jugador2")
 accion_izquierda = &"p1_izquierda"
@@ -194,7 +194,7 @@ accion_patada = &"p1_patada"
 accion_bloqueo = &"p1_bloquear"
 accion_agarre = &"p1_agarre"
 
-[node name="Jugador2" parent="." unique_id=1991135801 node_paths=PackedStringArray("rival") instance=ExtResource("1_n823b")]
+[node name="Jugador2" parent="." unique_id=1991135801 node_paths=PackedStringArray("rival") instance=ExtResource("4_1isoa")]
 position = Vector2(1119, 915)
 player_id = 2
 rival = NodePath("../Jugador")
@@ -211,6 +211,6 @@ accion_agarre = &"p2_agarre"
 [node name="Camera2D" type="Camera2D" parent="." unique_id=502597948 node_paths=PackedStringArray("jugador_1", "jugador_2")]
 position = Vector2(952, 631)
 zoom = Vector2(1.3, 1.3)
-script = ExtResource("5_np4jd")
+script = ExtResource("5_y8iie")
 jugador_1 = NodePath("../Jugador")
 jugador_2 = NodePath("../Jugador2")

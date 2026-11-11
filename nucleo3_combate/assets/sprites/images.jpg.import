@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fwbx5q42mseo"
-path="res://.godot/imported/Punio_patada_aereos.png-a082de759f3ca52b408183a3419672a9.ctex"
+uid="uid://b5m23x5wh0omf"
+path="res://.godot/imported/images.jpg-89cfab53174e71f0061576001157e16c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Punio_patada_aereos.png"
-dest_files=["res://.godot/imported/Punio_patada_aereos.png-a082de759f3ca52b408183a3419672a9.ctex"]
+source_file="res://assets/sprites/images.jpg"
+dest_files=["res://.godot/imported/images.jpg-89cfab53174e71f0061576001157e16c.ctex"]
 
 [params]
 

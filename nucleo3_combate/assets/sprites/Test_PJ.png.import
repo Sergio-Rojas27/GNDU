@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://q00hw40mvfba"
-path="res://.godot/imported/Stun.png-c0944aa819822d027779da035cd54ad8.ctex"
+uid="uid://bwslfqhf7en8"
+path="res://.godot/imported/Test_PJ.png-3569ed4592e0509454c082a07950f554.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Stun.png"
-dest_files=["res://.godot/imported/Stun.png-c0944aa819822d027779da035cd54ad8.ctex"]
+source_file="res://assets/sprites/Test_PJ.png"
+dest_files=["res://.godot/imported/Test_PJ.png-3569ed4592e0509454c082a07950f554.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cavv1t268dl4f"
-path="res://.godot/imported/bloqueo bajo.png-a439e299b5b968aaa98c3927130d3687.ctex"
+uid="uid://1xqa4uij5fvi"
+path="res://.godot/imported/Punio_agachado.png-31a30681523ce680fb59efaec739fe49.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://bloqueo bajo.png"
-dest_files=["res://.godot/imported/bloqueo bajo.png-a439e299b5b968aaa98c3927130d3687.ctex"]
+source_file="res://assets/sprites/Punio_agachado.png"
+dest_files=["res://.godot/imported/Punio_agachado.png-31a30681523ce680fb59efaec739fe49.ctex"]
 
 [params]
 

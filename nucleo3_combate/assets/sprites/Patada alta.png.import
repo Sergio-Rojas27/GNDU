@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmuu16jsqxp45"
-path="res://.godot/imported/Punio_arriba.png-70244b9835094a89e165ef76de757a80.ctex"
+uid="uid://c2etdvl02drgs"
+path="res://.godot/imported/Patada alta.png-05719aa28b5ff3310a1e6133d04128f4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Punio_arriba.png"
-dest_files=["res://.godot/imported/Punio_arriba.png-70244b9835094a89e165ef76de757a80.ctex"]
+source_file="res://assets/sprites/Patada alta.png"
+dest_files=["res://.godot/imported/Patada alta.png-05719aa28b5ff3310a1e6133d04128f4.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcnwq3tvw2ktc"
-path="res://.godot/imported/Patada_abajo.png-0745f28a74b6268f09ac5bffb3d0a9b7.ctex"
+uid="uid://ociadvbfitqq"
+path="res://.godot/imported/Test_Ground.png-ef34b0e87d73c3680777b62e47d86d50.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Patada_abajo.png"
-dest_files=["res://.godot/imported/Patada_abajo.png-0745f28a74b6268f09ac5bffb3d0a9b7.ctex"]
+source_file="res://assets/background/Test_Ground.png"
+dest_files=["res://.godot/imported/Test_Ground.png-ef34b0e87d73c3680777b62e47d86d50.ctex"]
 
 [params]
 

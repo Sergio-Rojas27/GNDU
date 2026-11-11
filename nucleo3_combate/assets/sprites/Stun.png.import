@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cw4u7rk21pxcs"
-path="res://.godot/imported/Agarrado_Tumbado.png-34f055a9056577bc860a781cb51938fc.ctex"
+uid="uid://q00hw40mvfba"
+path="res://.godot/imported/Stun.png-5aa02c1770a0aa3ef174f33957c49671.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Agarrado_Tumbado.png"
-dest_files=["res://.godot/imported/Agarrado_Tumbado.png-34f055a9056577bc860a781cb51938fc.ctex"]
+source_file="res://assets/sprites/Stun.png"
+dest_files=["res://.godot/imported/Stun.png-5aa02c1770a0aa3ef174f33957c49671.ctex"]
 
 [params]
 

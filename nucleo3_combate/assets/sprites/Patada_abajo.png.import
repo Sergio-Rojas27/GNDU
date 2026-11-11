@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b522cjvockvlw"
-path="res://.godot/imported/Agarrando.png-7ba2f60bb5875c29fdb61d4b8f88bf3e.ctex"
+uid="uid://dcnwq3tvw2ktc"
+path="res://.godot/imported/Patada_abajo.png-84dc2869c53b2baa72335ac0e1a05586.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Agarrando.png"
-dest_files=["res://.godot/imported/Agarrando.png-7ba2f60bb5875c29fdb61d4b8f88bf3e.ctex"]
+source_file="res://assets/sprites/Patada_abajo.png"
+dest_files=["res://.godot/imported/Patada_abajo.png-84dc2869c53b2baa72335ac0e1a05586.ctex"]
 
 [params]
 

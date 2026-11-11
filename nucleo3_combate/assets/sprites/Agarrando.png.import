@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ociadvbfitqq"
-path="res://.godot/imported/Test_Ground.png-bf0e4c4de88e9d03bf8f3dff4817dc21.ctex"
+uid="uid://b522cjvockvlw"
+path="res://.godot/imported/Agarrando.png-5ec8a0ed5f115e03f1dfd58b38b32c50.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Test_Ground.png"
-dest_files=["res://.godot/imported/Test_Ground.png-bf0e4c4de88e9d03bf8f3dff4817dc21.ctex"]
+source_file="res://assets/sprites/Agarrando.png"
+dest_files=["res://.godot/imported/Agarrando.png-5ec8a0ed5f115e03f1dfd58b38b32c50.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2etdvl02drgs"
-path="res://.godot/imported/Patada alta.png-927ebb60fa2c4826be87e37d82a17379.ctex"
+uid="uid://cgyh0ge8vd7xl"
+path="res://.godot/imported/Salto diagonal.png-a87b008c60e602e16d47d1225235528c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Patada alta.png"
-dest_files=["res://.godot/imported/Patada alta.png-927ebb60fa2c4826be87e37d82a17379.ctex"]
+source_file="res://assets/sprites/Salto diagonal.png"
+dest_files=["res://.godot/imported/Salto diagonal.png-a87b008c60e602e16d47d1225235528c.ctex"]
 
 [params]
 

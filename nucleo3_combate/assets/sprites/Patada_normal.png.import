@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mmxgcqow56w"
-path="res://.godot/imported/Saltar_atras.png-fd5daa2dad0092a72514b761d5f08b72.ctex"
+uid="uid://bikb3xth3ictc"
+path="res://.godot/imported/Patada_normal.png-fd7aa9fb03888c4b7f0b33772c64b472.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Saltar_atras.png"
-dest_files=["res://.godot/imported/Saltar_atras.png-fd5daa2dad0092a72514b761d5f08b72.ctex"]
+source_file="res://assets/sprites/Patada_normal.png"
+dest_files=["res://.godot/imported/Patada_normal.png-fd7aa9fb03888c4b7f0b33772c64b472.ctex"]
 
 [params]
 

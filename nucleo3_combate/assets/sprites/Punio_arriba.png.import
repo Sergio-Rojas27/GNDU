@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcdysawrxmv55"
-path="res://.godot/imported/Mas_animaciones.png-e4e92671eef52ff833b1ead34ea3f250.ctex"
+uid="uid://bmuu16jsqxp45"
+path="res://.godot/imported/Punio_arriba.png-7cec0fb536d276a28b766ad938a4264e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Mas_animaciones.png"
-dest_files=["res://.godot/imported/Mas_animaciones.png-e4e92671eef52ff833b1ead34ea3f250.ctex"]
+source_file="res://assets/sprites/Punio_arriba.png"
+dest_files=["res://.godot/imported/Punio_arriba.png-7cec0fb536d276a28b766ad938a4264e.ctex"]
 
 [params]
 
