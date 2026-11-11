@@ -12,6 +12,8 @@ func _initialize() -> void:
 	_test_combos()
 	_test_no_reuse()
 	_test_contract()
+	_test_contract_artifacts()
+	_test_viewer_artifacts()
 	_test_report_sign()
 
 	if _failures == 0:
@@ -352,6 +354,108 @@ func _test_contract() -> void:
 	var y_validator = MockConsumer.new()
 	_check(y_validator._validate(bad_y) != "", "el validador rechaza move_y fuera de [-1, 0, 1]")
 	y_validator.free()
+
+func _load_json_file(path: String) -> Variant:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return null
+	var text := file.get_as_text()
+	file.close()
+	return JSON.parse_string(text)
+
+func _normalize_report(value: Variant) -> Dictionary:
+	var out: Dictionary = value.duplicate(true)
+	out["player_id"] = int(out.get("player_id", 0))
+	out["frame"] = int(out.get("frame", 0))
+	var state: Dictionary = out.get("state", {})
+	state["move_x"] = int(state.get("move_x", 0))
+	state["move_y"] = int(state.get("move_y", 0))
+	out["state"] = state
+	return out
+
+func _test_contract_artifacts() -> void:
+	var schema = _load_json_file("res://contracts/input_report.schema.json")
+	_check(schema is Dictionary, "el esquema JSON existe y es un objeto")
+	if schema is Dictionary:
+		_check(schema.has("$schema"), "el esquema declara $schema")
+		_check(schema.get("additionalProperties", true) == false, "el esquema no admite claves extra")
+		var required: Array = schema.get("required", [])
+		for key in ["player_id", "frame", "state", "command_detected"]:
+			_check(key in required, "el esquema exige %s" % key)
+		var state_schema: Dictionary = schema.get("properties", {}).get("state", {})
+		var state_required: Array = state_schema.get("required", [])
+		_check(state_required.size() == 6, "el esquema exige las 6 claves de state")
+		_check(not state_schema.get("properties", {}).has("jump"), "el esquema no admite state.jump")
+		var move_y_enum: Array = state_schema.get("properties", {}).get("move_y", {}).get("enum", [])
+		_check(move_y_enum.has(1.0) and move_y_enum.has(-1.0), "el esquema admite move_y -1 y +1")
+
+	var example = _load_json_file("res://contracts/input_report.example.json")
+	_check(example is Dictionary, "el ejemplo JSON es un objeto")
+	var MockConsumer = load("res://scripts/mock_consumer.gd")
+	if MockConsumer == null:
+		_check(false, "se puede cargar el validador para los ejemplos")
+		return
+	var validator = MockConsumer.new()
+	if example is Dictionary:
+		_check(validator._validate(_normalize_report(example)) == "", "el ejemplo JSON pasa el contrato")
+	validator.free()
+
+	var lines: Array = []
+	var file := FileAccess.open("res://contracts/input_report.example.jsonl", FileAccess.READ)
+	_check(file != null, "el ejemplo JSONL existe")
+	if file != null:
+		while not file.eof_reached():
+			var line := file.get_line().strip_edges()
+			if not line.is_empty():
+				lines.append(line)
+		file.close()
+	_check(lines.size() >= 4, "el ejemplo JSONL tiene varios reportes")
+	var jsonl_validator = MockConsumer.new()
+	var sees_p1 := false
+	var sees_p2 := false
+	var sees_command := false
+	var last_frames := {1: -1, 2: -1}
+	for line in lines:
+		var report = JSON.parse_string(line)
+		var valid := false
+		if report is Dictionary:
+			report = _normalize_report(report)
+			valid = jsonl_validator._validate(report) == ""
+		_check(valid, "cada linea JSONL pasa el contrato")
+		if not (report is Dictionary):
+			continue
+		var pid := int(report.get("player_id", 0))
+		var frame := int(report.get("frame", -1))
+		if pid == 1:
+			sees_p1 = true
+		if pid == 2:
+			sees_p2 = true
+		if report.get("command_detected", null) is String:
+			sees_command = true
+		if last_frames.has(pid):
+			_check(frame > int(last_frames[pid]), "los frames de J%d crecen en el JSONL" % pid)
+			last_frames[pid] = frame
+	jsonl_validator.free()
+	_check(sees_p1 and sees_p2, "el ejemplo JSONL incluye a J1 y J2")
+	_check(sees_command, "el ejemplo JSONL incluye al menos un comando")
+
+func _test_viewer_artifacts() -> void:
+	var Viewer = load("res://scripts/report_viewer.gd")
+	_check(Viewer != null, "se puede cargar el script del visor")
+	_check(ResourceLoader.exists("res://scenes/report_viewer.tscn"), "la escena del visor existe")
+	_check(ResourceLoader.exists("res://scenes/diagnostic.tscn"), "la escena de diagnostico sigue existiendo")
+	if Viewer == null:
+		return
+	var viewer = Viewer.new()
+	viewer._load_example()
+	_check(viewer._reports.size() == 6, "el visor carga el ejemplo JSONL")
+	_check(typeof(viewer._reports[0]["frame"]) == TYPE_INT, "el visor normaliza los enteros del ejemplo")
+	viewer._filter_player = 1
+	_check(viewer._matching_reports().size() == 3, "el visor filtra Solo J1")
+	viewer._filter_player = 0
+	viewer._only_commands = true
+	_check(viewer._matching_reports().size() == 2, "el visor filtra Solo comandos")
+	viewer.free()
 
 func _test_report_sign() -> void:
 	var Core = load("res://scripts/input_core.gd")
