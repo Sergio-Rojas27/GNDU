@@ -48,6 +48,12 @@ var input_nucleo2: Dictionary = {
 }
 
 var depurador_label: Label
+var debug_overlay: Node2D
+var mostrar_cajas_debug: bool = false:
+	set(valor):
+		mostrar_cajas_debug = valor
+		if debug_overlay:
+			debug_overlay.queue_redraw()
 
 func _ready() -> void:
 	current_hp = max_hp
@@ -66,6 +72,12 @@ func _ready() -> void:
 	add_child(depurador_label)
 	depurador_label.position = Vector2(-100, -120) 
 	depurador_label.add_theme_color_override("font_color", Color(1, 0, 0))
+	
+	debug_overlay = Node2D.new()
+	debug_overlay.name = "DebugOverlay"
+	debug_overlay.z_index = 10
+	debug_overlay.draw.connect(_on_debug_overlay_draw)
+	add_child(debug_overlay)
 
 func desactivar_todas_hitboxes() -> void:
 	if hitbox_alta_collision: hitbox_alta_collision.disabled = true
@@ -106,6 +118,8 @@ func _simular_entrada_nucleo2() -> void:
 func _physics_process(delta: float) -> void:
 	_simular_entrada_nucleo2()
 	_actualizar_hurtbox()
+	if mostrar_cajas_debug and debug_overlay:
+		debug_overlay.queue_redraw()
 	
 	if depurador_label:
 		depurador_label.text = "Estado: " + estado_actual
@@ -505,3 +519,52 @@ func imprimir_evento_combate(tipo_evento: String, atacante: int, defensor: int, 
 		}
 	}
 	print(JSON.stringify(evento_json))
+
+# --- REINICIO DE ROUND Y VISUALIZADOR DEBUG ---
+func reiniciar_para_round(posicion_inicial: Vector2) -> void:
+	global_position = posicion_inicial
+	velocity = Vector2.ZERO
+	current_hp = max_hp
+	estado_actual = "reposo"
+	collision_layer = 1
+	collision_mask = 1
+	rival_agarrado = null
+	tiempo_agarre = 0.0
+	desactivar_todas_hitboxes()
+	_actualizar_hurtbox()
+	actualizar_animacion("Reposo")
+	if debug_overlay:
+		debug_overlay.queue_redraw()
+
+func _on_debug_overlay_draw() -> void:
+	if not mostrar_cajas_debug:
+		return
+	
+	# 1. Pushbox (Cian semitransparente)
+	var pushbox = get_node_or_null("Pushbox") as CollisionShape2D
+	if pushbox and pushbox.shape is RectangleShape2D:
+		_dibujar_forma_rect(pushbox, Color(0.0, 1.0, 0.8, 0.12), Color(0.0, 1.0, 0.8, 0.85))
+	
+	# 2. Hurtbox activa (Verde semitransparente)
+	if hurtbox_estandar_collision and not hurtbox_estandar_collision.disabled:
+		_dibujar_forma_rect(hurtbox_estandar_collision, Color(0.0, 0.85, 0.25, 0.25), Color(0.0, 1.0, 0.35, 0.95))
+	if hurtbox_baja_collision and not hurtbox_baja_collision.disabled:
+		_dibujar_forma_rect(hurtbox_baja_collision, Color(0.0, 0.85, 0.25, 0.25), Color(0.0, 1.0, 0.35, 0.95))
+		
+	# 3. Hitboxes activas (Rojo semitransparente)
+	if hitbox_alta_collision and not hitbox_alta_collision.disabled:
+		_dibujar_forma_rect(hitbox_alta_collision, Color(1.0, 0.1, 0.1, 0.35), Color(1.0, 0.2, 0.2, 0.95))
+	if hitbox_media_collision and not hitbox_media_collision.disabled:
+		_dibujar_forma_rect(hitbox_media_collision, Color(1.0, 0.1, 0.1, 0.35), Color(1.0, 0.2, 0.2, 0.95))
+	if hitbox_baja_collision and not hitbox_baja_collision.disabled:
+		_dibujar_forma_rect(hitbox_baja_collision, Color(1.0, 0.1, 0.1, 0.35), Color(1.0, 0.2, 0.2, 0.95))
+
+func _dibujar_forma_rect(col: CollisionShape2D, color_relleno: Color, color_borde: Color) -> void:
+	if not col or not col.shape or not debug_overlay:
+		return
+	if col.shape is RectangleShape2D:
+		var tam = col.shape.size
+		var centro = debug_overlay.to_local(col.global_position)
+		var r = Rect2(centro - tam / 2.0, tam)
+		debug_overlay.draw_rect(r, color_relleno, true)
+		debug_overlay.draw_rect(r, color_borde, false, 2.5)

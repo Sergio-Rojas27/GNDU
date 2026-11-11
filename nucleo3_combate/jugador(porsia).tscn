@@ -477,13 +477,13 @@ size = Vector2(150, 247.75)
 size = Vector2(150, 121.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ukvfq"]
-size = Vector2(196, 158)
+size = Vector2(143, 124)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_67qoh"]
-size = Vector2(187.5, 89)
+size = Vector2(114.75, 89)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
-size = Vector2(247, 94)
+size = Vector2(160, 86)
 
 [node name="Jugador" type="CharacterBody2D" unique_id=655716964]
 script = ExtResource("1_h4r5d")
@@ -524,20 +524,20 @@ debug_color = Color(0.9843137, 0, 0.33333334, 0.101960786)
 [node name="Hitbox-Alta" type="Area2D" parent="." unique_id=1655027874]
 
 [node name="HitboxArea" type="CollisionShape2D" parent="Hitbox-Alta" unique_id=4613849]
-position = Vector2(109, -112)
+position = Vector2(74, -100)
 shape = SubResource("RectangleShape2D_ukvfq")
 debug_color = Color(0, 0.5596874, 0.8895528, 0.41960785)
 
 [node name="Hitbox-Media" type="Area2D" parent="." unique_id=1512885188]
 
 [node name="HitboxArea" type="CollisionShape2D" parent="Hitbox-Media" unique_id=558772888]
-position = Vector2(144.25, -59.5)
+position = Vector2(127, -58)
 shape = SubResource("RectangleShape2D_67qoh")
 debug_color = Color(0, 0.5596874, 0.8895528, 0.41960785)
 
 [node name="Hitbox-Baja" type="Area2D" parent="." unique_id=1859240033]
 
 [node name="HitboxArea" type="CollisionShape2D" parent="Hitbox-Baja" unique_id=503595862]
-position = Vector2(103.5, 93)
+position = Vector2(60, 89)
 shape = SubResource("RectangleShape2D_57qmd")
 debug_color = Color(0, 0.5596874, 0.8895528, 0.41960785)
