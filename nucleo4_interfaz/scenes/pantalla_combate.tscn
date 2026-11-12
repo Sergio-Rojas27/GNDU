@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cafimn7hnuyf4"]
+
+[ext_resource type="Script" uid="uid://3rineuqtame7" path="res://nucleo4_interfaz/scripts/pantalla_combate.gd" id="1_put7b"]
+[ext_resource type="Script" uid="uid://ddfrhuci5yeij" path="res://nucleo4_interfaz/scripts/simulador_hud.gd" id="2_put7b"]
+[ext_resource type="PackedScene" uid="uid://byaqn8rqd3nbg" path="res://nucleo4_interfaz/scenes/HUD.tscn" id="3_hf6tk"]
+
+[node name="PantallaCombate" type="Node2D" unique_id=1041855568]
+script = ExtResource("1_put7b")
+
+[node name="StageContainer" type="Node2D" parent="." unique_id=5346377]
+
+[node name="SimuladorHUD" type="Node" parent="." unique_id=1805481096 node_paths=PackedStringArray("hud")]
+script = ExtResource("2_put7b")
+hud = NodePath("../HUD/Control")
+
+[node name="HUD" parent="." unique_id=365052251 instance=ExtResource("3_hf6tk")]
+
+[editable path="HUD"]

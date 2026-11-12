@@ -1,0 +1,89 @@
+[gd_scene format=3 uid="uid://dfocvlcjkjiic"]
+
+[ext_resource type="Texture2D" uid="uid://2si1qo77b7wk" path="res://assets/Fighters/Prueba_1/Personaje1.png" id="1_jbwxd"]
+[ext_resource type="Texture2D" uid="uid://b5f6qj6b6ltjp" path="res://assets/Fighters/Prueba_1/fondoUni.png" id="1_pgquq"]
+[ext_resource type="Texture2D" uid="uid://dthjqfrgnrvmn" path="res://assets/Fighters/Prueba_1/black.png" id="2_g0b5a"]
+[ext_resource type="Texture2D" uid="uid://64y0dpyekeen" path="res://assets/Fighters/Prueba_1/winner.png" id="2_t0lwd"]
+[ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="3_n2co3"]
+[ext_resource type="Texture2D" uid="uid://dwju7cle7oi2u" path="res://assets/Menus/Menu_Principal/btn.png" id="6_p547k"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_t0fkw"]
+
+[node name="PantallaGanador" type="Control" unique_id=554211726]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1991754188]
+layout_mode = 0
+offset_right = 1923.0
+offset_bottom = 1093.0
+texture = ExtResource("1_pgquq")
+
+[node name="fondo" type="TextureRect" parent="." unique_id=1479045997]
+modulate = Color(1, 1, 1, 0.7882353)
+layout_mode = 0
+offset_right = 1922.0
+offset_bottom = 1089.0
+texture = ExtResource("2_g0b5a")
+
+[node name="Personaje" type="TextureRect" parent="." unique_id=772533641]
+layout_mode = 0
+offset_left = -67.0
+offset_top = 5.0
+offset_right = 997.0
+offset_bottom = 1648.0
+texture = ExtResource("1_jbwxd")
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=227639489]
+layout_mode = 0
+offset_left = 830.0001
+offset_top = 137.10165
+offset_right = 1856.0001
+offset_bottom = 534.1017
+rotation = -0.0022860286
+texture = ExtResource("2_t0lwd")
+
+[node name="TimerLabel" type="Label" parent="." unique_id=654119021]
+layout_mode = 0
+offset_left = 906.99994
+offset_top = 121.0
+offset_right = 1594.0
+offset_bottom = 216.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 12
+theme_override_fonts/font = ExtResource("3_n2co3")
+theme_override_font_sizes/font_size = 80
+text = "Nombre"
+
+[node name="TextureButton" type="TextureButton" parent="." unique_id=852118454]
+layout_mode = 0
+offset_left = 1277.0
+offset_top = 528.0
+offset_right = 2025.0
+offset_bottom = 666.0
+button_group = SubResource("ButtonGroup_t0fkw")
+texture_normal = ExtResource("6_p547k")
+stretch_mode = 0
+
+[node name="TextureButton" type="TextureButton" parent="TextureButton" unique_id=1030232926]
+layout_mode = 0
+offset_top = 157.0
+offset_right = 748.0
+offset_bottom = 295.0
+button_group = SubResource("ButtonGroup_t0fkw")
+texture_normal = ExtResource("6_p547k")
+stretch_mode = 0
+
+[node name="TextureButton" type="TextureButton" parent="TextureButton/TextureButton" unique_id=1027723680]
+layout_mode = 0
+offset_top = 157.0
+offset_right = 748.0
+offset_bottom = 295.0
+button_group = SubResource("ButtonGroup_t0fkw")
+texture_normal = ExtResource("6_p547k")
+stretch_mode = 0

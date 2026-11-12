@@ -1,0 +1,238 @@
+[gd_scene format=3 uid="uid://cjx1342kglqwf"]
+
+[ext_resource type="Script" uid="uid://cgcsuqcs1gjdo" path="res://nucleo4_interfaz/scripts/menu_seleccion_personajes.gd" id="1_nepuf"]
+[ext_resource type="Texture2D" uid="uid://bn3d4xgh77fdx" path="res://assets/Menus/Menu_Principal/Fondo_menu.jpg" id="1_ohdfd"]
+[ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="2_n7xox"]
+[ext_resource type="Texture2D" uid="uid://courd0hgbtlup" path="res://assets/Menus/Menu_Principal/shade.png" id="3_5weik"]
+[ext_resource type="Texture2D" uid="uid://buey7mkv6e18w" path="res://assets/Fighters/profesor_mara/preview.png" id="5_luoes"]
+[ext_resource type="Texture2D" uid="uid://x67ullcwj8dy" path="res://assets/Fighters/estudiante_maria/preview.png" id="6_mlmyq"]
+[ext_resource type="Texture2D" uid="uid://cdhdaffr8xa2k" path="res://assets/Menus/Menu_Principal/Rectangle 87 (1).png" id="6_u81vn"]
+[ext_resource type="Texture2D" uid="uid://cvqox1tdwag3b" path="res://assets/Menus/Menu_Principal/Rectangle 88.png" id="7_cywbx"]
+[ext_resource type="Texture2D" uid="uid://y6s7t1qthia8" path="res://assets/Menus/Menu_Principal/Rectangle 89 1.png" id="9_cywbx"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_luoes"]
+texture = ExtResource("6_u81vn")
+expand_margin_left = 15.0
+expand_margin_top = 12.0
+expand_margin_right = 15.0
+expand_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ffvw0"]
+texture = ExtResource("7_cywbx")
+expand_margin_left = 15.0
+expand_margin_top = 12.0
+expand_margin_right = 15.0
+expand_margin_bottom = 15.0
+
+[node name="Menu_Seleccion_Personajes" type="Control" unique_id=1560392101]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nepuf")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1714600657]
+layout_mode = 1
+offset_right = 1930.0
+offset_bottom = 1080.0
+texture = ExtResource("1_ohdfd")
+
+[node name="TextureRect2" type="TextureRect" parent="TextureRect" unique_id=255452564]
+layout_mode = 1
+offset_top = 706.0
+offset_right = 1928.0
+offset_bottom = 1080.0
+texture = ExtResource("3_5weik")
+expand_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=116981833]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 86.0
+offset_right = 3.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 35
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1777890910]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1171812084]
+layout_mode = 2
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = ExtResource("2_n7xox")
+theme_override_font_sizes/font_size = 60
+text = "Seleccione un personaje
+
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=2093435171]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1057492939]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Control" unique_id=96494550]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.21200001
+anchor_top = 0.83900005
+anchor_right = 1.0
+anchor_bottom = 0.89500004
+offset_left = -0.3400116
+offset_top = -0.23205566
+offset_bottom = 0.23999023
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_n7xox")
+theme_override_font_sizes/font_size = 30
+text = "Profesor"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Control" unique_id=1299816685]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.27600002
+anchor_top = 0.031000001
+anchor_right = 0.86500007
+anchor_bottom = 0.81900007
+offset_left = 0.17997742
+offset_top = 0.20699883
+offset_right = -9.175049
+offset_bottom = 1.242981
+texture = ExtResource("5_luoes")
+expand_mode = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=541309534]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=1527118637]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/VBoxContainer" unique_id=2039950403]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_fonts/font = ExtResource("2_n7xox")
+theme_override_font_sizes/font_size = 30
+text = "Profesores"
+horizontal_alignment = 2
+
+[node name="fondogrilla" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/VBoxContainer" unique_id=2064225667]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_luoes")
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/VBoxContainer/fondogrilla" unique_id=575545920]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=463221309]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1727163399]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_n7xox")
+theme_override_font_sizes/font_size = 30
+text = "Estudiantes"
+
+[node name="fondogrilla2" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1326254252]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_ffvw0")
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/VBoxContainer2/fondogrilla2" unique_id=553587769]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="Control2" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=256523658]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Control2" unique_id=562767817]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.086
+anchor_top = 0.86200005
+anchor_right = 0.832
+anchor_bottom = 0.92600006
+offset_left = 0.14399719
+offset_top = -0.056030273
+offset_right = -0.072021484
+offset_bottom = -15.088013
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_n7xox")
+theme_override_font_sizes/font_size = 30
+text = "Estudiante"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Control2" unique_id=1502387024]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.141
+anchor_top = 0.031000001
+anchor_right = 0.716
+anchor_bottom = 0.82100004
+offset_left = -0.13600159
+offset_top = 0.20699883
+offset_right = -0.33602905
+offset_bottom = -0.1630249
+texture = ExtResource("6_mlmyq")
+expand_mode = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer" unique_id=912765620]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer" unique_id=463750257]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_n7xox")
+theme_override_font_sizes/font_size = 20
+text = "Presiones enter para seleccionar"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CursorP1" type="TextureRect" parent="." unique_id=1235016370]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.39900002
+anchor_top = 0.282
+anchor_right = 0.492
+anchor_bottom = 0.303
+offset_left = -99.08002
+offset_top = 22.440002
+offset_right = -197.64001
+offset_bottom = 79.76001
+mouse_filter = 2
+texture = ExtResource("9_cywbx")
+expand_mode = 1
