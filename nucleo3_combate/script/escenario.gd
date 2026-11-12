@@ -1,5 +1,7 @@
 extends Node2D
 
+signal on_combat_event(evento: Dictionary)
+
 @export_group("Jugadores")
 @export var jugador1: CharacterBody2D
 @export var jugador2: CharacterBody2D
@@ -22,12 +24,17 @@ extends Node2D
 
 const MAX_ROUNDS: int = 2
 
+var max_rounds: int = MAX_ROUNDS
+var duracion_round: int = 99
 var tiempo_restante: int = 99
 var combate_finalizado: bool = false
 var round_terminado: bool = false
 var round_actual: int = 1
 var rounds_j1: int = 0
 var rounds_j2: int = 0
+var player_1_fighter_id: String = ""
+var player_2_fighter_id: String = ""
+var stage_id: String = ""
 
 var altura_fija_camara: float = 0.0
 var pos_inicial_j1: Vector2 = Vector2.ZERO
@@ -71,6 +78,10 @@ func _ready() -> void:
 	if camara:
 		altura_fija_camara = camara.global_position.y
 
+	var bus = get_node_or_null("/root/EventBus")
+	if bus and bus.has_signal("on_match_start"):
+		bus.connect("on_match_start", Callable(self, "on_match_start"))
+
 func _process(_delta: float) -> void:
 	# --- LÓGICA DE CÁMARA DINÁMICA ---
 	if camara and jugador1 and jugador2:
@@ -110,8 +121,8 @@ func _finalizar_round(ganador_id: int) -> void:
 
 	_actualizar_labels_rounds()
 
-	var j1_gana_combate = (rounds_j1 >= MAX_ROUNDS)
-	var j2_gana_combate = (rounds_j2 >= MAX_ROUNDS)
+	var j1_gana_combate = (rounds_j1 >= max_rounds)
+	var j2_gana_combate = (rounds_j2 >= max_rounds)
 
 	if j1_gana_combate and j2_gana_combate:
 		finalizar_combate("¡EMPATE DEFINITIVO!\n¡DOBLE KO!")
@@ -134,7 +145,7 @@ func _finalizar_round(ganador_id: int) -> void:
 
 func _iniciar_siguiente_round() -> void:
 	round_actual += 1
-	tiempo_restante = 99
+	tiempo_restante = duracion_round
 	if texto_tiempo:
 		texto_tiempo.text = str(tiempo_restante)
 
@@ -178,7 +189,7 @@ func reiniciar_combate_completo() -> void:
 	round_actual = 1
 	rounds_j1 = 0
 	rounds_j2 = 0
-	tiempo_restante = 99
+	tiempo_restante = duracion_round
 	
 	if boton_reiniciar:
 		boton_reiniciar.visible = false
@@ -221,6 +232,7 @@ func _on_reloj_combate_timeout() -> void:
 			texto_tiempo.text = str(tiempo_restante)
 	else:
 		reloj_combate.stop()
+		emitir_evento_combate("TIME_OVER", null, null, 0, 0, null, false, "voice_time_over")
 		# Evaluar ganador del round por tiempo si expiran los 99s
 		if jugador1.current_hp > jugador2.current_hp:
 			_finalizar_round(1)
@@ -228,6 +240,66 @@ func _on_reloj_combate_timeout() -> void:
 			_finalizar_round(2)
 		else:
 			_finalizar_round(0)
+
+# --- INTEGRACIÓN CON EL BUS CENTRAL (NÚCLEOS 4 Y 5) ---
+func on_match_start(evento_raw: Variant) -> void:
+	var evento: Dictionary = {}
+	if typeof(evento_raw) == TYPE_STRING:
+		var parsed = JSON.parse_string(evento_raw)
+		if typeof(parsed) == TYPE_DICTIONARY:
+			evento = parsed
+		else:
+			return
+	elif typeof(evento_raw) == TYPE_DICTIONARY:
+		evento = evento_raw
+	else:
+		return
+
+	var datos: Dictionary = evento.get("data", evento)
+	player_1_fighter_id = str(datos.get("player_1_fighter_id", player_1_fighter_id))
+	player_2_fighter_id = str(datos.get("player_2_fighter_id", player_2_fighter_id))
+	stage_id = str(datos.get("stage_id", stage_id))
+	duracion_round = int(datos.get("round_time", 99))
+	max_rounds = int(datos.get("rounds_to_win", MAX_ROUNDS))
+	reiniciar_combate_completo()
+
+func emitir_evento_combate(
+	tipo_evento: String,
+	atacante: Variant,
+	defensor: Variant,
+	dano: int,
+	combo: int = 0,
+	current_hp_val: Variant = null,
+	is_ko_val: bool = false,
+	sound_id: String = "voice_time_over"
+) -> Dictionary:
+	var evento_json: Dictionary = {
+		"event_name": "on_combat_event",
+		"source_core": "nucleo3_combate",
+		"frame": Engine.get_process_frames(),
+		"data": {
+			"type": tipo_evento,
+			"attacker": atacante,
+			"defender": defensor,
+			"damage": dano,
+			"current_hp": current_hp_val,
+			"combo_count": combo,
+			"is_ko": is_ko_val,
+			"sound_id": sound_id
+		}
+	}
+	print(JSON.stringify(evento_json))
+	_on_jugador_combat_event(evento_json)
+	var bus = get_node_or_null("/root/EventBus")
+	if bus:
+		if bus.has_signal("on_combat_event"):
+			bus.emit_signal("on_combat_event", evento_json)
+		elif bus.has_method("on_combat_event"):
+			bus.call("on_combat_event", evento_json)
+	return evento_json
+
+func _on_jugador_combat_event(evento_json: Dictionary) -> void:
+	on_combat_event.emit(evento_json)
 
 func _actualizar_labels_rounds() -> void:
 	if label_rounds_j1:

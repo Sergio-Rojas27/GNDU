@@ -1,0 +1,15 @@
+{
+  "event_name": "on_combat_event",
+  "source_core": "nucleo3_combate",
+  "frame": 1240,
+  "data": {
+    "type": "HIT",
+    "attacker": 1,
+    "defender": 2,
+    "damage": 15,
+    "current_hp": 85,
+    "combo_count": 2,
+    "is_ko": false,
+    "sound_id": "sfx_heavy_hit"
+  }
+}

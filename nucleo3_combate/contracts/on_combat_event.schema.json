@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "N3 Combat Event (on_combat_event)",
+  "description": "Contrato oficial de salida del Núcleo 3 hacia el Bus Central de Eventos (Núcleos 4 y 5).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_name", "source_core", "frame", "data"],
+  "properties": {
+    "event_name": {
+      "type": "string",
+      "const": "on_combat_event"
+    },
+    "source_core": {
+      "type": "string",
+      "const": "nucleo3_combate"
+    },
+    "frame": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "attacker",
+        "defender",
+        "damage",
+        "current_hp",
+        "combo_count",
+        "is_ko",
+        "sound_id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["HIT", "BLOCK", "WHIFF", "TIME_OVER", "KO"]
+        },
+        "attacker": {
+          "type": ["integer", "null"],
+          "enum": [1, 2, null]
+        },
+        "defender": {
+          "type": ["integer", "null"],
+          "enum": [1, 2, null]
+        },
+        "damage": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_hp": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "combo_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "is_ko": {
+          "type": "boolean"
+        },
+        "sound_id": {
+          "type": "string",
+          "enum": [
+            "sfx_light_hit",
+            "sfx_heavy_hit",
+            "sfx_block",
+            "sfx_whiff",
+            "voice_ko",
+            "voice_time_over"
+          ]
+        }
+      }
+    }
+  }
+}

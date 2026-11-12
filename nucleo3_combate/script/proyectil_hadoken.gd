@@ -7,6 +7,7 @@ extends Area2D
 @export var empuje: Vector2 = Vector2(320.0, -140.0)
 @export var distancia_maxima: float = 960.0
 
+var dueno: Node = null
 var _distancia_recorrida: float = 0.0
 
 func _ready() -> void:
@@ -19,6 +20,8 @@ func _physics_process(delta: float) -> void:
 	global_position.x += direccion * avance
 	_distancia_recorrida += avance
 	if _distancia_recorrida >= distancia_maxima:
+		if dueno and dueno.has_method("imprimir_evento_combate"):
+			dueno.imprimir_evento_combate("WHIFF", dueno_id, null, 0, 0, null, false, "sfx_whiff")
 		queue_free()
 
 func _on_area_entered(area: Area2D) -> void:
@@ -32,5 +35,9 @@ func _on_area_entered(area: Area2D) -> void:
 	if id_objetivo != null and int(id_objetivo) == dueno_id:
 		return
 
+	var estado_antes = objetivo.get("estado_actual")
+	var estaba_en_stun: bool = estado_antes == "dano"
 	objetivo.recibir_ataque(dano, Vector2(empuje.x * direccion, empuje.y), dueno_id, "MEDIO", false)
+	if dueno and objetivo.get("rival") != dueno and dueno.has_method("registrar_golpe_externo") and estado_antes not in ["derrota", "en_suelo", "agarrado"]:
+		dueno.registrar_golpe_externo(objetivo, estaba_en_stun)
 	queue_free()

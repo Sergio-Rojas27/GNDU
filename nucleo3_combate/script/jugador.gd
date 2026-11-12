@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+signal on_combat_event(evento: Dictionary)
+
 const SPEED = 300.0
 const JUMP_VELOCITY = -750.0 
 
@@ -36,8 +38,9 @@ const VELOCIDAD_TATSUMAKI := 1000.0
 const DURACION_HADOKEN := 0.9
 const MOMENTO_LANZAMIENTO_HADOKEN := 0.35
 
-# Combos y cooldown
+# Combos, stun y cooldown
 const VENTANA_COMBO := 0.7
+const DURACION_STUN := 0.5
 const COOLDOWN_ATAQUE := 0.18
 const COOLDOWN_ATAQUE_FINAL := 0.45
 const COOLDOWN_ESPECIAL := 0.7
@@ -45,6 +48,11 @@ const COOLDOWN_ESPECIAL := 0.7
 # Pushboxes estilo Mortal Kombat
 const DISTANCIA_PUSHBOX := 150.0
 const ALTURA_PUSHBOX := 170.0
+
+# Capas: los cuerpos de los jugadores no colisionan entre sí (solo con el mundo);
+# la separación entre jugadores la resuelve la pushbox.
+const CAPA_JUGADOR := 4
+const MASCARA_MUNDO := 1
 
 # Escala del sprite según la hoja de animación utilizada
 const ESCALA_SPRITE_BASE := Vector2(3.4045453, 3.1996799)
@@ -111,11 +119,23 @@ var _cooldown_ataque: float = 0.0
 var _combo_tipo: String = ""
 var _combo_paso: int = 0
 var _tiempo_combo: float = 0.0
+var _tiempo_stun: float = 0.0
+var _ataque_aereo_usado: bool = false
+var _golpe_conectado_en_ataque: bool = false
+
+# Contador de combo (golpes seguidos mientras el rival sigue en stun)
+var combo_actual: int = 0
+var combo_label: Label
 
 var input_nucleo2: Dictionary = {
 	"move_x": 0, "move_y": 0, "salto": false,
 	"punch": false, "kick": false, "block": false, "grab": false
 }
+var _usar_reporte_externo_n2: bool = false
+var _estado_previo_n2: Dictionary = {
+	"move_y": 0, "punch": false, "kick": false
+}
+var _comando_n2_pendiente: String = ""
 
 var depurador_label: Label
 var debug_overlay: Node2D
@@ -127,6 +147,8 @@ var mostrar_cajas_debug: bool = false:
 
 func _ready() -> void:
 	current_hp = max_hp
+	collision_layer = CAPA_JUGADOR
+	collision_mask = MASCARA_MUNDO
 	desactivar_todas_hitboxes()
 	_actualizar_hurtbox()
 	
@@ -137,11 +159,26 @@ func _ready() -> void:
 	if sprite:
 		sprite.frame_changed.connect(_on_sprite_frame_changed)
 		sprite.animation_finished.connect(_on_sprite_animation_finished)
+
+	var n2_core = get_node_or_null("/root/N2InputCore")
+	if n2_core and n2_core.has_signal("report_emitted"):
+		n2_core.connect("report_emitted", Callable(self, "recibir_reporte_entrada"))
 		
 	depurador_label = Label.new()
 	add_child(depurador_label)
 	depurador_label.position = Vector2(-100, -120) 
 	depurador_label.add_theme_color_override("font_color", Color(1, 0, 0))
+	
+	combo_label = Label.new()
+	add_child(combo_label)
+	combo_label.position = Vector2(-125, -215)
+	combo_label.size = Vector2(250, 45)
+	combo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	combo_label.add_theme_font_size_override("font_size", 30)
+	combo_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.15))
+	combo_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	combo_label.add_theme_constant_override("outline_size", 8)
+	combo_label.visible = false
 	
 	debug_overlay = Node2D.new()
 	debug_overlay.name = "DebugOverlay"
@@ -176,6 +213,10 @@ func _actualizar_hurtbox() -> void:
 		hurtbox_baja_collision.disabled = not esta_agachado
 
 func _simular_entrada_nucleo2() -> void:
+	if _usar_reporte_externo_n2:
+		_usar_reporte_externo_n2 = false
+		return
+
 	input_nucleo2["move_x"] = Input.get_axis(accion_izquierda, accion_derecha)
 	
 	var move_y = 0
@@ -189,10 +230,10 @@ func _simular_entrada_nucleo2() -> void:
 	input_nucleo2["block"] = Input.is_action_pressed(accion_bloqueo)
 	input_nucleo2["grab"] = Input.is_action_just_pressed(accion_agarre)
 	
-	if Input.is_action_just_pressed(accion_abajo):
-		_tiempo_ultimo_abajo = Time.get_ticks_msec()
-
 	var ahora := Time.get_ticks_msec()
+	if Input.is_action_just_pressed(accion_abajo) or Input.is_action_pressed(accion_abajo):
+		_tiempo_ultimo_abajo = float(ahora)
+
 	if Input.is_action_just_pressed(accion_izquierda):
 		if ahora - _tiempo_ultima_izquierda <= VENTANA_DOBLE_TOQUE_MS:
 			_doble_toque_pendiente = -1.0
@@ -205,6 +246,68 @@ func _simular_entrada_nucleo2() -> void:
 			_tiempo_ultima_derecha = -1000.0
 		else:
 			_tiempo_ultima_derecha = float(ahora)
+
+func recibir_reporte_entrada(reporte_raw: Variant) -> void:
+	var reporte: Dictionary = {}
+	if typeof(reporte_raw) == TYPE_STRING:
+		var parsed = JSON.parse_string(reporte_raw)
+		if typeof(parsed) == TYPE_DICTIONARY:
+			reporte = parsed
+		else:
+			return
+	elif typeof(reporte_raw) == TYPE_DICTIONARY:
+		reporte = reporte_raw
+	else:
+		return
+
+	if int(reporte.get("player_id", -1)) != player_id:
+		return
+
+	var estado: Variant = reporte.get("state", {})
+	if typeof(estado) != TYPE_DICTIONARY:
+		return
+
+	_usar_reporte_externo_n2 = true
+	var move_x := int(estado.get("move_x", 0))
+	var move_y := int(estado.get("move_y", 0))
+	var punch_held := bool(estado.get("punch", false))
+	var kick_held := bool(estado.get("kick", false))
+	var block_held := bool(estado.get("block", false))
+
+	var ahora := float(Time.get_ticks_msec())
+	var prev_move_y := int(_estado_previo_n2.get("move_y", 0))
+	var prev_punch := bool(_estado_previo_n2.get("punch", false))
+	var prev_kick := bool(_estado_previo_n2.get("kick", false))
+
+	input_nucleo2["move_x"] = move_x
+	input_nucleo2["move_y"] = move_y
+	input_nucleo2["salto"] = (move_y == 1 and prev_move_y != 1)
+	input_nucleo2["punch"] = (punch_held and not prev_punch)
+	input_nucleo2["kick"] = (kick_held and not prev_kick)
+	input_nucleo2["block"] = block_held
+	input_nucleo2["grab"] = false
+
+	if move_y == -1:
+		_tiempo_ultimo_abajo = ahora
+	if move_x == -1 and int(_estado_previo_n2.get("move_x", 0)) != -1:
+		_tiempo_ultima_izquierda = ahora
+	elif move_x == 1 and int(_estado_previo_n2.get("move_x", 0)) != 1:
+		_tiempo_ultima_derecha = ahora
+
+	var cmd = reporte.get("command_detected", null)
+	if typeof(cmd) == TYPE_STRING and cmd != "":
+		_comando_n2_pendiente = cmd
+		if cmd == "DASH_LEFT":
+			_doble_toque_pendiente = -1.0
+		elif cmd == "DASH_RIGHT":
+			_doble_toque_pendiente = 1.0
+
+	_estado_previo_n2 = {
+		"move_x": move_x,
+		"move_y": move_y,
+		"punch": punch_held,
+		"kick": kick_held
+	}
 
 # --- DASH ---
 func _detectar_dash(mirando_derecha: bool) -> bool:
@@ -251,10 +354,24 @@ func _limpiar_movimientos_especiales() -> void:
 	_tiempo_ultimo_abajo = -1000.0
 	_tiempo_ultima_izquierda = -1000.0
 	_tiempo_ultima_derecha = -1000.0
+	_comando_n2_pendiente = ""
 
-func _detectar_especiales(mirando_derecha: bool) -> String:
-	if not _puede_iniciar_ataque():
+func _detectar_especiales(mirando_derecha: bool, ignorar_cooldown: bool = false) -> String:
+	if not ignorar_cooldown and not _puede_iniciar_ataque():
 		return ""
+
+	if _comando_n2_pendiente != "":
+		var cmd := _comando_n2_pendiente
+		match cmd:
+			"SPECIAL_ATTACK_1", "COMBO_LEFT_RIGHT_A", "HADOKEN":
+				_limpiar_movimientos_especiales()
+				return "hadoken"
+			"SPECIAL_ATTACK_2", "COMBO_DOWN_UP_A", "SHORYUKEN":
+				_limpiar_movimientos_especiales()
+				return "shoryuken"
+			"COMBO_DOWN_RIGHT_B", "COMBO_RIGHT_DOWN_RIGHT_B", "TATSUMAKI":
+				_limpiar_movimientos_especiales()
+				return "tatsumaki"
 
 	var move_x: float = input_nucleo2["move_x"]
 	if abs(move_x) < 0.2:
@@ -282,8 +399,29 @@ func _detectar_especiales(mirando_derecha: bool) -> String:
 
 	return ""
 
+func _en_combo_basico_cancelable() -> bool:
+	var estados_combo_basico := [
+		"ataque_golpe", "ataque_combo_punio_2", "ataque_combo_punio_3",
+		"ataque_patada", "ataque_combo_patada_2", "ataque_combo_patada_3",
+	]
+	return estado_actual in estados_combo_basico or (_tiempo_combo > 0.0 and _combo_paso > 0)
+
+func _intentar_ejecutar_especial(mirando_derecha: bool, permitir_cancelar_combo: bool = false) -> bool:
+	match _detectar_especiales(mirando_derecha, permitir_cancelar_combo):
+		"hadoken":
+			_iniciar_ataque_hadoken(mirando_derecha)
+			return true
+		"tatsumaki":
+			_iniciar_ataque_tatsumaki(mirando_derecha)
+			return true
+		"shoryuken":
+			_iniciar_ataque_especial(mirando_derecha)
+			return true
+	return false
+
 func _iniciar_ataque_especial(mirando_derecha: bool) -> void:
 	estado_actual = "ataque_especial"
+	_golpe_conectado_en_ataque = false
 	_reset_combo()
 	var direccion := 1.0 if mirando_derecha else -1.0
 	velocity = Vector2(IMPULSO_ESPECIAL_X * direccion, IMPULSO_ESPECIAL_Y)
@@ -300,6 +438,8 @@ func _procesar_ataque_especial(delta: float) -> void:
 	_aplicar_limites_camara()
 	_resolver_pushbox()
 	if is_on_floor() and velocity.y >= 0.0:
+		if not _golpe_conectado_en_ataque:
+			imprimir_evento_combate("WHIFF", player_id, null, 0, 0, null, false, "sfx_whiff")
 		estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
 		actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
 		_cooldown_ataque = COOLDOWN_ESPECIAL
@@ -334,6 +474,7 @@ func _procesar_ataque_hadoken(delta: float) -> void:
 
 func _lanzar_proyectil_hadoken() -> void:
 	var proyectil = ESCENA_PROYECTIL_HADOKEN.instantiate()
+	proyectil.dueno = self
 	proyectil.dueno_id = player_id
 	proyectil.direccion = _direccion_hadoken
 	get_parent().add_child(proyectil)
@@ -342,6 +483,7 @@ func _lanzar_proyectil_hadoken() -> void:
 # --- TATSUMAKI ---
 func _iniciar_ataque_tatsumaki(mirando_derecha: bool) -> void:
 	estado_actual = "ataque_tatsumaki"
+	_golpe_conectado_en_ataque = false
 	_reset_combo()
 	_direccion_tatsumaki = 1.0 if mirando_derecha else -1.0
 	_tiempo_tatsumaki = DURACION_TATSUMAKI
@@ -360,6 +502,8 @@ func _procesar_ataque_tatsumaki(delta: float) -> void:
 	_aplicar_limites_camara()
 	_resolver_pushbox()
 	if _tiempo_tatsumaki <= 0.0:
+		if not _golpe_conectado_en_ataque:
+			imprimir_evento_combate("WHIFF", player_id, null, 0, 0, null, false, "sfx_whiff")
 		estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
 		actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
 		desactivar_todas_hitboxes()
@@ -377,14 +521,15 @@ func _siguiente_paso_combo(tipo: String) -> int:
 	return 1
 
 func _iniciar_combo(tipo: String, paso: int = 0) -> void:
-	if not _puede_iniciar_ataque():
-		return
 	if paso == 0:
 		paso = _siguiente_paso_combo(tipo)
+	if paso == 1 and not _puede_iniciar_ataque():
+		return
 
 	_combo_tipo = tipo
 	_combo_paso = paso
 	_tiempo_combo = 0.0
+	_golpe_conectado_en_ataque = false
 	velocity.x = 0.0
 	desactivar_todas_hitboxes()
 
@@ -398,8 +543,6 @@ func _iniciar_combo(tipo: String, paso: int = 0) -> void:
 	activar_hitbox("MEDIO")
 
 func _intentar_encadenar_combo() -> bool:
-	if not _puede_iniciar_ataque():
-		return false
 	var estados_encadenables := [
 		"ataque_golpe", "ataque_combo_punio_2",
 		"ataque_patada", "ataque_combo_patada_2"
@@ -420,9 +563,41 @@ func _intentar_encadenar_combo() -> bool:
 	_iniciar_combo(tipo, _combo_paso + 1)
 	return true
 
+# --- CONTADOR DE COMBO ---
+func _actualizar_contador_combo() -> void:
+	if combo_actual > 0:
+		var est_rival = rival.get("estado_actual") if rival and is_instance_valid(rival) else null
+		if est_rival != "dano" and est_rival != "derrota":
+			combo_actual = 0
+	if combo_label:
+		combo_label.visible = combo_actual > 0
+		if combo_actual > 0:
+			combo_label.text = "%d HITS" % combo_actual
+
+func registrar_golpe_externo(objetivo: Node, estaba_en_stun: bool) -> void:
+	if objetivo == null:
+		return
+	var est = objetivo.get("estado_actual")
+	if est == "dano" or est == "derrota":
+		if estaba_en_stun:
+			combo_actual += 1
+		else:
+			combo_actual = 1
+	elif est == "bloqueo_alto" or est == "bloqueo_bajo":
+		combo_actual = 0
+
+func reiniciar_contador_combo() -> void:
+	combo_actual = 0
+	if combo_label:
+		combo_label.visible = false
+
 func _physics_process(delta: float) -> void:
 	_simular_entrada_nucleo2()
 	_actualizar_hurtbox()
+	_verificar_colision_hitboxes_activas()
+	if is_on_floor():
+		_ataque_aereo_usado = false
+	_actualizar_contador_combo()
 
 	if _cooldown_ataque > 0.0:
 		_cooldown_ataque = max(0.0, _cooldown_ataque - delta)
@@ -459,15 +634,17 @@ func _physics_process(delta: float) -> void:
 	if estado_actual in ["dano", "derrota", "lanzado", "caida_rebote", "en_suelo"]:
 		if not is_on_floor():
 			velocity += get_gravity() * delta
+			if estado_actual == "dano":
+				_tiempo_stun = max(0.1, _tiempo_stun - delta)
 		else:
 			velocity.x = move_toward(velocity.x, 0, 600.0 * delta)
+			if estado_actual == "dano" and velocity.y >= 0.0:
+				_tiempo_stun = max(0.0, _tiempo_stun - delta)
+				if _tiempo_stun <= 0.0:
+					estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
+					actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
+					_actualizar_contador_combo()
 		
-		# Pushbox Suave pasiva
-		if rival:
-			var dist_x = global_position.x - rival.global_position.x
-			if abs(dist_x) < 40 and global_position.y < rival.global_position.y - 10:
-				velocity.x += (150.0 if dist_x > 0 else -150.0)
-				
 		move_and_slide()
 		_aplicar_limites_camara()
 		_resolver_pushbox()
@@ -550,27 +727,21 @@ func _physics_process(delta: float) -> void:
 		return
 
 	if is_on_floor() and not input_nucleo2["block"] and not estado_actual.begins_with("ataque_") and estado_actual != "intentar_agarre":
-		if _puede_iniciar_ataque():
-			match _detectar_especiales(mirando_derecha):
-				"hadoken":
-					_iniciar_ataque_hadoken(mirando_derecha)
-					return
-				"tatsumaki":
-					_iniciar_ataque_tatsumaki(mirando_derecha)
-					return
-				"shoryuken":
-					_iniciar_ataque_especial(mirando_derecha)
-					return
+		if _intentar_ejecutar_especial(mirando_derecha, _en_combo_basico_cancelable()):
+			return
 		if _detectar_dash(mirando_derecha):
 			_procesar_dash(delta)
 			return
 
-	# 3.6 ENCADENAMIENTO DE COMBOS (AAA / BBB)
+	# 3.6 CANCELACIÓN DE COMBO BÁSICO EN ESPECIAL Y ENCADENAMIENTO (AAA / BBB)
 	if estado_actual.begins_with("ataque_") and is_on_floor():
+		if not input_nucleo2["block"] and _en_combo_basico_cancelable():
+			if _intentar_ejecutar_especial(mirando_derecha, true):
+				return
 		if _intentar_encadenar_combo():
 			return
 
-	if estado_actual.begins_with("ataque_") or estado_actual == "intentar_agarre":
+	if (estado_actual.begins_with("ataque_") and not estado_actual.begins_with("ataque_aire_")) or estado_actual == "intentar_agarre":
 		if is_on_floor():
 			velocity.x = 0
 			move_and_slide()
@@ -586,6 +757,7 @@ func _physics_process(delta: float) -> void:
 				
 		if input_nucleo2["grab"]:
 			velocity.x = 0
+			_golpe_conectado_en_ataque = false
 			estado_actual = "intentar_agarre"
 			actualizar_animacion("Agarre")
 			desactivar_todas_hitboxes()
@@ -602,11 +774,13 @@ func _physics_process(delta: float) -> void:
 			velocity.x = 0
 			if input_nucleo2["punch"] and _puede_iniciar_ataque():
 				_reset_combo()
+				_golpe_conectado_en_ataque = false
 				estado_actual = "ataque_punio_abajo"
 				actualizar_animacion("Punio_Abajo")
 				desactivar_todas_hitboxes()
 			elif input_nucleo2["kick"] and _puede_iniciar_ataque():
 				_reset_combo()
+				_golpe_conectado_en_ataque = false
 				estado_actual = "ataque_patada_abajo"
 				actualizar_animacion("Patada_Abajo")
 				activar_hitbox("BAJO")
@@ -618,6 +792,7 @@ func _physics_process(delta: float) -> void:
 			velocity.x = 0
 			if input_nucleo2["move_y"] == 1:
 				_reset_combo()
+				_golpe_conectado_en_ataque = false
 				estado_actual = "ataque_punio_arriba"
 				actualizar_animacion("Punio_Arriba")
 				desactivar_todas_hitboxes()
@@ -627,12 +802,14 @@ func _physics_process(delta: float) -> void:
 			velocity.x = 0
 			if input_nucleo2["move_y"] == 1:
 				_reset_combo()
+				_golpe_conectado_en_ataque = false
 				estado_actual = "ataque_patada_arriba"
 				actualizar_animacion("Patada_Arriba")
 				desactivar_todas_hitboxes()
 			else:
 				_iniciar_combo("patada")
 		elif input_nucleo2["salto"]:
+			_ataque_aereo_usado = false
 			desactivar_todas_hitboxes()
 			velocity.y = JUMP_VELOCITY
 			var direction = input_nucleo2["move_x"]
@@ -673,16 +850,22 @@ func _physics_process(delta: float) -> void:
 				actualizar_animacion("Reposo")
 				desactivar_todas_hitboxes()
 	else:
-		# LÓGICA EN EL AIRE
+		# LÓGICA EN EL AIRE (solo se permite un ataque por salto)
 		velocity += get_gravity() * delta
-		if not estado_actual.begins_with("ataque_aire_"):
+		if not estado_actual.begins_with("ataque_aire_") and not _ataque_aereo_usado:
 			if input_nucleo2["punch"]:
+				_ataque_aereo_usado = true
+				_golpe_conectado_en_ataque = false
+				_reset_combo()
 				estado_actual = "ataque_aire_punio"
-				actualizar_animacion("Punio_Aire")
+				actualizar_animacion("Punio_Aire", true)
 				activar_hitbox("MEDIO")
 			elif input_nucleo2["kick"]:
+				_ataque_aereo_usado = true
+				_golpe_conectado_en_ataque = false
+				_reset_combo()
 				estado_actual = "ataque_aire_patada"
-				actualizar_animacion("Patada_Aire")
+				actualizar_animacion("Patada_Aire", true)
 				activar_hitbox("BAJO")
 
 	move_and_slide()
@@ -693,11 +876,15 @@ func _physics_process(delta: float) -> void:
 func _resolver_pushbox() -> void:
 	if not rival or not is_instance_valid(rival):
 		return
+	# La pushbox solo actúa cuando ambos están apoyados en el suelo;
+	# en el aire los cuerpos no deben empujarse entre sí.
+	if not is_on_floor() or not rival.is_on_floor():
+		return
 	var estado_rival = rival.get("estado_actual")
 	if estado_rival == null:
 		return
 
-	var estados_ignorados := ["agarrado", "agarrando", "lanzado", "caida_rebote", "en_suelo", "derrota"]
+	var estados_ignorados := ["dano", "agarrado", "agarrando", "lanzado", "caida_rebote", "en_suelo", "derrota"]
 	if estado_actual in estados_ignorados or estado_rival in estados_ignorados:
 		return
 
@@ -752,7 +939,8 @@ func _on_sprite_frame_changed() -> void:
 		return
 
 	# Para ataques de múltiples frames, activar la hitbox correspondiente en frame 1
-	if sprite.frame == 1:
+	# únicamente si el ataque actual aún no ha conectado en el fotograma inicial.
+	if sprite.frame == 1 and not _golpe_conectado_en_ataque:
 		match estado_actual:
 			"ataque_golpe", "ataque_combo_punio_2", "ataque_combo_punio_3", \
 			"ataque_patada", "ataque_combo_patada_2", "ataque_combo_patada_3":
@@ -780,6 +968,8 @@ func _on_sprite_animation_finished() -> void:
 		return
 	if estado_actual.begins_with("ataque_") or estado_actual == "intentar_agarre":
 		desactivar_todas_hitboxes()
+		if not _golpe_conectado_en_ataque:
+			imprimir_evento_combate("WHIFF", player_id, null, 0, 0, null, false, "sfx_whiff")
 
 		# El tercer golpe del combo cierra la secuencia y aplica más recuperación
 		if estado_actual in ["ataque_combo_punio_3", "ataque_combo_patada_3"]:
@@ -810,16 +1000,35 @@ func _on_sprite_animation_finished() -> void:
 
 
 # --- DETECCIÓN DE IMPACTO Y COMBATE ---
+func _verificar_colision_hitboxes_activas() -> void:
+	if _golpe_conectado_en_ataque:
+		return
+	for par in [
+		[hitbox_alta, hitbox_alta_collision],
+		[hitbox_media, hitbox_media_collision],
+		[hitbox_baja, hitbox_baja_collision],
+	]:
+		var area: Area2D = par[0]
+		var col: CollisionShape2D = par[1]
+		if area and col and not col.disabled:
+			for area_rival in area.get_overlapping_areas():
+				_on_hitbox_area_entered(area_rival)
+				if _golpe_conectado_en_ataque:
+					return
+
 func _empuje_segun_ataque() -> Vector2:
 	var direccion := -1.0 if (sprite and sprite.flip_h) else 1.0
 	var empuje_base: Vector2 = EMPUJES_ATAQUE.get(estado_actual, Vector2(150.0, 0.0))
 	return Vector2(empuje_base.x * direccion, empuje_base.y)
 
 func _on_hitbox_area_entered(area_rival: Area2D) -> void:
+	if _golpe_conectado_en_ataque:
+		return
 	var es_hurtbox = area_rival.name in ["Hurtbox-Estandar", "Hurtbox-Baja", "Hurtbox"]
 	if es_hurtbox and area_rival.get_parent() != self:
 		var rival_atacado = area_rival.get_parent()
 		if rival_atacado and rival_atacado.has_method("recibir_ataque"):
+			_golpe_conectado_en_ataque = true
 			var es_agarre = (estado_actual == "intentar_agarre")
 			var empuje_ataque = Vector2.ZERO if es_agarre else _empuje_segun_ataque()
 			var altura_ataque = "MEDIO" 
@@ -831,6 +1040,8 @@ func _on_hitbox_area_entered(area_rival: Area2D) -> void:
 			
 			desactivar_todas_hitboxes()
 			
+			var estado_objetivo_antes: String = rival_atacado.estado_actual
+			var estaba_en_stun := estado_objetivo_antes == "dano"
 			var estados_no_agarrables = ["agarrado", "derrota", "en_suelo", "lanzado", "caida_rebote"]
 			if es_agarre and rival_atacado.is_on_floor() and rival_atacado.estado_actual not in estados_no_agarrables:
 				estado_actual = "agarrando"
@@ -839,10 +1050,15 @@ func _on_hitbox_area_entered(area_rival: Area2D) -> void:
 				
 			rival_atacado.recibir_ataque(fuerza_golpe, empuje_ataque, player_id, altura_ataque, es_agarre)
 
+			if not es_agarre and rival_atacado.get("rival") != self and estado_objetivo_antes not in ["derrota", "en_suelo", "agarrado"]:
+				registrar_golpe_externo(rival_atacado, estaba_en_stun)
+
 func recibir_ataque(cantidad: int, empuje: Vector2, atacante_id: int, altura: String, es_agarre: bool) -> void:
 	if estado_actual in ["derrota", "en_suelo", "agarrado"]:
 		return
 
+	var estaba_en_stun := (estado_actual == "dano")
+	reiniciar_contador_combo()
 	_reset_combo()
 
 	if es_agarre:
@@ -865,30 +1081,33 @@ func recibir_ataque(cantidad: int, empuje: Vector2, atacante_id: int, altura: St
 
 	if fue_bloqueado:
 		velocity = Vector2(empuje.x * 0.35, 0.0)
-		imprimir_evento_combate("BLOCK", atacante_id, player_id, 0)
+		if rival and rival.has_method("registrar_golpe_externo"):
+			rival.registrar_golpe_externo(self, false)
+		imprimir_evento_combate("BLOCK", atacante_id, player_id, 0, 0)
 	else:
 		current_hp = max(0, current_hp - cantidad)
 		estado_actual = "dano"
 		velocity = empuje
-		imprimir_evento_combate("HIT", atacante_id, player_id, cantidad)
-		actualizar_animacion("Stun")
+		if rival and rival.has_method("registrar_golpe_externo"):
+			rival.registrar_golpe_externo(self, estaba_en_stun)
+		var combo_atacante: int = int(rival.combo_actual) if rival else (2 if estaba_en_stun else 1)
+		imprimir_evento_combate("HIT", atacante_id, player_id, cantidad, combo_atacante)
+		actualizar_animacion("Stun", true)
 		
 		if current_hp <= 0:
+			_tiempo_stun = 0.0
 			estado_actual = "derrota"
-			imprimir_evento_combate("KO", atacante_id, player_id, 0)
+			imprimir_evento_combate("KO", atacante_id, player_id, 0, combo_atacante)
 			actualizar_animacion("Tumbar")
 		else:
 			_stun_seq += 1
-			var mi_stun := _stun_seq
-			await get_tree().create_timer(0.3).timeout
-			while estado_actual == "dano" and not is_on_floor():
-				await get_tree().physics_frame
-			if estado_actual == "dano" and mi_stun == _stun_seq:
-				estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
-				actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
+			_tiempo_stun = DURACION_STUN
 
 func ser_lanzado(fuerza_vector: Vector2) -> void:
+	var estaba_en_stun := (estado_actual == "dano")
 	estado_actual = "lanzado"
+	_tiempo_stun = 0.0
+	reiniciar_contador_combo()
 	_reset_combo()
 	velocity = fuerza_vector
 	current_hp = max(0, current_hp - 10)
@@ -896,16 +1115,17 @@ func ser_lanzado(fuerza_vector: Vector2) -> void:
 	_stun_seq += 1
 	_lanzamiento_seq += 1
 	
-	collision_layer = 1
-	collision_mask = 1
+	collision_layer = CAPA_JUGADOR
+	collision_mask = MASCARA_MUNDO
 	desactivar_todas_hitboxes()
 	
-	imprimir_evento_combate("HIT", rival.player_id if rival else 0, player_id, 10)
+	var combo_atacante: int = int(rival.combo_actual) if rival and estaba_en_stun else 1
+	imprimir_evento_combate("HIT", rival.player_id if rival else 0, player_id, 10, combo_atacante)
 	actualizar_animacion("Tumbar")
 	
 	if current_hp <= 0:
 		estado_actual = "derrota"
-		imprimir_evento_combate("KO", rival.player_id if rival else 0, player_id, 0)
+		imprimir_evento_combate("KO", rival.player_id if rival else 0, player_id, 0, combo_atacante)
 	else:
 		_seguridad_levantarse(_lanzamiento_seq)
 
@@ -979,16 +1199,53 @@ func liberar_agarre() -> void:
 	rebotes_restantes = 0
 	actualizar_animacion("Reposo")
 	
-	collision_layer = 1
-	collision_mask = 1
+	collision_layer = CAPA_JUGADOR
+	collision_mask = MASCARA_MUNDO
 	desactivar_todas_hitboxes()
 	
 	velocity.x = (1 if sprite.flip_h else -1) * 200.0 
 
 
 # --- COMUNICACIÓN CON EL BUS CENTRAL ---
-func imprimir_evento_combate(tipo_evento: String, atacante: int, defensor: int, dano: int) -> void:
-	var evento_json = {
+func imprimir_evento_combate(
+	tipo_evento: String,
+	atacante: Variant,
+	defensor: Variant,
+	dano: int,
+	combo: int = 0,
+	hp_override: Variant = null,
+	es_ko_override: Variant = null,
+	sound_override: String = ""
+) -> Dictionary:
+	var hp_val: Variant = current_hp
+	if tipo_evento in ["WHIFF", "TIME_OVER"]:
+		hp_val = hp_override
+	elif hp_override != null:
+		hp_val = hp_override
+
+	var ko_val: bool = false
+	if tipo_evento not in ["WHIFF", "TIME_OVER", "BLOCK"]:
+		ko_val = (current_hp <= 0)
+	if es_ko_override != null:
+		ko_val = bool(es_ko_override)
+
+	var sound_id := sound_override
+	if sound_id == "":
+		match tipo_evento:
+			"HIT":
+				sound_id = "sfx_heavy_hit"
+			"BLOCK":
+				sound_id = "sfx_block"
+			"WHIFF":
+				sound_id = "sfx_whiff"
+			"KO":
+				sound_id = "voice_ko"
+			"TIME_OVER":
+				sound_id = "voice_time_over"
+			_:
+				sound_id = "sfx_heavy_hit"
+
+	var evento_json: Dictionary = {
 		"event_name": "on_combat_event",
 		"source_core": "nucleo3_combate",
 		"frame": Engine.get_process_frames(),
@@ -997,12 +1254,29 @@ func imprimir_evento_combate(tipo_evento: String, atacante: int, defensor: int, 
 			"attacker": atacante,
 			"defender": defensor,
 			"damage": dano,
-			"current_hp": current_hp,
-			"is_ko": (current_hp <= 0),
-			"sound_id": "sfx_heavy_hit" if tipo_evento == "HIT" else "voice_ko" if tipo_evento == "KO" else "sfx_block"
+			"current_hp": hp_val,
+			"combo_count": combo,
+			"is_ko": ko_val,
+			"sound_id": sound_id
 		}
 	}
 	print(JSON.stringify(evento_json))
+	on_combat_event.emit(evento_json)
+	_publicar_en_bus_central(evento_json)
+	return evento_json
+
+func _publicar_en_bus_central(evento_json: Dictionary) -> void:
+	if not is_inside_tree():
+		return
+	var bus = get_node_or_null("/root/EventBus")
+	if bus:
+		if bus.has_signal("on_combat_event"):
+			bus.emit_signal("on_combat_event", evento_json)
+		elif bus.has_method("on_combat_event"):
+			bus.call("on_combat_event", evento_json)
+	var padre = get_parent()
+	if padre and padre.has_method("_on_jugador_combat_event"):
+		padre.call("_on_jugador_combat_event", evento_json)
 
 # --- REINICIO DE ROUND Y VISUALIZADOR DEBUG ---
 func reiniciar_para_round(posicion_inicial: Vector2) -> void:
@@ -1010,8 +1284,8 @@ func reiniciar_para_round(posicion_inicial: Vector2) -> void:
 	velocity = Vector2.ZERO
 	current_hp = max_hp
 	estado_actual = "reposo"
-	collision_layer = 1
-	collision_mask = 1
+	collision_layer = CAPA_JUGADOR
+	collision_mask = MASCARA_MUNDO
 	rival_agarrado = null
 	tiempo_agarre = 0.0
 	rebotes_restantes = 0
@@ -1023,8 +1297,12 @@ func reiniciar_para_round(posicion_inicial: Vector2) -> void:
 	_cooldown_ataque = 0.0
 	_tiempo_tatsumaki = 0.0
 	_tiempo_hadoken = 0.0
+	_tiempo_stun = 0.0
 	_proyectil_lanzado = false
+	_ataque_aereo_usado = false
+	_golpe_conectado_en_ataque = false
 	_reset_combo()
+	reiniciar_contador_combo()
 	desactivar_todas_hitboxes()
 	_actualizar_hurtbox()
 	actualizar_animacion("Reposo")
