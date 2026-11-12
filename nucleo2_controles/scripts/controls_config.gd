@@ -4,18 +4,38 @@ signal config_reloaded
 signal config_error(message: String)
 
 const CONFIG_PATH := "res://controls_config.json"
+const AUTO_RELOAD_INTERVAL := 0.5
 const ACTIONS := ["left", "right", "up", "down", "punch", "kick", "block", "pause"]
 
 var data: Dictionary = {}
 var last_error: String = ""
+var _auto_reload_timer := 0.0
+var _last_config_hash := ""
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	if not reload():
 		if data.is_empty():
 			data = _default_config()
 		push_warning("N2ControlsConfig: %s" % last_error)
 
+func _process(delta: float) -> void:
+	_auto_reload_timer += delta
+	if _auto_reload_timer < AUTO_RELOAD_INTERVAL:
+		return
+	_auto_reload_timer = 0.0
+	var current := _config_hash()
+	if current.is_empty() or current == _last_config_hash:
+		return
+	reload()
+
+func _config_hash() -> String:
+	if not FileAccess.file_exists(CONFIG_PATH):
+		return ""
+	return FileAccess.get_md5(CONFIG_PATH)
+
 func reload() -> bool:
+	_last_config_hash = _config_hash()
 	last_error = ""
 	if not FileAccess.file_exists(CONFIG_PATH):
 		_fail("No existe %s" % CONFIG_PATH)

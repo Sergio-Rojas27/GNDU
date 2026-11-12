@@ -27,6 +27,7 @@ func _ready() -> void:
 
 	N2InputCore.report_emitted.connect(_on_report)
 	N2ControlsConfig.config_error.connect(_on_config_error)
+	N2ControlsConfig.config_reloaded.connect(_on_config_reloaded)
 
 	var mock := MockConsumerScript.new()
 	add_child(mock)
@@ -206,6 +207,10 @@ func _update_raw_label() -> void:
 				float(event.get("value", 0.0)),
 				int(event.get("frame", 0))
 			]
+
+func _on_config_reloaded() -> void:
+	_status.text = "Config recargada: %s" % N2ControlsConfig.CONFIG_PATH
+	_status.add_theme_color_override("font_color", Color(0.4, 1.0, 0.6))
 
 func _reload_config() -> void:
 	if N2ControlsConfig.reload():
