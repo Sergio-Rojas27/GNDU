@@ -36,7 +36,7 @@ Resultado de esta revisión:
 | Controles independientes para J1 y J2 | `controls_config.json` define `players.1` (híbrido) y `players.2` (mando). `input_core.gd` recorre ambos por separado. | Cumple; falta prueba física simultánea. |
 | Búfer de 15 a 30 fotogramas | `scripts/input_buffer.gd` (circular). `controls_config.gd` limita `buffer_size_frames` a **15–30**; valor por defecto 30. Pruebas: capacidad, orden y recorte. | Cumple. |
 | Reconocer combinaciones rápidas y movimientos especiales | `scripts/command_recognizer.gd` con ventana, hueco máximo, `final_window`, prioridad, cooldown y consumo de pulsaciones. 12 comandos en la configuración. | Cumple; varios comandos solo probados en automático. |
-| Mapeo reconfigurable por `controls_config.json` | `scripts/controls_config.gd` valida y recarga; `R` en la demo ejecuta `reload()`. | Cumple; falta probar `R` con JSON roto/válido en ventana real. |
+| Mapeo reconfigurable por `controls_config.json` | `scripts/controls_config.gd` valida y auto-recarga el JSON cada 0.5 s; `R` ejecuta `reload()` manualmente. | Cumple; falta prueba física de auto-recarga con JSON roto/válido. |
 | Abstracción de entrada y emisión estandarizada | `N2InputCore.report_emitted(report)` y `_build_report()` emiten el contrato del PDF. El diagnóstico y el mock consumen la misma señal. | Cumple. |
 
 ## 2. Conceptos técnicos exigidos
@@ -71,7 +71,7 @@ Resultado de esta revisión:
 | Dos columnas J1/J2 con botones iluminados y cinta del búfer en tiempo real | `scenes/diagnostic.tscn`, `scripts/diagnostic.gd`, `scripts/player_panel.gd`. | Cumple. |
 | Reconocimiento en vivo de doble toque y técnica especial con tolerancia | `command_recognizer.gd`; pruebas automáticas de `DASH_*` y `SPECIAL_ATTACK_*`. | Cumple en automático; falta demo física de todos. |
 | Multijugador simultáneo sin bloqueo ni interferencias | Dos jugadores con estado, búfer y reconocedor independientes. | Implementado; **falta prueba física**. |
-| Configuración dinámica sin tocar código | Editar `controls_config.json` + `R`; `controls_config.gd` conserva la última configuración válida si falla. | Implementado; **falta prueba física**. |
+| Configuración dinámica sin tocar código | Editar y guardar `controls_config.json`; se auto-recarga en ~0.5 s. `controls_config.gd` conserva la última configuración válida si falla. | Implementado; **falta prueba física**. |
 | Emisión estructurada del reporte en consola o pantalla | Registro JSON de 20 líneas en el diagnóstico; `J` activa `print()` por frame; `V` abre el visor con filtros, copia y exportación JSONL. | Cumple; falta prueba visual con ventana real. |
 
 ## 5. Archivos obligatorios
@@ -100,7 +100,7 @@ Resultado de esta revisión:
 - [ ] Probar el visor con ventana real: layout, copiar y abrir la carpeta.
 - [ ] Probar hot-plug: desconectar/conectar un mando sin robar el del otro jugador.
 - [ ] Probar a J1 y J2 pulsando a la vez durante varios segundos.
-- [ ] Probar `R` con un JSON válido y con uno roto en la ventana real.
+- [ ] Probar la auto-recarga con un JSON válido y con uno roto en la ventana real (y que `R` siga funcionando).
 - [ ] Confirmar con N3/N4 el contrato v3 (seis claves, salto por `move_y`).
 - [ ] Decidir si se agrega `LICENSE`.
 - [ ] Decidir si se agrega el inyector sintético independiente del protocolo 6.4.

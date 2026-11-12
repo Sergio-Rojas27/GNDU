@@ -164,7 +164,8 @@ No garantizado:
 
 ## 5. Errores de configuración
 
-Si `controls_config.json` no se puede leer o es inválido:
+Si `controls_config.json` no se puede leer o es inválido (al arrancar o al
+recargarlo automáticamente):
 
 - Se conserva la última configuración válida (o la interna por defecto).
 - `N2ControlsConfig.last_error` contiene el mensaje.
@@ -242,7 +243,9 @@ Además de la señal `report_emitted`, el autoload `N2InputCore` expone:
 `N2ControlsConfig` expone `reload()`, `last_error`, `get_player`,
 `get_device`, `get_bindings`, `get_commands`, `get_buffer_size`,
 `get_global_cooldown`, `get_action_names` y las señales `config_reloaded` y
-`config_error(message)`.
+`config_error(message)`. Además sondea `controls_config.json` cada 0.5 s y
+llama a `reload()` automáticamente cuando cambia; `reload()` sigue disponible
+para forzarla.
 
 Para consumir el reporte sin duplicar lógica, conectar una sola vez:
 
@@ -255,7 +258,8 @@ Si se instancian varios consumidores, todos reciben la misma señal; el
 `mock_consumer.gd` es solo una referencia y no debe convivir con el
 consumidor real del N3 en la misma escena.
 
-> Al recargar el JSON se reconstruyen el búfer y el reconocedor de cada
-> jugador; `frame` sigue creciendo. El primer frame después de recargar puede
-> marcar como `pressed` lo que ya estaba mantenido. No pulses `R` mientras
-> mantienes un botón de ataque si estás midiendo combos.
+> Al recargar el JSON (automáticamente al guardarlo o con `reload()`) se
+> reconstruyen el búfer y el reconocedor de cada jugador; `frame` sigue
+> creciendo. El primer frame después de recargar puede marcar como `pressed`
+> lo que ya estaba mantenido. Evita guardar el JSON mientras mantienes un
+> botón de ataque si estás midiendo combos.

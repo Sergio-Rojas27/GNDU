@@ -18,11 +18,12 @@ Requiere Godot 4.7 (probado con 4.7.2 Flatpak).
 flatpak run org.godotengine.Godot --path .
 ```
 
-La escena principal es `scenes/diagnostic.tscn` (1280×720). Teclas de la demo:
-`R` recarga el JSON, `J` muestra/oculta la consola, `C` congela la cinta,
-`V` abre el visor de reportes JSON y `F10` sale. El visor permite filtrar J1/J2,
-pausar la vista, copiar, cargar el ejemplo y guardar `.jsonl` en
-`user://n2_reports/`.
+La escena principal es `scenes/diagnostic.tscn` (1280×720). Los cambios en
+`controls_config.json` se aplican solos al guardar (cada ~0.5 s). Teclas de la
+demo: `R` fuerza una recarga, `J` muestra/oculta la consola, `C` congela la
+cinta, `V` abre el visor de reportes JSON y `F10` sale. El visor permite
+filtrar J1/J2, pausar la vista, copiar, cargar el ejemplo y guardar `.jsonl`
+en `user://n2_reports/`.
 
 ## Probar
 

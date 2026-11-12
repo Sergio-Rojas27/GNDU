@@ -48,7 +48,7 @@ Archivos de referencia:
 - `CONTRATO.md`: explicación completa del contrato.
 
 > `controls_config.json` **no** es el canal de salida. Es el archivo donde se
-> configuran las teclas y los mandos.
+> configuran las teclas y los mandos; sus cambios se aplican solos al guardar.
 
 ---
 
@@ -105,11 +105,14 @@ Teclas de la demo:
 
 | Tecla | Qué hace |
 |---|---|
-| `R` | Recarga `controls_config.json` |
+| `R` | Fuerza la recarga de `controls_config.json` (normalmente automática) |
 | `J` | Muestra/oculta los JSON en la consola |
 | `C` | Congela la cinta del búfer |
 | `V` | Abre el visor de JSON |
 | `F10` | Sale |
+
+Al guardar `controls_config.json`, la demo lo recarga sola en ~0.5 s; `R` solo
+fuerza la recarga.
 
 Si aparece `JUGADOR 1` y `JUGADOR 2`, el núcleo está funcionando.
 

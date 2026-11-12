@@ -42,14 +42,14 @@ La ventana está pensada para **1280×720** y el motor corre la física a
 
 | Tecla | Acción |
 |-------|--------|
-| `R`   | Recargar `controls_config.json` **en caliente** |
+| `R`   | Forzar recarga de `controls_config.json` (normalmente es automática) |
 | `J`   | Mostrar/ocultar la consola de reportes JSON |
 | `C`   | Congelar/descongelar la cinta del búfer |
 | `V`   | Abrir/volver del visor de reportes JSON |
 | `F10` | Salir |
 
 > `R`, `J`, `C`, `V` y `F10` son teclas del **diagnóstico**, no del juego, y
-> no forman parte del mapeo configurable.
+> no forman parte del mapeo configurable. `R` solo fuerza la recarga manual.
 
 ---
 
@@ -167,7 +167,7 @@ Reglas de tolerancia:
 ```
 nucleo2_controles/
 ├── project.godot              # autoloads, escena principal, 60 Hz, 1280×720
-├── controls_config.json       # mapeo y comandos (editable en caliente)
+├── controls_config.json       # mapeo y comandos (auto-recarga al guardar)
 ├── leeme.md                   # este documento
 ├── CONTRATO.md                # contrato de datos para N3/N4
 ├── INTEGRACION.md             # guía paso a paso para el proyecto final
@@ -183,7 +183,7 @@ nucleo2_controles/
 │   ├── diagnostic.tscn        # escena principal (raíz vacía + script)
 │   └── report_viewer.tscn     # visor de reportes (tecla V)
 ├── scripts/
-│   ├── controls_config.gd     # autoload N2ControlsConfig: carga/valida/recarga
+│   ├── controls_config.gd     # autoload N2ControlsConfig: carga/valida y auto-recarga
 │   ├── input_core.gd          # autoload N2InputCore: lectura, búfer, reportes
 │   ├── input_buffer.gd        # N2InputBuffer: búfer circular de 15-30 frames
 │   ├── command_recognizer.gd  # N2CommandRecognizer: coincidencia de patrones
@@ -340,20 +340,28 @@ Opciones adicionales:
 
 ### Recarga en caliente
 
-1. Guardar el JSON.
-2. Pulsar `R` en la demo (o llamar `N2ControlsConfig.reload()`).
-3. Si el JSON es inválido, la demo **conserva la configuración anterior** y
-   muestra el error en rojo. Si nunca hubo una válida, usa la interna.
+La demo vigila `controls_config.json` cada 0.5 s. Al guardar el archivo, el
+mapeo y los comandos nuevos se aplican solos, **sin recompilar ni pulsar nada**.
+
+1. Edita `controls_config.json`.
+2. Guarda el archivo.
+3. En menos de ~1 s la franja de estado muestra `Config recargada`.
+
+Si el JSON es inválido, la demo **conserva la configuración anterior** y
+muestra el error en rojo; al corregirlo y guardar se recarga sola. Si nunca
+hubo una válida, usa la interna.
 
 Para volver a los valores de fábrica hay que **reiniciar la demo sin el
 archivo** (o con el archivo borrado/renombrado antes de arrancar). Si el
-archivo se borra y solo se pulsa `R`, se conserva la última configuración
-válida que ya estaba cargada; no se vuelve automáticamente a la interna.
+archivo se borra con la demo en marcha, se conserva la última configuración
+válida; al restaurarlo se recarga si su contenido cambia.
+
+`R` y el botón **Recargar (R)** siguen disponibles como recarga manual forzada.
 
 Al recargar se reconstruyen el búfer y el reconocedor de cada jugador, pero
 `frame` sigue creciendo. El primer frame posterior a la recarga puede marcar
-como `pressed` un botón que ya estaba mantenido: no pulses `R` mientras
-mantienes un ataque si estás midiendo combos.
+como `pressed` un botón que ya estaba mantenido: evita guardar el JSON justo
+mientras mantienes un ataque si estás midiendo combos.
 
 > `R`, `J`, `C`, `V` y `F10` están reservadas para el diagnóstico. No las
 > uses como teclas de juego en el JSON: la acción se ejecutaría y además se
@@ -364,8 +372,8 @@ mantienes un ataque si estás midiendo combos.
 
 ## 8. Qué muestra el diagnóstico
 
-- **Encabezado**: frame de física actual, FPS, botones de recarga, consola y
-  congelar.
+- **Encabezado**: frame de física actual, FPS, botón de recarga manual, consola
+  y congelar.
 - **Estado de configuración**: ruta del JSON y errores en rojo.
 - **Último evento físico**: tecla o botón/eje de mando con su frame. Sirve
   para descubrir qué reporta un mando genérico.
@@ -515,10 +523,14 @@ flatpak run org.godotengine.Godot --headless \
 ## 11. Limitaciones conocidas
 
 - No hay interfaz gráfica de remapeo; el mapeo se edita en el JSON y se
-  recarga con `R`. (El documento pedía JSON+recarga como obligatorio; la UI
-  era un extra.)
-- La recarga es **manual** (`R`, botón o `N2ControlsConfig.reload()`); no hay
-  vigilancia automática del archivo con `FileSystemWatcher`.
+  recarga automáticamente al guardar. (El documento pedía JSON+recarga como
+  obligatorio; la UI era un extra.)
+- La auto-recarga se implementa con polling del MD5 del archivo cada 0.5 s
+  (no con `FileSystemWatcher`). `R`, el botón o `N2ControlsConfig.reload()`
+  permiten forzarla.
+- La auto-recarga funciona ejecutando desde Godot o con el JSON como archivo
+  externo editable. En un export con el JSON dentro del PCK no hay cambios en
+  caliente.
 - No hay vibración. Los gatillos se leen como ejes, pero se convierten a
   booleano con zona muerta; no se expone su valor continuo en el reporte.
 - El reconocimiento es por flancos dentro de una ventana de frames. El
@@ -571,7 +583,7 @@ flatpak run org.godotengine.Godot --headless \
       combo. En pruebas y simulación funciona; muy lento cae en el combo 8.
 - [ ] Probar los 12 comandos con mando real (varios solo están cubiertos por
       pruebas automáticas).
-- [ ] Probar `R` con un JSON roto y con un JSON válido en la ventana real.
+- [ ] Probar la auto-recarga con un JSON válido y con uno roto en la ventana real (y que `R` siga funcionando).
 - [ ] Probar desconectar/conectar un mando en caliente y comprobar que no se
       roba el mando del otro jugador.
 - [ ] Probar a dos jugadores pulsando a la vez (J1 y J2) durante varios
@@ -594,7 +606,7 @@ flatpak run org.godotengine.Godot --headless \
 |---------|-------------|
 | No aparece ningún mando | Conectarlo antes de abrir la demo; ejecutar `tests/joy_probe.gd` con ventana; en `--headless` no llegan eventos de mando. |
 | Un botón no responde | Ver el “último evento físico” o `joy_probe.gd` para saber qué índice reporta; ajustar el JSON. |
-| El JSON nuevo no se aplica | Guardar el archivo y pulsar `R`; revisar la franja de estado en rojo. La recarga no es automática. |
+| El JSON nuevo no se aplica | Guardar el archivo y esperar ~0.5 s; revisar la franja de estado (rojo si el JSON es inválido). `R` fuerza la recarga. |
 | Error de configuración | El mensaje queda en `N2ControlsConfig.last_error`; se conserva la última configuración válida. |
 | No se detecta un combo | Revisar el ritmo (huecos de ~4–8 frames), el orden y que las pulsaciones sean nuevas; el combo 6 puede caer en el 8 si va muy lento. |
 | El visor está vacío | No hay entradas ni mandos. Usa el teclado o pulsa **Cargar ejemplo**. |
