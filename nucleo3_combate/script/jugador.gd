@@ -1,7 +1,57 @@
 extends CharacterBody2D
 
 const SPEED = 300.0
-const JUMP_VELOCITY = -800.0 
+const JUMP_VELOCITY = -750.0 
+
+const ESCENA_PROYECTIL_HADOKEN := preload("res://escenas/proyectil_hadoken.tscn")
+
+# Empuje base (x, y) de cada ataque. La X se invierte según la mirada.
+const EMPUJES_ATAQUE: Dictionary = {
+	"ataque_golpe": Vector2(180.0, 0.0),
+	"ataque_patada": Vector2(280.0, 0.0),
+	"ataque_punio_arriba": Vector2(180.0, -300.0),
+	"ataque_patada_arriba": Vector2(160.0, -300.0),
+	"ataque_punio_abajo": Vector2(160.0, 40.0),
+	"ataque_patada_abajo": Vector2(240.0, 60.0),
+	"ataque_aire_punio": Vector2(200.0, 120.0),
+	"ataque_aire_patada": Vector2(240.0, 100.0),
+	"ataque_especial": Vector2(250.0, -750.0),
+	"ataque_combo_punio_2": Vector2(220.0, 0.0),
+	"ataque_combo_punio_3": Vector2(480.0, -60.0),
+	"ataque_combo_patada_2": Vector2(280.0, 0.0),
+	"ataque_combo_patada_3": Vector2(540.0, -80.0),
+	"ataque_tatsumaki": Vector2(300.0, -100.0),
+}
+
+# Dash y especiales
+const VENTANA_DOBLE_TOQUE_MS := 280
+const VENTANA_ESPECIAL_MS := 500
+const DURACION_DASH := 0.22
+const VELOCIDAD_DASH_ADELANTE := 850.0
+const VELOCIDAD_DASH_ATRAS := 700.0
+const IMPULSO_ESPECIAL_X := 320.0
+const IMPULSO_ESPECIAL_Y := -750.0
+const DURACION_TATSUMAKI := 0.9
+const VELOCIDAD_TATSUMAKI := 1000.0
+const DURACION_HADOKEN := 0.9
+const MOMENTO_LANZAMIENTO_HADOKEN := 0.35
+
+# Combos y cooldown
+const VENTANA_COMBO := 0.7
+const COOLDOWN_ATAQUE := 0.18
+const COOLDOWN_ATAQUE_FINAL := 0.45
+const COOLDOWN_ESPECIAL := 0.7
+
+# Pushboxes estilo Mortal Kombat
+const DISTANCIA_PUSHBOX := 150.0
+const ALTURA_PUSHBOX := 170.0
+
+# Escala del sprite según la hoja de animación utilizada
+const ESCALA_SPRITE_BASE := Vector2(3.4045453, 3.1996799)
+const ESCALA_ANIMACIONES: Dictionary = {
+	"Hadoken": Vector2(1.6, 1.6),
+	"Tatsumaki": Vector2(1.6, 1.6),
+}
 
 @export_group("Datos del Jugador")
 @export var player_id: int = 1
@@ -41,6 +91,26 @@ var current_hp: int = 100
 
 var rival_agarrado: CharacterBody2D = null
 var tiempo_agarre: float = 0.0
+var rebotes_restantes: int = 0
+var _stun_seq: int = 0
+var _lanzamiento_seq: int = 0
+
+# Dash, especiales, combos y cooldown
+var _tiempo_dash: float = 0.0
+var _direccion_dash: float = 1.0
+var _tiempo_ultima_izquierda: float = -1000.0
+var _tiempo_ultima_derecha: float = -1000.0
+var _doble_toque_pendiente: float = 0.0
+var _tiempo_ultimo_abajo: float = -1000.0
+var _direccion_hadoken: float = 1.0
+var _proyectil_lanzado: bool = false
+var _tiempo_hadoken: float = 0.0
+var _direccion_tatsumaki: float = 1.0
+var _tiempo_tatsumaki: float = 0.0
+var _cooldown_ataque: float = 0.0
+var _combo_tipo: String = ""
+var _combo_paso: int = 0
+var _tiempo_combo: float = 0.0
 
 var input_nucleo2: Dictionary = {
 	"move_x": 0, "move_y": 0, "salto": false,
@@ -80,19 +150,19 @@ func _ready() -> void:
 	add_child(debug_overlay)
 
 func desactivar_todas_hitboxes() -> void:
-	if hitbox_alta_collision: hitbox_alta_collision.disabled = true
-	if hitbox_media_collision: hitbox_media_collision.disabled = true
-	if hitbox_baja_collision: hitbox_baja_collision.disabled = true
+	if hitbox_alta_collision: hitbox_alta_collision.set_deferred("disabled", true)
+	if hitbox_media_collision: hitbox_media_collision.set_deferred("disabled", true)
+	if hitbox_baja_collision: hitbox_baja_collision.set_deferred("disabled", true)
 
 func activar_hitbox(altura: String) -> void:
 	desactivar_todas_hitboxes()
 	match altura:
 		"ALTO":
-			if hitbox_alta_collision: hitbox_alta_collision.disabled = false
+			if hitbox_alta_collision: hitbox_alta_collision.set_deferred("disabled", false)
 		"MEDIO":
-			if hitbox_media_collision: hitbox_media_collision.disabled = false
+			if hitbox_media_collision: hitbox_media_collision.set_deferred("disabled", false)
 		"BAJO":
-			if hitbox_baja_collision: hitbox_baja_collision.disabled = false
+			if hitbox_baja_collision: hitbox_baja_collision.set_deferred("disabled", false)
 
 func _actualizar_hurtbox() -> void:
 	if estado_actual in ["derrota", "en_suelo"]:
@@ -118,10 +188,250 @@ func _simular_entrada_nucleo2() -> void:
 	input_nucleo2["kick"] = Input.is_action_just_pressed(accion_patada)
 	input_nucleo2["block"] = Input.is_action_pressed(accion_bloqueo)
 	input_nucleo2["grab"] = Input.is_action_just_pressed(accion_agarre)
+	
+	if Input.is_action_just_pressed(accion_abajo):
+		_tiempo_ultimo_abajo = Time.get_ticks_msec()
+
+	var ahora := Time.get_ticks_msec()
+	if Input.is_action_just_pressed(accion_izquierda):
+		if ahora - _tiempo_ultima_izquierda <= VENTANA_DOBLE_TOQUE_MS:
+			_doble_toque_pendiente = -1.0
+			_tiempo_ultima_izquierda = -1000.0
+		else:
+			_tiempo_ultima_izquierda = float(ahora)
+	if Input.is_action_just_pressed(accion_derecha):
+		if ahora - _tiempo_ultima_derecha <= VENTANA_DOBLE_TOQUE_MS:
+			_doble_toque_pendiente = 1.0
+			_tiempo_ultima_derecha = -1000.0
+		else:
+			_tiempo_ultima_derecha = float(ahora)
+
+# --- DASH ---
+func _detectar_dash(mirando_derecha: bool) -> bool:
+	if _doble_toque_pendiente == 0.0:
+		return false
+	var direccion := _doble_toque_pendiente
+	_doble_toque_pendiente = 0.0
+	_iniciar_dash(direccion, mirando_derecha)
+	return true
+
+func _iniciar_dash(direccion: float, mirando_derecha: bool) -> void:
+	var hacia_adelante := (direccion > 0.0) == mirando_derecha
+	_direccion_dash = direccion
+	_tiempo_dash = DURACION_DASH
+	_reset_combo()
+	desactivar_todas_hitboxes()
+	if hacia_adelante:
+		estado_actual = "dash_adelante"
+		velocity.x = VELOCIDAD_DASH_ADELANTE * direccion
+		actualizar_animacion("Dash_Adelante")
+	else:
+		estado_actual = "dash_atras"
+		velocity.x = VELOCIDAD_DASH_ATRAS * direccion
+		actualizar_animacion("Dash_Atras")
+
+func _procesar_dash(delta: float) -> void:
+	_tiempo_dash -= delta
+	var velocidad := VELOCIDAD_DASH_ADELANTE if estado_actual == "dash_adelante" else VELOCIDAD_DASH_ATRAS
+	velocity.x = _direccion_dash * velocidad
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	move_and_slide()
+	_aplicar_limites_camara()
+	_resolver_pushbox()
+	if _tiempo_dash <= 0.0:
+		estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
+		actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
+
+# --- ESPECIALES ---
+func _puede_iniciar_ataque() -> bool:
+	return _cooldown_ataque <= 0.0
+
+func _limpiar_movimientos_especiales() -> void:
+	_tiempo_ultimo_abajo = -1000.0
+	_tiempo_ultima_izquierda = -1000.0
+	_tiempo_ultima_derecha = -1000.0
+
+func _detectar_especiales(mirando_derecha: bool) -> String:
+	if not _puede_iniciar_ataque():
+		return ""
+
+	var move_x: float = input_nucleo2["move_x"]
+	if abs(move_x) < 0.2:
+		return ""
+	var direccion_adelante := 1.0 if mirando_derecha else -1.0
+	if sign(move_x) != sign(direccion_adelante):
+		return ""
+
+	var ahora := Time.get_ticks_msec()
+	var tiempo_atras := _tiempo_ultima_izquierda if mirando_derecha else _tiempo_ultima_derecha
+	var atras_reciente := ahora - tiempo_atras <= VENTANA_ESPECIAL_MS
+	var abajo_reciente := ahora - _tiempo_ultimo_abajo <= VENTANA_ESPECIAL_MS
+
+	if input_nucleo2["kick"] and atras_reciente:
+		_limpiar_movimientos_especiales()
+		return "tatsumaki"
+
+	if input_nucleo2["punch"]:
+		if atras_reciente and (not abajo_reciente or tiempo_atras >= _tiempo_ultimo_abajo):
+			_limpiar_movimientos_especiales()
+			return "hadoken"
+		if abajo_reciente:
+			_limpiar_movimientos_especiales()
+			return "shoryuken"
+
+	return ""
+
+func _iniciar_ataque_especial(mirando_derecha: bool) -> void:
+	estado_actual = "ataque_especial"
+	_reset_combo()
+	var direccion := 1.0 if mirando_derecha else -1.0
+	velocity = Vector2(IMPULSO_ESPECIAL_X * direccion, IMPULSO_ESPECIAL_Y)
+	actualizar_animacion("Shoryuken")
+	activar_hitbox("ALTO")
+
+func _procesar_ataque_especial(delta: float) -> void:
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	velocity.x = move_toward(velocity.x, 0.0, 120.0 * delta)
+	if velocity.y >= 0.0:
+		desactivar_todas_hitboxes()
+	move_and_slide()
+	_aplicar_limites_camara()
+	_resolver_pushbox()
+	if is_on_floor() and velocity.y >= 0.0:
+		estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
+		actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
+		_cooldown_ataque = COOLDOWN_ESPECIAL
+
+# --- HADOKEN ---
+func _iniciar_ataque_hadoken(mirando_derecha: bool) -> void:
+	estado_actual = "ataque_hadoken"
+	_reset_combo()
+	_direccion_hadoken = 1.0 if mirando_derecha else -1.0
+	_proyectil_lanzado = false
+	_tiempo_hadoken = DURACION_HADOKEN
+	velocity.x = 0.0
+	desactivar_todas_hitboxes()
+	actualizar_animacion("Hadoken")
+
+func _procesar_ataque_hadoken(delta: float) -> void:
+	_tiempo_hadoken -= delta
+	velocity.x = 0.0
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	if not _proyectil_lanzado and _tiempo_hadoken <= DURACION_HADOKEN - MOMENTO_LANZAMIENTO_HADOKEN:
+		_proyectil_lanzado = true
+		_lanzar_proyectil_hadoken()
+	move_and_slide()
+	_aplicar_limites_camara()
+	_resolver_pushbox()
+	if _tiempo_hadoken <= 0.0:
+		desactivar_todas_hitboxes()
+		estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
+		actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
+		_cooldown_ataque = COOLDOWN_ESPECIAL
+
+func _lanzar_proyectil_hadoken() -> void:
+	var proyectil = ESCENA_PROYECTIL_HADOKEN.instantiate()
+	proyectil.dueno_id = player_id
+	proyectil.direccion = _direccion_hadoken
+	get_parent().add_child(proyectil)
+	proyectil.global_position = global_position + Vector2(100.0 * _direccion_hadoken, -40.0)
+
+# --- TATSUMAKI ---
+func _iniciar_ataque_tatsumaki(mirando_derecha: bool) -> void:
+	estado_actual = "ataque_tatsumaki"
+	_reset_combo()
+	_direccion_tatsumaki = 1.0 if mirando_derecha else -1.0
+	_tiempo_tatsumaki = DURACION_TATSUMAKI
+	velocity = Vector2(_direccion_tatsumaki * VELOCIDAD_TATSUMAKI, 0.0)
+	actualizar_animacion("Tatsumaki")
+	activar_hitbox("MEDIO")
+
+func _procesar_ataque_tatsumaki(delta: float) -> void:
+	_tiempo_tatsumaki -= delta
+	velocity.x = _direccion_tatsumaki * VELOCIDAD_TATSUMAKI
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	else:
+		velocity.y = 0.0
+	move_and_slide()
+	_aplicar_limites_camara()
+	_resolver_pushbox()
+	if _tiempo_tatsumaki <= 0.0:
+		estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
+		actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
+		desactivar_todas_hitboxes()
+		_cooldown_ataque = COOLDOWN_ESPECIAL
+
+# --- COMBOS (AAA / BBB) ---
+func _reset_combo() -> void:
+	_combo_tipo = ""
+	_combo_paso = 0
+	_tiempo_combo = 0.0
+
+func _siguiente_paso_combo(tipo: String) -> int:
+	if _combo_tipo == tipo and _tiempo_combo > 0.0 and _combo_paso in [1, 2]:
+		return _combo_paso + 1
+	return 1
+
+func _iniciar_combo(tipo: String, paso: int = 0) -> void:
+	if not _puede_iniciar_ataque():
+		return
+	if paso == 0:
+		paso = _siguiente_paso_combo(tipo)
+
+	_combo_tipo = tipo
+	_combo_paso = paso
+	_tiempo_combo = 0.0
+	velocity.x = 0.0
+	desactivar_todas_hitboxes()
+
+	if tipo == "punio":
+		estado_actual = "ataque_golpe" if paso == 1 else "ataque_combo_punio_%d" % paso
+		actualizar_animacion("Golpear", true)
+	else:
+		estado_actual = "ataque_patada" if paso == 1 else "ataque_combo_patada_%d" % paso
+		actualizar_animacion("Patada", true)
+
+	activar_hitbox("MEDIO")
+
+func _intentar_encadenar_combo() -> bool:
+	if not _puede_iniciar_ataque():
+		return false
+	var estados_encadenables := [
+		"ataque_golpe", "ataque_combo_punio_2",
+		"ataque_patada", "ataque_combo_patada_2"
+	]
+	if estado_actual not in estados_encadenables:
+		return false
+
+	var tipo := ""
+	if input_nucleo2["punch"] and input_nucleo2["move_y"] != 1:
+		tipo = "punio"
+	elif input_nucleo2["kick"] and input_nucleo2["move_y"] != 1:
+		tipo = "patada"
+	if tipo == "" or tipo != _combo_tipo:
+		return false
+	if _combo_paso >= 3:
+		return false
+
+	_iniciar_combo(tipo, _combo_paso + 1)
+	return true
 
 func _physics_process(delta: float) -> void:
 	_simular_entrada_nucleo2()
 	_actualizar_hurtbox()
+
+	if _cooldown_ataque > 0.0:
+		_cooldown_ataque = max(0.0, _cooldown_ataque - delta)
+	if _tiempo_combo > 0.0:
+		_tiempo_combo = max(0.0, _tiempo_combo - delta)
+		if _tiempo_combo == 0.0 and not estado_actual.begins_with("ataque_"):
+			_combo_tipo = ""
+			_combo_paso = 0
+
 	if mostrar_cajas_debug and debug_overlay:
 		debug_overlay.queue_redraw()
 	
@@ -136,7 +446,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		mirando_derecha = (player_id == 1)
 
-	if estado_actual not in ["dano", "derrota", "agarrado", "lanzado", "caida_rebote", "en_suelo"]:
+	if estado_actual not in ["dano", "derrota", "agarrado", "lanzado", "caida_rebote", "en_suelo", "dash_adelante", "dash_atras", "ataque_especial", "ataque_hadoken", "ataque_tatsumaki"]:
 		sprite.flip_h = not mirando_derecha
 		var dir_x = 1.0 if mirando_derecha else -1.0
 		if hitbox_alta: hitbox_alta.scale.x = dir_x
@@ -147,7 +457,6 @@ func _physics_process(delta: float) -> void:
 		return
 
 	if estado_actual in ["dano", "derrota", "lanzado", "caida_rebote", "en_suelo"]:
-		var estaba_en_aire = not is_on_floor()
 		if not is_on_floor():
 			velocity += get_gravity() * delta
 		else:
@@ -161,25 +470,19 @@ func _physics_process(delta: float) -> void:
 				
 		move_and_slide()
 		_aplicar_limites_camara()
+		_resolver_pushbox()
 		
-		# Impacto contra el suelo al ser lanzado
-		if estado_actual == "lanzado" and is_on_floor():
+		# Impacto contra el suelo: rebote o levantarse
+		if estado_actual in ["lanzado", "caida_rebote"] and is_on_floor() and velocity.y >= 0:
 			if current_hp <= 0:
 				estado_actual = "derrota"
 				velocity = Vector2.ZERO
 				actualizar_animacion("Tumbar")
-			else:
-				velocity.y = -350.0
-				velocity.x *= 0.4
+			elif rebotes_restantes > 0:
+				rebotes_restantes -= 1
+				velocity.y = -400.0
+				velocity.x *= 0.5
 				estado_actual = "caida_rebote"
-			return
-			
-		# Impacto tras el rebote: se frena y comienza a levantarse
-		if estado_actual == "caida_rebote" and is_on_floor() and velocity.y >= 0:
-			if current_hp <= 0:
-				estado_actual = "derrota"
-				velocity = Vector2.ZERO
-				actualizar_animacion("Tumbar")
 			else:
 				_iniciar_levantarse_del_suelo()
 			return
@@ -191,11 +494,9 @@ func _physics_process(delta: float) -> void:
 		tiempo_agarre += delta
 		
 		if rival_agarrado:
-			# Agarre seguro: Matemáticas puras basadas en hacia dónde miras, sin importar el sprite
 			var direccion_mirada = 1 if mirando_derecha else -1
 			var posicion_manos = global_position + Vector2(60 * direccion_mirada, 0)
-			
-			# lerp() suaviza el movimiento del rival hacia tus manos
+
 			rival_agarrado.global_position = rival_agarrado.global_position.lerp(posicion_manos, 0.5)
 			
 			var direccion_lanzamiento = Vector2.ZERO
@@ -208,6 +509,9 @@ func _physics_process(delta: float) -> void:
 				if empuja_adelante:
 					direccion_lanzamiento = Vector2(600 if mirando_derecha else -600, -300)
 				else:
+					# Lanzamiento hacia atrás: colocamos al rival detrás para
+					# garantizar el cambio de lado antes de impulsarlo.
+					rival_agarrado.global_position.x = global_position.x - 60.0 * direccion_mirada
 					direccion_lanzamiento = Vector2(-600 if mirando_derecha else 600, -300)
 			elif input_nucleo2["punch"] or input_nucleo2["kick"]:
 				direccion_lanzamiento = Vector2(600 if mirando_derecha else -600, -300)
@@ -217,7 +521,7 @@ func _physics_process(delta: float) -> void:
 				estado_actual = "reposo"
 				actualizar_animacion("Reposo")
 				rival_agarrado = null
-			elif tiempo_agarre >= 3.0: 
+			elif tiempo_agarre >= 1.5: 
 				rival_agarrado.liberar_agarre()
 				estado_actual = "reposo"
 				actualizar_animacion("Reposo")
@@ -225,13 +529,53 @@ func _physics_process(delta: float) -> void:
 				
 		move_and_slide()
 		_aplicar_limites_camara()
+		_resolver_pushbox()
 		return
+
+	# 3.5 DASH Y ATAQUES ESPECIALES
+	if estado_actual == "ataque_especial":
+		_procesar_ataque_especial(delta)
+		return
+
+	if estado_actual == "ataque_tatsumaki":
+		_procesar_ataque_tatsumaki(delta)
+		return
+
+	if estado_actual == "ataque_hadoken":
+		_procesar_ataque_hadoken(delta)
+		return
+
+	if estado_actual in ["dash_adelante", "dash_atras"]:
+		_procesar_dash(delta)
+		return
+
+	if is_on_floor() and not input_nucleo2["block"] and not estado_actual.begins_with("ataque_") and estado_actual != "intentar_agarre":
+		if _puede_iniciar_ataque():
+			match _detectar_especiales(mirando_derecha):
+				"hadoken":
+					_iniciar_ataque_hadoken(mirando_derecha)
+					return
+				"tatsumaki":
+					_iniciar_ataque_tatsumaki(mirando_derecha)
+					return
+				"shoryuken":
+					_iniciar_ataque_especial(mirando_derecha)
+					return
+		if _detectar_dash(mirando_derecha):
+			_procesar_dash(delta)
+			return
+
+	# 3.6 ENCADENAMIENTO DE COMBOS (AAA / BBB)
+	if estado_actual.begins_with("ataque_") and is_on_floor():
+		if _intentar_encadenar_combo():
+			return
 
 	if estado_actual.begins_with("ataque_") or estado_actual == "intentar_agarre":
 		if is_on_floor():
 			velocity.x = 0
 			move_and_slide()
 			_aplicar_limites_camara()
+			_resolver_pushbox()
 			return
 
 	# 4. MÁQUINA DE ESTADOS PRINCIPAL
@@ -256,11 +600,13 @@ func _physics_process(delta: float) -> void:
 				actualizar_animacion("Bloqueo_Alto")
 		elif input_nucleo2["move_y"] == -1:
 			velocity.x = 0
-			if input_nucleo2["punch"]:
+			if input_nucleo2["punch"] and _puede_iniciar_ataque():
+				_reset_combo()
 				estado_actual = "ataque_punio_abajo"
 				actualizar_animacion("Punio_Abajo")
 				desactivar_todas_hitboxes()
-			elif input_nucleo2["kick"]:
+			elif input_nucleo2["kick"] and _puede_iniciar_ataque():
+				_reset_combo()
 				estado_actual = "ataque_patada_abajo"
 				actualizar_animacion("Patada_Abajo")
 				activar_hitbox("BAJO")
@@ -268,26 +614,24 @@ func _physics_process(delta: float) -> void:
 				estado_actual = "agachado"
 				actualizar_animacion("Agachado")
 				desactivar_todas_hitboxes()
-		elif input_nucleo2["punch"]:
+		elif input_nucleo2["punch"] and _puede_iniciar_ataque():
 			velocity.x = 0
 			if input_nucleo2["move_y"] == 1:
+				_reset_combo()
 				estado_actual = "ataque_punio_arriba"
 				actualizar_animacion("Punio_Arriba")
 				desactivar_todas_hitboxes()
 			else:
-				estado_actual = "ataque_golpe"
-				actualizar_animacion("Golpear")
-				desactivar_todas_hitboxes()
-		elif input_nucleo2["kick"]:
+				_iniciar_combo("punio")
+		elif input_nucleo2["kick"] and _puede_iniciar_ataque():
 			velocity.x = 0
 			if input_nucleo2["move_y"] == 1:
+				_reset_combo()
 				estado_actual = "ataque_patada_arriba"
 				actualizar_animacion("Patada_Arriba")
 				desactivar_todas_hitboxes()
 			else:
-				estado_actual = "ataque_patada"
-				actualizar_animacion("Patada")
-				activar_hitbox("MEDIO")
+				_iniciar_combo("patada")
 		elif input_nucleo2["salto"]:
 			desactivar_todas_hitboxes()
 			velocity.y = JUMP_VELOCITY
@@ -339,67 +683,113 @@ func _physics_process(delta: float) -> void:
 			elif input_nucleo2["kick"]:
 				estado_actual = "ataque_aire_patada"
 				actualizar_animacion("Patada_Aire")
-				desactivar_todas_hitboxes()
-
-	# PUSHBOX INTELIGENTE (Anti-Caminar en la cabeza)
-	if rival:
-		var distancia_horizontal = global_position.x - rival.global_position.x
-		var distancia_vertical = rival.global_position.y - global_position.y 
-		
-		# Si estamos pisándolo (superposición X menor a 40 y estamos físicamente más arriba)
-		if abs(distancia_horizontal) < 40 and distancia_vertical > 10 and distancia_vertical < 150:
-			var direccion_desliz = 1 if distancia_horizontal > 0 else -1
-			if distancia_horizontal == 0: direccion_desliz = 1 if mirando_derecha else -1
-			
-			# Inyectamos velocidad lateral para que resbale de forma fluida
-			velocity.x += direccion_desliz * 150.0
+				activar_hitbox("BAJO")
 
 	move_and_slide()
-	
-	# Lógica Anti-Caminar en la cabeza (Pushbox Aérea)
-	if is_on_floor() and rival:
-		for i in get_slide_collision_count():
-			var col = get_slide_collision(i)
-			if col.get_collider() == rival:
-				if global_position.y < rival.global_position.y - 10:
-					var empuje_dir = sign(global_position.x - rival.global_position.x)
-					if empuje_dir == 0: empuje_dir = 1
-					global_position.x += empuje_dir * 10
-
+	_resolver_pushbox()
 	_aplicar_limites_camara()
+
+# --- PUSHBOXES ESTILO MORTAL KOMBAT ---
+func _resolver_pushbox() -> void:
+	if not rival or not is_instance_valid(rival):
+		return
+	var estado_rival = rival.get("estado_actual")
+	if estado_rival == null:
+		return
+
+	var estados_ignorados := ["agarrado", "agarrando", "lanzado", "caida_rebote", "en_suelo", "derrota"]
+	if estado_actual in estados_ignorados or estado_rival in estados_ignorados:
+		return
+
+	var distancia_vertical: float = rival.global_position.y - global_position.y
+	if abs(distancia_vertical) > ALTURA_PUSHBOX:
+		return
+
+	var distancia_horizontal: float = rival.global_position.x - global_position.x
+	var distancia: float = absf(distancia_horizontal)
+	if distancia >= DISTANCIA_PUSHBOX:
+		return
+
+	var direccion: float = signf(distancia_horizontal)
+	if direccion == 0.0:
+		direccion = -1.0 if player_id < int(rival.get("player_id")) else 1.0
+
+	var correccion: float = (DISTANCIA_PUSHBOX - distancia) * 0.5
+	global_position.x -= direccion * correccion
+	rival.global_position.x += direccion * correccion
+
+	# Frenar la velocidad que empuja contra el rival, como un muro
+	if velocity.x * direccion > 0.0:
+		velocity.x = 0.0
+	if rival is CharacterBody2D and rival.velocity.x * direccion < 0.0:
+		rival.velocity.x = 0.0
 
 
 # --- ANIMACIONES Y FOTOGRAMAS ---
-func actualizar_animacion(nombre_anim: String) -> void:
-	if sprite:
-		if sprite.animation != nombre_anim or not sprite.is_playing():
-			sprite.play(nombre_anim)
+func actualizar_animacion(nombre_anim: String, forzar: bool = false) -> void:
+	if not sprite:
+		return
+	sprite.scale = ESCALA_ANIMACIONES.get(nombre_anim, ESCALA_SPRITE_BASE)
+	if forzar:
+		sprite.play(nombre_anim)
+		sprite.frame = 0
+	elif sprite.animation != nombre_anim or not sprite.is_playing():
+		sprite.play(nombre_anim)
 
 func _on_sprite_frame_changed() -> void:
 	if not sprite:
 		return
-		
+
+	# El proyectil sale en el fotograma de lanzamiento del Hadoken
+	if estado_actual == "ataque_hadoken":
+		if sprite.frame >= 2 and not _proyectil_lanzado:
+			_proyectil_lanzado = true
+			_lanzar_proyectil_hadoken()
+		return
+
+	# Los especiales gestionan sus propias hitboxes
+	if estado_actual in ["ataque_especial", "ataque_tatsumaki"]:
+		return
+
 	# Para ataques de múltiples frames, activar la hitbox correspondiente en frame 1
 	if sprite.frame == 1:
 		match estado_actual:
-			"ataque_golpe":
+			"ataque_golpe", "ataque_combo_punio_2", "ataque_combo_punio_3", \
+			"ataque_patada", "ataque_combo_patada_2", "ataque_combo_patada_3":
 				activar_hitbox("MEDIO")
 			"ataque_punio_arriba", "ataque_patada_arriba":
 				activar_hitbox("ALTO")
 			"ataque_punio_abajo":
 				activar_hitbox("BAJO")
 			"ataque_aire_patada":
-				activar_hitbox("MEDIO")
+				activar_hitbox("BAJO")
 			"intentar_agarre":
 				activar_hitbox("MEDIO")
-	else:
+	elif sprite.frame > 1:
 		# En fotogramas de recuperación o viento, apagar hitboxes
 		if estado_actual.begins_with("ataque_") or estado_actual == "intentar_agarre":
 			desactivar_todas_hitboxes()
 
 func _on_sprite_animation_finished() -> void:
+	# Hadoken y Tatsumaki se controlan por temporizador para no depender
+	# de que la animación tenga fotogramas configurados.
+	if estado_actual in ["ataque_hadoken", "ataque_tatsumaki"]:
+		return
+
+	if estado_actual in ["ataque_especial", "dash_adelante", "dash_atras"]:
+		return
 	if estado_actual.begins_with("ataque_") or estado_actual == "intentar_agarre":
 		desactivar_todas_hitboxes()
+
+		# El tercer golpe del combo cierra la secuencia y aplica más recuperación
+		if estado_actual in ["ataque_combo_punio_3", "ataque_combo_patada_3"]:
+			_cooldown_ataque = COOLDOWN_ATAQUE_FINAL
+			_reset_combo()
+		else:
+			_cooldown_ataque = COOLDOWN_ATAQUE
+			# Mantener viva la ventana para encadenar el siguiente golpe
+			if estado_actual in ["ataque_golpe", "ataque_combo_punio_2", "ataque_patada", "ataque_combo_patada_2"]:
+				_tiempo_combo = VENTANA_COMBO
 		
 		if not is_on_floor():
 			if velocity.x == 0:
@@ -420,33 +810,40 @@ func _on_sprite_animation_finished() -> void:
 
 
 # --- DETECCIÓN DE IMPACTO Y COMBATE ---
+func _empuje_segun_ataque() -> Vector2:
+	var direccion := -1.0 if (sprite and sprite.flip_h) else 1.0
+	var empuje_base: Vector2 = EMPUJES_ATAQUE.get(estado_actual, Vector2(150.0, 0.0))
+	return Vector2(empuje_base.x * direccion, empuje_base.y)
+
 func _on_hitbox_area_entered(area_rival: Area2D) -> void:
 	var es_hurtbox = area_rival.name in ["Hurtbox-Estandar", "Hurtbox-Baja", "Hurtbox"]
 	if es_hurtbox and area_rival.get_parent() != self:
 		var rival_atacado = area_rival.get_parent()
-		if rival_atacado.has_method("recibir_ataque"):
-			var direccion_empuje = 1 if global_position.x < rival_atacado.global_position.x else -1
-			
+		if rival_atacado and rival_atacado.has_method("recibir_ataque"):
 			var es_agarre = (estado_actual == "intentar_agarre")
+			var empuje_ataque = Vector2.ZERO if es_agarre else _empuje_segun_ataque()
 			var altura_ataque = "MEDIO" 
 			
-			if estado_actual in ["ataque_punio_abajo", "ataque_patada_abajo"]: 
+			if estado_actual in ["ataque_punio_abajo", "ataque_patada_abajo", "ataque_aire_patada"]: 
 				altura_ataque = "BAJO"
-			elif estado_actual in ["ataque_aire_punio", "ataque_aire_patada", "ataque_patada_arriba", "ataque_punio_arriba"]: 
+			elif estado_actual in ["ataque_aire_punio", "ataque_patada_arriba", "ataque_punio_arriba", "ataque_especial"]: 
 				altura_ataque = "ALTO"
 			
 			desactivar_todas_hitboxes()
 			
-			if es_agarre and rival_atacado.estado_actual != "agarrado":
+			var estados_no_agarrables = ["agarrado", "derrota", "en_suelo", "lanzado", "caida_rebote"]
+			if es_agarre and rival_atacado.is_on_floor() and rival_atacado.estado_actual not in estados_no_agarrables:
 				estado_actual = "agarrando"
 				rival_agarrado = rival_atacado
 				tiempo_agarre = 0.0
 				
-			rival_atacado.recibir_ataque(fuerza_golpe, direccion_empuje, player_id, altura_ataque, es_agarre)
+			rival_atacado.recibir_ataque(fuerza_golpe, empuje_ataque, player_id, altura_ataque, es_agarre)
 
-func recibir_ataque(cantidad: int, direccion_empuje: int, atacante_id: int, altura: String, es_agarre: bool) -> void:
-	if estado_actual in ["derrota", "lanzado", "caida_rebote", "en_suelo"]:
+func recibir_ataque(cantidad: int, empuje: Vector2, atacante_id: int, altura: String, es_agarre: bool) -> void:
+	if estado_actual in ["derrota", "en_suelo", "agarrado"]:
 		return
+
+	_reset_combo()
 
 	if es_agarre:
 		if not is_on_floor() or estado_actual == "agarrado": return 
@@ -467,12 +864,12 @@ func recibir_ataque(cantidad: int, direccion_empuje: int, atacante_id: int, altu
 	desactivar_todas_hitboxes()
 
 	if fue_bloqueado:
-		velocity.x = direccion_empuje * 50.0 
+		velocity = Vector2(empuje.x * 0.35, 0.0)
 		imprimir_evento_combate("BLOCK", atacante_id, player_id, 0)
 	else:
 		current_hp = max(0, current_hp - cantidad)
 		estado_actual = "dano"
-		velocity.x = direccion_empuje * 150.0
+		velocity = empuje
 		imprimir_evento_combate("HIT", atacante_id, player_id, cantidad)
 		actualizar_animacion("Stun")
 		
@@ -481,15 +878,23 @@ func recibir_ataque(cantidad: int, direccion_empuje: int, atacante_id: int, altu
 			imprimir_evento_combate("KO", atacante_id, player_id, 0)
 			actualizar_animacion("Tumbar")
 		else:
+			_stun_seq += 1
+			var mi_stun := _stun_seq
 			await get_tree().create_timer(0.3).timeout
-			if estado_actual == "dano":
+			while estado_actual == "dano" and not is_on_floor():
+				await get_tree().physics_frame
+			if estado_actual == "dano" and mi_stun == _stun_seq:
 				estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
 				actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
 
 func ser_lanzado(fuerza_vector: Vector2) -> void:
 	estado_actual = "lanzado"
+	_reset_combo()
 	velocity = fuerza_vector
 	current_hp = max(0, current_hp - 10)
+	rebotes_restantes = 1
+	_stun_seq += 1
+	_lanzamiento_seq += 1
 	
 	collision_layer = 1
 	collision_mask = 1
@@ -502,21 +907,24 @@ func ser_lanzado(fuerza_vector: Vector2) -> void:
 		estado_actual = "derrota"
 		imprimir_evento_combate("KO", rival.player_id if rival else 0, player_id, 0)
 	else:
-		_seguridad_levantarse()
+		_seguridad_levantarse(_lanzamiento_seq)
 
-func _seguridad_levantarse() -> void:
-	await get_tree().create_timer(1.8).timeout
-	if estado_actual in ["lanzado", "caida_rebote"]:
+func _seguridad_levantarse(numero_lanzamiento: int) -> void:
+	await get_tree().create_timer(1.5).timeout
+	if numero_lanzamiento != _lanzamiento_seq:
+		return
+	if estado_actual in ["lanzado", "caida_rebote"] and is_on_floor():
 		if current_hp > 0:
 			_iniciar_levantarse_del_suelo()
 
 func _iniciar_levantarse_del_suelo() -> void:
+	rebotes_restantes = 0
 	estado_actual = "en_suelo"
 	velocity = Vector2.ZERO
 	desactivar_todas_hitboxes()
 	actualizar_animacion("Tumbar")
 	
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.3).timeout
 	if estado_actual != "en_suelo":
 		return
 		
@@ -568,6 +976,7 @@ func _aplicar_limites_camara() -> void:
 
 func liberar_agarre() -> void:
 	estado_actual = "reposo"
+	rebotes_restantes = 0
 	actualizar_animacion("Reposo")
 	
 	collision_layer = 1
@@ -605,6 +1014,17 @@ func reiniciar_para_round(posicion_inicial: Vector2) -> void:
 	collision_mask = 1
 	rival_agarrado = null
 	tiempo_agarre = 0.0
+	rebotes_restantes = 0
+	_tiempo_dash = 0.0
+	_doble_toque_pendiente = 0.0
+	_tiempo_ultima_izquierda = -1000.0
+	_tiempo_ultima_derecha = -1000.0
+	_tiempo_ultimo_abajo = -1000.0
+	_cooldown_ataque = 0.0
+	_tiempo_tatsumaki = 0.0
+	_tiempo_hadoken = 0.0
+	_proyectil_lanzado = false
+	_reset_combo()
 	desactivar_todas_hitboxes()
 	_actualizar_hurtbox()
 	actualizar_animacion("Reposo")
