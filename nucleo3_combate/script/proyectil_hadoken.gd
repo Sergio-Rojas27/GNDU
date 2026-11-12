@@ -3,7 +3,7 @@ extends Area2D
 @export var dueno_id: int = 1
 @export var direccion: float = 1.0
 @export var velocidad: float = 900.0
-@export var dano: int = 15
+@export_range(1.5, 5.0, 0.5) var dano: float = 4.0
 @export var empuje: Vector2 = Vector2(320.0, -140.0)
 @export var distancia_maxima: float = 960.0
 

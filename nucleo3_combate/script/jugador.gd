@@ -7,6 +7,29 @@ const JUMP_VELOCITY = -750.0
 
 const ESCENA_PROYECTIL_HADOKEN := preload("res://escenas/proyectil_hadoken.tscn")
 
+# Límites y tabla de daño por ataque (rango permitido: 1.5 a 5.0)
+const DANIO_MINIMO := 1.5
+const DANIO_MAXIMO := 5.0
+const DANIO_LANZAMIENTO := 3.0
+
+const DANIOS_ATAQUE: Dictionary = {
+	"ataque_punio_abajo": 1.5,
+	"ataque_golpe": 2.0,
+	"ataque_patada_abajo": 2.0,
+	"ataque_aire_punio": 2.0,
+	"ataque_combo_punio_2": 2.5,
+	"ataque_patada": 2.5,
+	"ataque_punio_arriba": 2.5,
+	"ataque_aire_patada": 2.5,
+	"ataque_patada_arriba": 3.0,
+	"ataque_combo_patada_2": 3.0,
+	"ataque_combo_punio_3": 3.5,
+	"ataque_combo_patada_3": 4.0,
+	"ataque_tatsumaki": 4.0,
+	"ataque_hadoken": 4.0,
+	"ataque_especial": 5.0,
+}
+
 # Empuje base (x, y) de cada ataque. La X se invierte según la mirada.
 const EMPUJES_ATAQUE: Dictionary = {
 	"ataque_golpe": Vector2(180.0, 0.0),
@@ -63,8 +86,8 @@ const ESCALA_ANIMACIONES: Dictionary = {
 
 @export_group("Datos del Jugador")
 @export var player_id: int = 1
-@export var max_hp: int = 100
-@export var fuerza_golpe: int = 15
+@export var max_hp: float = 100.0
+@export_range(1.5, 5.0, 0.5) var fuerza_golpe: float = 2.0
 @export var rival: CharacterBody2D 
 
 @export_group("Controles (Demo Local)")
@@ -95,7 +118,7 @@ const ESCALA_ANIMACIONES: Dictionary = {
 @onready var hitbox_baja_collision: CollisionShape2D = $"Hitbox-Baja/HitboxArea"
 
 var estado_actual: String = "reposo"
-var current_hp: int = 100
+var current_hp: float = 100.0
 
 var rival_agarrado: CharacterBody2D = null
 var tiempo_agarre: float = 0.0
@@ -121,6 +144,7 @@ var _combo_paso: int = 0
 var _tiempo_combo: float = 0.0
 var _tiempo_stun: float = 0.0
 var _ataque_aereo_usado: bool = false
+var _castigo_shoryuken_pendiente: bool = false
 var _golpe_conectado_en_ataque: bool = false
 
 # Contador de combo (golpes seguidos mientras el rival sigue en stun)
@@ -422,15 +446,43 @@ func _intentar_ejecutar_especial(mirando_derecha: bool, permitir_cancelar_combo:
 func _iniciar_ataque_especial(mirando_derecha: bool) -> void:
 	estado_actual = "ataque_especial"
 	_golpe_conectado_en_ataque = false
+	_ataque_aereo_usado = false
+	_castigo_shoryuken_pendiente = true
 	_reset_combo()
 	var direccion := 1.0 if mirando_derecha else -1.0
 	velocity = Vector2(IMPULSO_ESPECIAL_X * direccion, IMPULSO_ESPECIAL_Y)
 	actualizar_animacion("Shoryuken")
 	activar_hitbox("ALTO")
 
+func _intentar_ataque_aereo() -> bool:
+	if _ataque_aereo_usado:
+		return false
+	if input_nucleo2["punch"]:
+		_ataque_aereo_usado = true
+		_golpe_conectado_en_ataque = false
+		_reset_combo()
+		estado_actual = "ataque_aire_punio"
+		actualizar_animacion("Punio_Aire", true)
+		activar_hitbox("MEDIO")
+		return true
+	elif input_nucleo2["kick"]:
+		_ataque_aereo_usado = true
+		_golpe_conectado_en_ataque = false
+		_reset_combo()
+		estado_actual = "ataque_aire_patada"
+		actualizar_animacion("Patada_Aire", true)
+		activar_hitbox("BAJO")
+		return true
+	return false
+
 func _procesar_ataque_especial(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
+		if not _ataque_aereo_usado and _intentar_ataque_aereo():
+			move_and_slide()
+			_aplicar_limites_camara()
+			_resolver_pushbox()
+			return
 	velocity.x = move_toward(velocity.x, 0.0, 120.0 * delta)
 	if velocity.y >= 0.0:
 		desactivar_todas_hitboxes()
@@ -443,6 +495,7 @@ func _procesar_ataque_especial(delta: float) -> void:
 		estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
 		actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
 		_cooldown_ataque = COOLDOWN_ESPECIAL
+		_castigo_shoryuken_pendiente = false
 
 # --- HADOKEN ---
 func _iniciar_ataque_hadoken(mirando_derecha: bool) -> void:
@@ -752,8 +805,13 @@ func _physics_process(delta: float) -> void:
 	# 4. MÁQUINA DE ESTADOS PRINCIPAL
 	if is_on_floor():
 		if estado_actual.begins_with("salto_") or estado_actual.begins_with("ataque_aire_"):
+			if estado_actual.begins_with("ataque_aire_") and not _golpe_conectado_en_ataque:
+				imprimir_evento_combate("WHIFF", player_id, null, 0, 0, null, false, "sfx_whiff")
 			estado_actual = "reposo"
 			desactivar_todas_hitboxes()
+		if _castigo_shoryuken_pendiente:
+			_cooldown_ataque = COOLDOWN_ESPECIAL
+			_castigo_shoryuken_pendiente = false
 				
 		if input_nucleo2["grab"]:
 			velocity.x = 0
@@ -852,21 +910,10 @@ func _physics_process(delta: float) -> void:
 	else:
 		# LÓGICA EN EL AIRE (solo se permite un ataque por salto)
 		velocity += get_gravity() * delta
+		if _castigo_shoryuken_pendiente:
+			velocity.x = move_toward(velocity.x, 0.0, 120.0 * delta)
 		if not estado_actual.begins_with("ataque_aire_") and not _ataque_aereo_usado:
-			if input_nucleo2["punch"]:
-				_ataque_aereo_usado = true
-				_golpe_conectado_en_ataque = false
-				_reset_combo()
-				estado_actual = "ataque_aire_punio"
-				actualizar_animacion("Punio_Aire", true)
-				activar_hitbox("MEDIO")
-			elif input_nucleo2["kick"]:
-				_ataque_aereo_usado = true
-				_golpe_conectado_en_ataque = false
-				_reset_combo()
-				estado_actual = "ataque_aire_patada"
-				actualizar_animacion("Patada_Aire", true)
-				activar_hitbox("BAJO")
+			_intentar_ataque_aereo()
 
 	move_and_slide()
 	_resolver_pushbox()
@@ -972,7 +1019,9 @@ func _on_sprite_animation_finished() -> void:
 			imprimir_evento_combate("WHIFF", player_id, null, 0, 0, null, false, "sfx_whiff")
 
 		# El tercer golpe del combo cierra la secuencia y aplica más recuperación
-		if estado_actual in ["ataque_combo_punio_3", "ataque_combo_patada_3"]:
+		if _castigo_shoryuken_pendiente:
+			_cooldown_ataque = COOLDOWN_ESPECIAL
+		elif estado_actual in ["ataque_combo_punio_3", "ataque_combo_patada_3"]:
 			_cooldown_ataque = COOLDOWN_ATAQUE_FINAL
 			_reset_combo()
 		else:
@@ -982,7 +1031,12 @@ func _on_sprite_animation_finished() -> void:
 				_tiempo_combo = VENTANA_COMBO
 		
 		if not is_on_floor():
-			if velocity.x == 0:
+			if _castigo_shoryuken_pendiente:
+				# Mantener el estado de caída vulnerable del Shoryuken hasta tocar el suelo
+				estado_actual = "ataque_especial"
+				_golpe_conectado_en_ataque = true
+				actualizar_animacion("Shoryuken")
+			elif velocity.x == 0:
 				estado_actual = "salto_estatico"
 				actualizar_animacion("Salto_Subida")
 			else:
@@ -995,6 +1049,9 @@ func _on_sprite_animation_finished() -> void:
 					estado_actual = "salto_atras"
 					actualizar_animacion("Salto_Atras")
 		else:
+			if _castigo_shoryuken_pendiente:
+				_cooldown_ataque = COOLDOWN_ESPECIAL
+				_castigo_shoryuken_pendiente = false
 			estado_actual = "agachado" if input_nucleo2["move_y"] == -1 else "reposo"
 			actualizar_animacion("Agachado" if input_nucleo2["move_y"] == -1 else "Reposo")
 
@@ -1016,6 +1073,10 @@ func _verificar_colision_hitboxes_activas() -> void:
 				if _golpe_conectado_en_ataque:
 					return
 
+func _danio_segun_ataque() -> float:
+	var danio_base: float = float(DANIOS_ATAQUE.get(estado_actual, fuerza_golpe))
+	return clampf(danio_base, DANIO_MINIMO, DANIO_MAXIMO)
+
 func _empuje_segun_ataque() -> Vector2:
 	var direccion := -1.0 if (sprite and sprite.flip_h) else 1.0
 	var empuje_base: Vector2 = EMPUJES_ATAQUE.get(estado_actual, Vector2(150.0, 0.0))
@@ -1030,6 +1091,7 @@ func _on_hitbox_area_entered(area_rival: Area2D) -> void:
 		if rival_atacado and rival_atacado.has_method("recibir_ataque"):
 			_golpe_conectado_en_ataque = true
 			var es_agarre = (estado_actual == "intentar_agarre")
+			var danio_ataque := 0.0 if es_agarre else _danio_segun_ataque()
 			var empuje_ataque = Vector2.ZERO if es_agarre else _empuje_segun_ataque()
 			var altura_ataque = "MEDIO" 
 			
@@ -1048,16 +1110,17 @@ func _on_hitbox_area_entered(area_rival: Area2D) -> void:
 				rival_agarrado = rival_atacado
 				tiempo_agarre = 0.0
 				
-			rival_atacado.recibir_ataque(fuerza_golpe, empuje_ataque, player_id, altura_ataque, es_agarre)
+			rival_atacado.recibir_ataque(danio_ataque, empuje_ataque, player_id, altura_ataque, es_agarre)
 
 			if not es_agarre and rival_atacado.get("rival") != self and estado_objetivo_antes not in ["derrota", "en_suelo", "agarrado"]:
 				registrar_golpe_externo(rival_atacado, estaba_en_stun)
 
-func recibir_ataque(cantidad: int, empuje: Vector2, atacante_id: int, altura: String, es_agarre: bool) -> void:
+func recibir_ataque(cantidad: float, empuje: Vector2, atacante_id: int, altura: String, es_agarre: bool) -> void:
 	if estado_actual in ["derrota", "en_suelo", "agarrado"]:
 		return
 
 	var estaba_en_stun := (estado_actual == "dano")
+	_castigo_shoryuken_pendiente = false
 	reiniciar_contador_combo()
 	_reset_combo()
 
@@ -1085,13 +1148,14 @@ func recibir_ataque(cantidad: int, empuje: Vector2, atacante_id: int, altura: St
 			rival.registrar_golpe_externo(self, false)
 		imprimir_evento_combate("BLOCK", atacante_id, player_id, 0, 0)
 	else:
-		current_hp = max(0, current_hp - cantidad)
+		var danio_aplicado := clampf(float(cantidad), DANIO_MINIMO, DANIO_MAXIMO)
+		current_hp = maxf(0.0, current_hp - danio_aplicado)
 		estado_actual = "dano"
 		velocity = empuje
 		if rival and rival.has_method("registrar_golpe_externo"):
 			rival.registrar_golpe_externo(self, estaba_en_stun)
 		var combo_atacante: int = int(rival.combo_actual) if rival else (2 if estaba_en_stun else 1)
-		imprimir_evento_combate("HIT", atacante_id, player_id, cantidad, combo_atacante)
+		imprimir_evento_combate("HIT", atacante_id, player_id, danio_aplicado, combo_atacante)
 		actualizar_animacion("Stun", true)
 		
 		if current_hp <= 0:
@@ -1107,10 +1171,12 @@ func ser_lanzado(fuerza_vector: Vector2) -> void:
 	var estaba_en_stun := (estado_actual == "dano")
 	estado_actual = "lanzado"
 	_tiempo_stun = 0.0
+	_castigo_shoryuken_pendiente = false
 	reiniciar_contador_combo()
 	_reset_combo()
 	velocity = fuerza_vector
-	current_hp = max(0, current_hp - 10)
+	var danio_lanzamiento := clampf(DANIO_LANZAMIENTO, DANIO_MINIMO, DANIO_MAXIMO)
+	current_hp = maxf(0.0, current_hp - danio_lanzamiento)
 	rebotes_restantes = 1
 	_stun_seq += 1
 	_lanzamiento_seq += 1
@@ -1120,7 +1186,7 @@ func ser_lanzado(fuerza_vector: Vector2) -> void:
 	desactivar_todas_hitboxes()
 	
 	var combo_atacante: int = int(rival.combo_actual) if rival and estaba_en_stun else 1
-	imprimir_evento_combate("HIT", rival.player_id if rival else 0, player_id, 10, combo_atacante)
+	imprimir_evento_combate("HIT", rival.player_id if rival else 0, player_id, danio_lanzamiento, combo_atacante)
 	actualizar_animacion("Tumbar")
 	
 	if current_hp <= 0:
@@ -1211,7 +1277,7 @@ func imprimir_evento_combate(
 	tipo_evento: String,
 	atacante: Variant,
 	defensor: Variant,
-	dano: int,
+	dano: Variant,
 	combo: int = 0,
 	hp_override: Variant = null,
 	es_ko_override: Variant = null,
@@ -1300,6 +1366,7 @@ func reiniciar_para_round(posicion_inicial: Vector2) -> void:
 	_tiempo_stun = 0.0
 	_proyectil_lanzado = false
 	_ataque_aereo_usado = false
+	_castigo_shoryuken_pendiente = false
 	_golpe_conectado_en_ataque = false
 	_reset_combo()
 	reiniciar_contador_combo()

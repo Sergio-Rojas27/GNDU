@@ -142,18 +142,17 @@ theme_override_font_sizes/font_size = 80
 horizontal_alignment = 1
 
 [node name="Boton_Reiniciar" type="Button" parent="CanvasLayer/Control" unique_id=987654321]
-visible = false
 layout_mode = 0
-offset_left = 770.0
-offset_top = 615.0
-offset_right = 1150.0
-offset_bottom = 680.0
+offset_left = 245.0
+offset_top = 30.0
+offset_right = 475.0
+offset_bottom = 75.0
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.4, 0.85, 1, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_reiniciar")
-text = "REINICIAR COMBATE"
+text = "Reiniciar Partida"
 
 [node name="Fondo" type="Sprite2D" parent="." unique_id=767365593]
 position = Vector2(954.2501, 514.38245)

@@ -6,8 +6,8 @@
     "type": "HIT",
     "attacker": 1,
     "defender": 2,
-    "damage": 15,
-    "current_hp": 85,
+    "damage": 2.5,
+    "current_hp": 97.5,
     "combo_count": 2,
     "is_ko": false,
     "sound_id": "sfx_heavy_hit"

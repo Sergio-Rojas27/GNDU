@@ -45,11 +45,11 @@
           "enum": [1, 2, null]
         },
         "damage": {
-          "type": "integer",
+          "type": "number",
           "minimum": 0
         },
         "current_hp": {
-          "type": ["integer", "null"],
+          "type": ["number", "null"],
           "minimum": 0
         },
         "combo_count": {

@@ -74,11 +74,11 @@ Escena raíz (`Node2D`) controlada por `script/escenario.gd`:
 - **CanvasLayer/Control:** Interfaz de usuario de combate:
   - `Timer`: Reloj con `autostart = true` (intervalo de 1s).
   - `Label_tiempo`: Muestra los segundos restantes del round (inicia en 99).
-  - `Vida_P1` / `Vida_P2`: Barras de progreso (`ProgressBar`) vinculadas al `current_hp` de cada luchador.
+  - `Vida_P1` / `Vida_P2`: Barras de progreso (`ProgressBar`, `step = 0.1`) vinculadas al `current_hp` de cada luchador.
   - `Rounds_P1` / `Rounds_P2`: Indicadores visuales (○ / ●) de rondas ganadas.
   - `Boton_Hitboxes`: Botón para activar/desactivar en caliente la visualización de cajas de colisión (Hitboxes: ON/OFF).
+  - `Boton_Reiniciar`: Botón manual permanente en el HUD superior (`Reiniciar Partida`) disponible en todo momento para reiniciar la partida completa.
   - `Texto Victoria`: Etiqueta central para anuncios de round, KO y ganador definitivo.
-  - `Boton_Reiniciar`: Botón visible al finalizar la partida para reiniciar todo el encuentro.
 - **ColisionEscenario (`StaticBody2D`):** Contiene `HitboxSuelo` (y = 1060), `HitboxParedIzquierda` (x = -22) y `HitboxParedDerecha` (x = 1932).
 - **Jugador y Jugador2:** Instancias de `jugador.tscn` cruzadas mediante la propiedad exportada `rival`.
 - **Camera2D:** Cámara con `zoom = Vector2(1.3, 1.3)` gobernada por `script/Camara.gd`.
@@ -101,6 +101,8 @@ Escena del luchador (`CharacterBody2D`) controlada por `script/jugador.gd`:
 | :--- | :---: | :--- |
 | `SPEED` | `300.0` | Velocidad de desplazamiento horizontal al caminar. |
 | `JUMP_VELOCITY` | `-750.0` | Impulso vertical inicial del salto. |
+| `DANIO_MINIMO / MAXIMO` | `1.5 / 5.0` | Rango estricto de daño permitido por impacto. |
+| `DANIO_LANZAMIENTO` | `3.0` | Daño aplicado al ejecutar un lanzamiento tras agarre. |
 | `VENTANA_DOBLE_TOQUE_MS` | `280 ms` | Tiempo máximo entre pulsaciones de dirección para Dash. |
 | `VENTANA_ESPECIAL_MS` | `500 ms` | Memoria direccional (abajo/atrás) para ataques especiales. |
 | `DURACION_DASH` | `0.22 s` | Duración del desplazamiento de dash. |
@@ -115,6 +117,12 @@ Escena del luchador (`CharacterBody2D`) controlada por `script/jugador.gd`:
 | `COOLDOWN_ESPECIAL` | `0.7 s` | Recuperación aplicada al finalizar un movimiento especial. |
 | `DISTANCIA_PUSHBOX / ALTURA`| `150.0 / 170.0` | Distancia mínima y umbral vertical del sistema de empuje. |
 | `CAPA_JUGADOR / MASC_MUNDO`| `4 / 1` | Evita colisiones rígidas entre jugadores, solo con el escenario.|
+
+#### Tabla de Daño por Ataque (`DANIOS_ATAQUE`)
+Todos los ataques están escalados y limitados (`clampf`) dentro del rango **`1.5` a `5.0`**:
+- **Daño Ligero (`1.5` - `2.0`):** `ataque_punio_abajo` (`1.5`), `ataque_golpe` (`2.0`), `ataque_patada_abajo` (`2.0`), `ataque_aire_punio` (`2.0`).
+- **Daño Medio (`2.5` - `3.0`):** `ataque_combo_punio_2` (`2.5`), `ataque_patada` (`2.5`), `ataque_punio_arriba` (`2.5`), `ataque_aire_patada` (`2.5`), `ataque_patada_arriba` (`3.0`), `ataque_combo_patada_2` (`3.0`), Lanzamiento de agarre (`3.0`).
+- **Daño Fuerte y Especiales (`3.5` - `5.0`):** `ataque_combo_punio_3` (`3.5`), `ataque_combo_patada_3` (`4.0`), `ataque_tatsumaki` (`4.0`), `ataque_hadoken` / Proyectil (`4.0`), `ataque_especial` / Shoryuken (`5.0`).
 
 #### Tabla de Empujes por Ataque (`EMPUJES_ATAQUE`)
 Cada ataque aplica un vector `Vector2(x, y)` al rival (la `x` se invierte automáticamente según hacia dónde mira el atacante):
@@ -175,7 +183,7 @@ Cada ataque se clasifica en una de tres alturas al impactar:
 | `bloqueo_bajo` (Agachado)| Impacta (*Overhead*) | Bloqueado | Bloqueado | Agarrable |
 
 - **Si el golpe es bloqueado:** No reduce `current_hp`, retroceso reducido (35%), reinicia combo y emite evento `BLOCK` (`sfx_block`).
-- **Si el golpe conecta (HIT):** Resta vida (fuerza 15 por defecto), entra en estado `dano` por 0.5s, incrementa el combo y emite `HIT` (y `KO` si `current_hp <= 0`).
+- **Si el golpe conecta (HIT):** Resta vida según `DANIOS_ATAQUE` (siempre acotado entre `1.5` y `5.0`, con `fuerza_golpe = 2.0` por defecto), entra en estado `dano` por 0.5s, incrementa el combo y emite `HIT` (y `KO` si `current_hp <= 0`).
 
 ### 4.6 Combos Básicos (AAA / BBB), Cancelaciones y Contador de Hits
 - **Cadenas de 3 golpes:** Presionar repetidamente Puño o Patada encadena hasta 3 pasos. Ventana de 0.7s para continuar, finalizando con mayor empuje y cooldown.
@@ -187,9 +195,9 @@ Cada ataque se clasifica en una de tres alturas al impactar:
 | Movimiento | Entrada Local (Mirando a la derecha) | Comando Núcleo 2 (`command_detected`) | Comportamiento en Código |
 | :--- | :--- | :--- | :--- |
 | **Dash** | `→ →` o `← ←` (<= 280 ms) | `DASH_RIGHT` / `DASH_LEFT` | Desplazamiento rápido 0.22s. |
-| **Hadoken** | `←` luego `→` + Puño (<= 500 ms) | `SPECIAL_ATTACK_1`, `HADOKEN` | Instancia `proyectil_hadoken.tscn` a los 0.35s. |
-| **Shoryuken**| `↓` luego `→` + Puño (<= 500 ms) | `SPECIAL_ATTACK_2`, `SHORYUKEN` | Impulso diagonal ascendente con hitbox ALTA. |
-| **Tatsumaki**| `←` luego `→` + Patada (<= 500 ms)| `COMBO_DOWN_RIGHT_B`, `TATSUMAKI` | Avanza a 1000 px/s con hitbox MEDIO. |
+| **Hadoken** | `←` luego `→` + Puño (<= 500 ms) | `SPECIAL_ATTACK_1`, `HADOKEN` | Instancia `proyectil_hadoken.tscn` a los 0.35s (`4.0` de daño). |
+| **Shoryuken**| `↓` luego `→` + Puño (<= 500 ms) | `SPECIAL_ATTACK_2`, `SHORYUKEN` | Impulso diagonal ascendente con hitbox ALTA (`5.0` de daño). Permite encadenar **1 ataque aéreo** durante el vuelo manteniendo la penalización de castigo (`_castigo_shoryuken_pendiente`: desaceleración aérea, caída vulnerable y `COOLDOWN_ESPECIAL = 0.7s` al aterrizar). |
+| **Tatsumaki**| `←` luego `→` + Patada (<= 500 ms)| `COMBO_DOWN_RIGHT_B`, `TATSUMAKI` | Avanza a 1000 px/s con hitbox MEDIO (`4.0` de daño). |
 
 ### 4.8 Sistema de Agarres, Lanzamientos y Rebotes
 1. **Inicio del Agarre (`intentar_agarre`):** Activa hitbox MEDIO en frame 1. Si conecta, el atacante pasa a `agarrando` y el defensor a `agarrado`.
@@ -198,7 +206,7 @@ Cada ataque se clasifica en una de tres alturas al impactar:
    - **Abajo:** Estrellar contra el suelo.
    - **Adelante / Puño / Patada:** Lanzamiento frontal.
    - **Atrás:** Reposiciona al rival detrás (-60 px) e invierte los lados.
-3. **Daño y Rebote:** Ser lanzado inflige 10 de daño. Al impactar el suelo, rebota una vez (`velocity.y = -400.0`). Entra en estado `en_suelo` (invulnerable por 0.3s) antes de levantarse.
+3. **Daño y Rebote:** Ser lanzado inflige `3.0` de daño (`DANIO_LANZAMIENTO`). Al impactar el suelo, rebota una vez (`velocity.y = -400.0`). Entra en estado `en_suelo` (invulnerable por 0.3s) antes de levantarse.
 
 ### 4.9 Límites de Cámara y Escenario
 El método `_aplicar_limites_camara()` impone dos restricciones en cada frame:
@@ -216,6 +224,7 @@ Dibuja en tiempo real (conmutable desde el botón UI):
 ## 🏟️ 5. Gestor de Escenario y Partida (`script/escenario.gd`)
 Controla el ciclo de vida del encuentro y comunicación de alto nivel:
 - **Sistema de Rondas (`MAX_ROUNDS = 2`):** Al mejor de 3. Evalúa si hay KO o Doble KO. Espera 2.5s antes de reanudar.
+- **Reinicio Manual en Todo Momento (`Boton_Reiniciar` / `reiniciar_combate_completo`):** El botón `Reiniciar Partida` permanece visible durante todo el combate. Al pulsarlo en cualquier instante, invalida temporizadores previos mediante `_reinicio_seq`, elimina proyectiles activos en escena (`_limpiar_proyectiles_activos()`), restaura rondas, reloj y posiciones iniciales de ambos luchadores.
 - **Temporizador:** Descuenta desde 99s. Al llegar a 0, emite `TIME_OVER` y otorga ronda por mayor vida.
 - **Recepción de Configuración (`on_match_start`):** Configura IDs, tiempos y rondas al iniciar.
 
@@ -232,7 +241,7 @@ Controla el ciclo de vida del encuentro y comunicación de alto nivel:
 ## ☄️ 7. Proyectil Hadoken (`script/proyectil_hadoken.gd`)
 Controla la escena del proyectil:
 - **Velocidad:** 900.0 px/s.
-- **Daño:** 15.
+- **Daño:** `4.0` (configurable en el rango `1.5` a `5.0`).
 - **Ciclo de vida:** Avanza horizontalmente. Si llega a `distancia_maxima` sin impactar, emite `WHIFF`. Si impacta, llama a `recibir_ataque()` del rival y desaparece.
 
 ---
@@ -250,8 +259,8 @@ El Núcleo 3 publica sucesos hacia `/root/EventBus` y señales locales `on_comba
 | `data.type` | `string` | `"HIT"`, `"BLOCK"`, `"WHIFF"`, `"TIME_OVER"`, `"KO"`. |
 | `data.attacker` | `int | null` | ID del atacante (`1`, `2`, o `null` en TIME_OVER). |
 | `data.defender` | `int | null` | ID del defensor (`1`, `2`, o `null` en WHIFF/TIME_OVER). |
-| `data.damage` | `integer` | Daño aplicado (>= 0). |
-| `data.current_hp` | `int | null` | Vida restante del defensor (`null` en WHIFF/TIME_OVER).|
+| `data.damage` | `number` | Daño aplicado (`>= 0`, entre `1.5` y `5.0` en impactos). |
+| `data.current_hp` | `number | null` | Vida restante del defensor (`null` en WHIFF/TIME_OVER).|
 | `data.combo_count`| `integer` | Número de impactos consecutivos en el combo. |
 | `data.is_ko` | `boolean` | `true` si el golpe dejó al defensor en KO. |
 | `data.sound_id` | `string` | Identificador de audio (ej: `"sfx_heavy_hit"`). |
@@ -266,8 +275,8 @@ El Núcleo 3 publica sucesos hacia `/root/EventBus` y señales locales `on_comba
     "type": "HIT",
     "attacker": 1,
     "defender": 2,
-    "damage": 15,
-    "current_hp": 85,
+    "damage": 2.5,
+    "current_hp": 97.5,
     "combo_count": 2,
     "is_ko": false,
     "sound_id": "sfx_heavy_hit"

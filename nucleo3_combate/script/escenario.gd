@@ -40,6 +40,7 @@ var altura_fija_camara: float = 0.0
 var pos_inicial_j1: Vector2 = Vector2.ZERO
 var pos_inicial_j2: Vector2 = Vector2.ZERO
 var mostrar_hitboxes: bool = false
+var _reinicio_seq: int = 0
 
 func _ready() -> void:
 	tiempo_restante = 99
@@ -51,10 +52,12 @@ func _ready() -> void:
 	
 	if jugador1:
 		pos_inicial_j1 = jugador1.global_position
+		barra_vida_j1.step = 0.1
 		barra_vida_j1.max_value = jugador1.max_hp
 		barra_vida_j1.value = jugador1.current_hp
 	if jugador2:
 		pos_inicial_j2 = jugador2.global_position
+		barra_vida_j2.step = 0.1
 		barra_vida_j2.max_value = jugador2.max_hp
 		barra_vida_j2.value = jugador2.current_hp
 
@@ -70,7 +73,7 @@ func _ready() -> void:
 		_actualizar_texto_boton_hitboxes()
 
 	if boton_reiniciar:
-		boton_reiniciar.visible = false
+		boton_reiniciar.visible = true
 		boton_reiniciar.pressed.connect(_on_boton_reiniciar_pressed)
 		
 	_actualizar_labels_rounds()
@@ -139,15 +142,24 @@ func _finalizar_round(ganador_id: int) -> void:
 			else:
 				texto_victoria.text = "¡ROUND " + str(round_actual) + "!\n¡EMPATE EN EL ROUND!"
 		
+		var seq_actual := _reinicio_seq
 		await get_tree().create_timer(2.5).timeout
-		if not combate_finalizado:
+		if seq_actual == _reinicio_seq and not combate_finalizado:
 			_iniciar_siguiente_round()
 
+func _limpiar_proyectiles_activos() -> void:
+	for hijo in get_children():
+		if hijo is Area2D and hijo != jugador1 and hijo != jugador2:
+			hijo.queue_free()
+
 func _iniciar_siguiente_round() -> void:
+	var seq_actual := _reinicio_seq
 	round_actual += 1
 	tiempo_restante = duracion_round
 	if texto_tiempo:
 		texto_tiempo.text = str(tiempo_restante)
+
+	_limpiar_proyectiles_activos()
 
 	if jugador1 and jugador1.has_method("reiniciar_para_round"):
 		jugador1.reiniciar_para_round(pos_inicial_j1)
@@ -163,6 +175,8 @@ func _iniciar_siguiente_round() -> void:
 		texto_victoria.text = "¡ROUND " + str(round_actual) + "!\n¡PELEEN!"
 
 	await get_tree().create_timer(1.2).timeout
+	if seq_actual != _reinicio_seq or combate_finalizado:
+		return
 
 	if texto_victoria:
 		texto_victoria.text = ""
@@ -184,6 +198,8 @@ func _on_boton_reiniciar_pressed() -> void:
 	reiniciar_combate_completo()
 
 func reiniciar_combate_completo() -> void:
+	_reinicio_seq += 1
+	var seq_actual := _reinicio_seq
 	combate_finalizado = false
 	round_terminado = false
 	round_actual = 1
@@ -191,13 +207,17 @@ func reiniciar_combate_completo() -> void:
 	rounds_j2 = 0
 	tiempo_restante = duracion_round
 	
+	if reloj_combate:
+		reloj_combate.stop()
+	
 	if boton_reiniciar:
-		boton_reiniciar.visible = false
+		boton_reiniciar.visible = true
 		
 	if texto_tiempo:
 		texto_tiempo.text = str(tiempo_restante)
 		
 	_actualizar_labels_rounds()
+	_limpiar_proyectiles_activos()
 	
 	if jugador1 and jugador1.has_method("reiniciar_para_round"):
 		jugador1.reiniciar_para_round(pos_inicial_j1)
@@ -213,7 +233,7 @@ func reiniciar_combate_completo() -> void:
 		texto_victoria.text = "¡ROUND 1!\n¡PELEEN!"
 		
 	await get_tree().create_timer(1.2).timeout
-	if combate_finalizado:
+	if seq_actual != _reinicio_seq or combate_finalizado:
 		return
 		
 	if texto_victoria:
@@ -267,7 +287,7 @@ func emitir_evento_combate(
 	tipo_evento: String,
 	atacante: Variant,
 	defensor: Variant,
-	dano: int,
+	dano: Variant,
 	combo: int = 0,
 	current_hp_val: Variant = null,
 	is_ko_val: bool = false,
