@@ -155,7 +155,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_btn_reiniciar")
 text = "Reiniciar Partida"
 
 [node name="Fondo" type="Sprite2D" parent="." unique_id=767365593]
-position = Vector2(954.2501, 514.38245)
+position = Vector2(954.2501, 477.3825)
 scale = Vector2(1.9135741, 1.7775611)
 texture = ExtResource("2_wynv6")
 
