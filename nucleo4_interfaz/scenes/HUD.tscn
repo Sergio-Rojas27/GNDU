@@ -7,8 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://c0xchixcam7f8" path="res://assets/States_Hud/Gema_Perdida.png" id="4_fotul"]
 [ext_resource type="Texture2D" uid="uid://ci2r4koltso34" path="res://assets/States_Hud/Gema_Draw.png" id="5_gledi"]
 [ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="6_a3qfq"]
-[ext_resource type="Texture2D" uid="uid://b5yi342k6er5a" path="res://assets/Fighters/Prueba_1/portrait.png" id="7_a3qfq"]
-[ext_resource type="Texture2D" uid="uid://4o7qes568cqw" path="res://assets/Fighters/Prueba_2/portrait.png" id="8_wrn67"]
 [ext_resource type="Texture2D" uid="uid://ctddmy7gv4v1t" path="res://assets/States_Hud/barra.png" id="10_gu30e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8h62i"]
@@ -42,6 +40,7 @@ gem_Roja = ExtResource("4_fotul")
 gem_Amarilla = ExtResource("5_gledi")
 
 [node name="Menu_Pausa" parent="Control" unique_id=327417413 instance=ExtResource("1_wrn67")]
+visible = false
 
 [node name="RedDamageBarP1" type="ProgressBar" parent="Control" unique_id=1994480774]
 layout_mode = 0
@@ -103,11 +102,10 @@ text = "99"
 
 [node name="PortraitP1" type="TextureRect" parent="Control" unique_id=822991234]
 layout_mode = 0
-offset_left = 51.0
-offset_top = 49.0
-offset_right = 151.0
-offset_bottom = 149.0
-texture = ExtResource("7_a3qfq")
+offset_left = 48.0
+offset_top = 47.0
+offset_right = 148.0
+offset_bottom = 147.0
 expand_mode = 1
 
 [node name="PortraitP2" type="TextureRect" parent="Control" unique_id=1777896359]
@@ -116,7 +114,6 @@ offset_left = 1777.0
 offset_top = 48.0
 offset_right = 1877.0
 offset_bottom = 148.0
-texture = ExtResource("8_wrn67")
 expand_mode = 1
 
 [node name="StatusAnnouncementTexture" type="TextureRect" parent="Control" unique_id=1358344973]

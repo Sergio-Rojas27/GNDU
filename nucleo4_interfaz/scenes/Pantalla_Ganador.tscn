@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://dfocvlcjkjiic"]
 
 [ext_resource type="Script" uid="uid://dbg1qb6utsfgu" path="res://nucleo4_interfaz/scripts/pantalla_ganador.gd" id="1_acbla"]
-[ext_resource type="Texture2D" uid="uid://2si1qo77b7wk" path="res://assets/Fighters/Prueba_1/Personaje1.png" id="1_jbwxd"]
-[ext_resource type="Texture2D" uid="uid://dthjqfrgnrvmn" path="res://assets/General/black.png" id="2_g0b5a"]
-[ext_resource type="Texture2D" uid="uid://64y0dpyekeen" path="res://assets/Fighters/Prueba_1/winner.png" id="2_t0lwd"]
+[ext_resource type="Texture2D" uid="uid://che8bsfsuewkx" path="res://assets/General/black.png" id="2_g0b5a"]
 [ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="3_n2co3"]
+[ext_resource type="Texture2D" uid="uid://brjn7m45ra0q5" path="res://assets/General/winner.png" id="3_nlo4c"]
 [ext_resource type="Texture2D" uid="uid://co6qnjhu8t6dk" path="res://assets/General/boton.png" id="7_7tyvd"]
 [ext_resource type="Texture2D" uid="uid://q48hgmqcax81" path="res://assets/General/botonPressed.png" id="8_jpo2m"]
 [ext_resource type="Texture2D" uid="uid://cvd5r4vmium10" path="res://assets/General/botonHover.png" id="9_k1hrv"]
@@ -31,7 +30,6 @@ offset_left = -67.0
 offset_top = 6.0
 offset_right = 997.0
 offset_bottom = 1649.0
-texture = ExtResource("1_jbwxd")
 
 [node name="TextureRect2" type="TextureRect" parent="." unique_id=227639489]
 layout_mode = 0
@@ -40,7 +38,7 @@ offset_top = 322.10165
 offset_right = 1841.0
 offset_bottom = 719.1017
 rotation = -0.0022860286
-texture = ExtResource("2_t0lwd")
+texture = ExtResource("3_nlo4c")
 
 [node name="TimerLabel" type="Label" parent="." unique_id=654119021]
 layout_mode = 0
