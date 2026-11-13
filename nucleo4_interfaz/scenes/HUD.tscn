@@ -41,8 +41,7 @@ gem_Verde = ExtResource("3_5gu17")
 gem_Roja = ExtResource("4_fotul")
 gem_Amarilla = ExtResource("5_gledi")
 
-[node name="Menu_Pausa" parent="Control" unique_id=616283500 instance=ExtResource("1_wrn67")]
-layout_mode = 1
+[node name="Menu_Pausa" parent="Control" unique_id=327417413 instance=ExtResource("1_wrn67")]
 
 [node name="RedDamageBarP1" type="ProgressBar" parent="Control" unique_id=1994480774]
 layout_mode = 0

@@ -1,20 +1,128 @@
 [gd_scene format=3 uid="uid://rga86yfihlq7"]
 
-[ext_resource type="Texture2D" uid="uid://l7fthr7hwcm2" path="res://assets/States_Hud/draw.jpg" id="1_2uj7a"]
+[ext_resource type="Texture2D" uid="uid://dthjqfrgnrvmn" path="res://assets/General/black.png" id="1_4ce2r"]
+[ext_resource type="Script" uid="uid://cohcc5tneylhw" path="res://nucleo4_interfaz/scripts/menu_pausa.gd" id="1_j2d2c"]
+[ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="2_j2d2c"]
+[ext_resource type="Texture2D" uid="uid://btu71hhwyuc2u" path="res://assets/General/Cuadrado.png" id="3_xbqkg"]
+[ext_resource type="Texture2D" uid="uid://co6qnjhu8t6dk" path="res://assets/General/boton.png" id="5_25hhs"]
+[ext_resource type="Texture2D" uid="uid://q48hgmqcax81" path="res://assets/General/botonPressed.png" id="6_xbqkg"]
+[ext_resource type="Texture2D" uid="uid://cvd5r4vmium10" path="res://assets/General/botonHover.png" id="7_25hhs"]
 
-[node name="MenuPausa" type="Control" unique_id=616283500]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Menu_Pausa" type="CanvasLayer" unique_id=327417413]
+process_mode = 3
+layer = 10
+script = ExtResource("1_j2d2c")
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=827533735]
-layout_mode = 0
-offset_left = 782.0
-offset_top = 348.0
-offset_right = 1099.0
-offset_bottom = 665.0
-texture = ExtResource("1_2uj7a")
+[node name="Fondo" type="TextureRect" parent="." unique_id=175436527]
+modulate = Color(1, 1, 1, 0.7294118)
+offset_right = 1921.0
+offset_bottom = 1082.0
+mouse_filter = 2
+texture = ExtResource("1_4ce2r")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=2113153725]
+offset_left = 565.0
+offset_top = 140.0
+offset_right = 1350.0
+offset_bottom = 932.0
+mouse_filter = 2
+texture = ExtResource("3_xbqkg")
 expand_mode = 1
+
+[node name="TimerLabel" type="Label" parent="." unique_id=1840701084]
+offset_left = 852.0
+offset_top = 348.0
+offset_right = 1086.0
+offset_bottom = 443.0
+theme_override_colors/font_color = Color(0.3560642, 0.35606438, 0.35606432, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 12
+theme_override_fonts/font = ExtResource("2_j2d2c")
+theme_override_font_sizes/font_size = 80
+text = "Pausa"
+
+[node name="Reanudar" type="TextureButton" parent="." unique_id=52334884]
+custom_minimum_size = Vector2(100, 0)
+offset_left = 716.0
+offset_top = 469.0
+offset_right = 1213.0
+offset_bottom = 588.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("5_25hhs")
+texture_pressed = ExtResource("6_xbqkg")
+texture_hover = ExtResource("7_25hhs")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Reanudar" unique_id=156244957]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 3.0
+offset_right = 484.0
+offset_bottom = 116.0
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("2_j2d2c")
+theme_override_font_sizes/font_size = 40
+text = "Reanudar"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Opciones" type="TextureButton" parent="." unique_id=1059845029]
+visible = false
+custom_minimum_size = Vector2(100, 0)
+offset_left = 718.0
+offset_top = 538.0
+offset_right = 1215.0
+offset_bottom = 657.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("5_25hhs")
+texture_pressed = ExtResource("6_xbqkg")
+texture_hover = ExtResource("7_25hhs")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="Opciones" unique_id=611401804]
+visible = false
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 11.0
+offset_right = 481.0
+offset_bottom = 112.0
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("2_j2d2c")
+theme_override_font_sizes/font_size = 40
+text = "Configuración"
+horizontal_alignment = 1
+vertical_alignment = 1
+justification_flags = 35
+
+[node name="Salir" type="TextureButton" parent="." unique_id=1678054532]
+custom_minimum_size = Vector2(100, 0)
+offset_left = 718.0
+offset_top = 603.0
+offset_right = 1215.0
+offset_bottom = 722.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("5_25hhs")
+texture_pressed = ExtResource("6_xbqkg")
+texture_hover = ExtResource("7_25hhs")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label2" type="Label" parent="Salir" unique_id=422125035]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 2.0
+offset_right = 484.0
+offset_bottom = 122.0
+theme_override_fonts/font = ExtResource("2_j2d2c")
+theme_override_font_sizes/font_size = 40
+text = "Volver al menú"
+horizontal_alignment = 1
+vertical_alignment = 1

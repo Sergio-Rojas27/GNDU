@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dthjqfrgnrvmn"
-path="res://.godot/imported/black.png-e0d651c984c34735c56b799902cae73e.ctex"
+uid="uid://co6qnjhu8t6dk"
+path="res://.godot/imported/boton.png-178c0821bac9945e843c5cf736391e8a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Fighters/Prueba_1/black.png"
-dest_files=["res://.godot/imported/black.png-e0d651c984c34735c56b799902cae73e.ctex"]
+source_file="res://assets/General/boton.png"
+dest_files=["res://.godot/imported/boton.png-178c0821bac9945e843c5cf736391e8a.ctex"]
 
 [params]
 

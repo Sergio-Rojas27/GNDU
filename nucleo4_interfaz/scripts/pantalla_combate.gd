@@ -5,11 +5,20 @@ extends Node2D
 @onready var spawn_p2: Marker2D = $SpawnP2
 @export var hud: Control
 
-
-
 func _ready() -> void:
 	cargar_escenario()
 
+	
+	# Conectamos la señal del simulador
+	$SimuladorHUD.combate_finalizado.connect(_on_combate_finalizado)
+
+func _on_combate_finalizado(ganador_id_recibido: String) -> void:
+	# 1. Guardamos quién ganó en el Singleton
+	DatosGlobales.ganador_id = ganador_id_recibido
+	
+	# 2. Cambiamos completamente a la escena de victoria
+	# Revisa que la ruta coincida con la ubicación real de tu archivo
+	get_tree().change_scene_to_file("res://nucleo4_interfaz/scenes/Pantalla_Ganador.tscn")
 
 func _on_logica_combete_daño_recibido(datos_evento: Dictionary) -> void:
 	# El escenario reenvía el evento hacia el HUD instanciado
@@ -34,28 +43,3 @@ func cargar_escenario() -> void:
 		print("Escenario cargado exitosamente: ", stage_id)
 	else:
 		print("ERROR: No se encontró el archivo del escenario en: ", stage_path)
-
-func cargar_personajes() -> void:
-	var p1_id: String = DatosGlobales.p1_fighter_id
-	var p2_id: String = DatosGlobales.p2_fighter_id
-	
-	# Instanciar P1
-	var path_p1: String = "res://assets/Fighters/" + p1_id + "/preview.png"
-	if ResourceLoader.exists(path_p1):
-		var p1_node = load(path_p1).instantiate()
-		p1_node.global_position = spawn_p1.global_position
-		add_child(p1_node)
-		print("Jugador 1 instanciado: ", p1_id)
-	else:
-		print("ERROR: No se encontró el personaje P1 en: ", path_p1)
-		
-	# Instanciar P2
-	var path_p2: String = "res://assets/fighters/" + p2_id + "/preview.png"
-	if ResourceLoader.exists(path_p2):
-		var p2_node = load(path_p2).instantiate()
-		p2_node.global_position = spawn_p2.global_position
-		add_child(p2_node)
-		print("Jugador 2 instanciado: ", p2_id)
-	else:
-		print("ERROR: No se encontró el personaje P2 en: ", path_p2)
-		

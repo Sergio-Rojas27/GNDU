@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://dfocvlcjkjiic"]
 
+[ext_resource type="Script" uid="uid://dbg1qb6utsfgu" path="res://nucleo4_interfaz/scripts/pantalla_ganador.gd" id="1_acbla"]
 [ext_resource type="Texture2D" uid="uid://2si1qo77b7wk" path="res://assets/Fighters/Prueba_1/Personaje1.png" id="1_jbwxd"]
-[ext_resource type="Texture2D" uid="uid://b5f6qj6b6ltjp" path="res://assets/Fighters/Prueba_1/fondoUni.png" id="1_pgquq"]
-[ext_resource type="Texture2D" uid="uid://dthjqfrgnrvmn" path="res://assets/Fighters/Prueba_1/black.png" id="2_g0b5a"]
+[ext_resource type="Texture2D" uid="uid://dthjqfrgnrvmn" path="res://assets/General/black.png" id="2_g0b5a"]
 [ext_resource type="Texture2D" uid="uid://64y0dpyekeen" path="res://assets/Fighters/Prueba_1/winner.png" id="2_t0lwd"]
 [ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="3_n2co3"]
-[ext_resource type="Texture2D" uid="uid://dwju7cle7oi2u" path="res://assets/Menus/Menu_Principal/btn.png" id="6_p547k"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_t0fkw"]
+[ext_resource type="Texture2D" uid="uid://co6qnjhu8t6dk" path="res://assets/General/boton.png" id="7_7tyvd"]
+[ext_resource type="Texture2D" uid="uid://q48hgmqcax81" path="res://assets/General/botonPressed.png" id="8_jpo2m"]
+[ext_resource type="Texture2D" uid="uid://cvd5r4vmium10" path="res://assets/General/botonHover.png" id="9_k1hrv"]
 
 [node name="PantallaGanador" type="Control" unique_id=554211726]
 layout_mode = 3
@@ -16,12 +16,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="TextureRect" type="TextureRect" parent="." unique_id=1991754188]
-layout_mode = 0
-offset_right = 1923.0
-offset_bottom = 1093.0
-texture = ExtResource("1_pgquq")
+script = ExtResource("1_acbla")
 
 [node name="fondo" type="TextureRect" parent="." unique_id=1479045997]
 modulate = Color(1, 1, 1, 0.7882353)
@@ -33,26 +28,26 @@ texture = ExtResource("2_g0b5a")
 [node name="Personaje" type="TextureRect" parent="." unique_id=772533641]
 layout_mode = 0
 offset_left = -67.0
-offset_top = 5.0
+offset_top = 6.0
 offset_right = 997.0
-offset_bottom = 1648.0
+offset_bottom = 1649.0
 texture = ExtResource("1_jbwxd")
 
 [node name="TextureRect2" type="TextureRect" parent="." unique_id=227639489]
 layout_mode = 0
-offset_left = 830.0001
-offset_top = 137.10165
-offset_right = 1856.0001
-offset_bottom = 534.1017
+offset_left = 815.0
+offset_top = 322.10165
+offset_right = 1841.0
+offset_bottom = 719.1017
 rotation = -0.0022860286
 texture = ExtResource("2_t0lwd")
 
 [node name="TimerLabel" type="Label" parent="." unique_id=654119021]
 layout_mode = 0
-offset_left = 906.99994
-offset_top = 121.0
-offset_right = 1594.0
-offset_bottom = 216.0
+offset_left = 891.9998
+offset_top = 296.0
+offset_right = 1578.9999
+offset_bottom = 391.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 theme_override_constants/shadow_outline_size = 12
@@ -60,30 +55,92 @@ theme_override_fonts/font = ExtResource("3_n2co3")
 theme_override_font_sizes/font_size = 80
 text = "Nombre"
 
-[node name="TextureButton" type="TextureButton" parent="." unique_id=852118454]
+[node name="Revancha" type="TextureButton" parent="." unique_id=2147365227]
+visible = false
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 0
-offset_left = 1277.0
-offset_top = 528.0
-offset_right = 2025.0
-offset_bottom = 666.0
-button_group = SubResource("ButtonGroup_t0fkw")
-texture_normal = ExtResource("6_p547k")
+offset_left = 1301.0
+offset_top = 535.0
+offset_right = 1798.0
+offset_bottom = 654.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("7_7tyvd")
+texture_pressed = ExtResource("8_jpo2m")
+texture_hover = ExtResource("9_k1hrv")
+ignore_texture_size = true
 stretch_mode = 0
 
-[node name="TextureButton" type="TextureButton" parent="TextureButton" unique_id=1030232926]
+[node name="Label" type="Label" parent="Revancha" unique_id=131431020]
+visible = false
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 0
-offset_top = 157.0
-offset_right = 748.0
-offset_bottom = 295.0
-button_group = SubResource("ButtonGroup_t0fkw")
-texture_normal = ExtResource("6_p547k")
+offset_left = 12.0
+offset_top = 3.0
+offset_right = 484.0
+offset_bottom = 116.0
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_n2co3")
+theme_override_font_sizes/font_size = 40
+text = "Revancha"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CambiarPersonaje" type="TextureButton" parent="." unique_id=2024926197]
+visible = false
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_left = 1303.0
+offset_top = 675.0
+offset_right = 1800.0
+offset_bottom = 794.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("7_7tyvd")
+texture_pressed = ExtResource("8_jpo2m")
+texture_hover = ExtResource("9_k1hrv")
+ignore_texture_size = true
 stretch_mode = 0
 
-[node name="TextureButton" type="TextureButton" parent="TextureButton/TextureButton" unique_id=1027723680]
+[node name="Label" type="Label" parent="CambiarPersonaje" unique_id=1740152387]
+visible = false
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 0
-offset_top = 157.0
-offset_right = 748.0
-offset_bottom = 295.0
-button_group = SubResource("ButtonGroup_t0fkw")
-texture_normal = ExtResource("6_p547k")
+offset_left = 12.0
+offset_top = 11.0
+offset_right = 481.0
+offset_bottom = 112.0
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_n2co3")
+theme_override_font_sizes/font_size = 40
+text = "Cambiar personaje"
+horizontal_alignment = 1
+vertical_alignment = 1
+justification_flags = 35
+
+[node name="Salir" type="TextureButton" parent="." unique_id=708325300]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_left = 1315.0
+offset_top = 817.0
+offset_right = 1812.0
+offset_bottom = 936.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("7_7tyvd")
+texture_pressed = ExtResource("8_jpo2m")
+texture_hover = ExtResource("9_k1hrv")
+ignore_texture_size = true
 stretch_mode = 0
+
+[node name="Label2" type="Label" parent="Salir" unique_id=922215890]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 2.0
+offset_right = 484.0
+offset_bottom = 122.0
+theme_override_fonts/font = ExtResource("3_n2co3")
+theme_override_font_sizes/font_size = 40
+text = "Volver al menú"
+horizontal_alignment = 1
+vertical_alignment = 1

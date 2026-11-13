@@ -11,6 +11,7 @@ var ronda_actual: int = 1
 var partida_terminada: bool = false
 var victorias_p1: int = 0
 var victorias_p2: int = 0
+signal combate_finalizado(ganador_id: String)
 
 func _ready() -> void:
 	# 1. Conectamos la señal...
@@ -157,7 +158,16 @@ func _verificar_vida_jugadores() -> void:
 		
 		# 2. Comprobar si alguien ya ganó la partida completa
 		if victorias_p1 >= 2 or victorias_p2 >= 2:
-			print("¡Pelea terminada! Ganador definitivo: ", "P1" if victorias_p1 > victorias_p2 else ("Empate" if victorias_p1 == victorias_p2 else "P2"))
+			var ganador_definitivo = ""
+			if victorias_p1 > victorias_p2:
+				ganador_definitivo = DatosGlobales.p1_fighter_id
+			elif victorias_p2 > victorias_p1:
+				ganador_definitivo = DatosGlobales.p2_fighter_id
+			else:
+				ganador_definitivo = "empate"
+				
+			print("¡Pelea terminada! Ganador definitivo: ", ganador_definitivo)
+			emit_signal("combate_finalizado", ganador_definitivo)
 			return
 			
 		# 3. Siguiente ronda
@@ -187,8 +197,18 @@ func _verificar_fin_por_tiempo() -> void:
 	await get_tree().create_timer(2.0).timeout
 	hud.on_combat_event({"event_type": "match_state", "state": "clear"})
 	
+	# 2. Comprobar si alguien ya ganó la partida completa
 	if victorias_p1 >= 2 or victorias_p2 >= 2:
-		print("¡Pelea por tiempo terminada! Ganador definitivo: ", "P1" if victorias_p1 > victorias_p2 else ("Empate" if victorias_p1 == victorias_p2 else "P2"))
+		var ganador_definitivo = ""
+		if victorias_p1 > victorias_p2:
+			ganador_definitivo = DatosGlobales.p1_fighter_id
+		elif victorias_p2 > victorias_p1:
+			ganador_definitivo = DatosGlobales.p2_fighter_id
+		else:
+			ganador_definitivo = "empate"
+			
+		print("¡Pelea terminada! Ganador definitivo: ", ganador_definitivo)
+		emit_signal("combate_finalizado", ganador_definitivo)
 		return
 		
 	ronda_actual += 1
