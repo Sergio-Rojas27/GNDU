@@ -6,6 +6,7 @@
 [ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="3_8qgpw"]
 [ext_resource type="Texture2D" uid="uid://dklpxx0kvs74k" path="res://assets/Escenarios/Escenario_Uni/Fondo_Unimar.jpeg" id="3_a4qr0"]
 [ext_resource type="Texture2D" uid="uid://dwju7cle7oi2u" path="res://assets/Menus/Menu_Principal/btn.png" id="4_ldn2g"]
+[ext_resource type="Texture2D" uid="uid://y6s7t1qthia8" path="res://assets/Menus/Menu_Principal/Rectangle 89 1.png" id="7_wevmb"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ffvw0"]
 texture = ExtResource("4_ldn2g")
@@ -106,6 +107,22 @@ texture_normal = ExtResource("3_a4qr0")
 ignore_texture_size = true
 stretch_mode = 0
 
+[node name="CursorP1" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer/TextureButton" unique_id=1432805721]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.39900002
+anchor_top = 0.282
+anchor_right = 0.492
+anchor_bottom = 0.303
+offset_left = -99.08002
+offset_top = 22.440002
+offset_right = -197.64001
+offset_bottom = 79.76001
+mouse_filter = 2
+texture = ExtResource("7_wevmb")
+expand_mode = 1
+
 [node name="TextureButton2" type="TextureButton" parent="MarginContainer/VBoxContainer/MarginContainer/GridContainer" unique_id=550635427]
 custom_minimum_size = Vector2(300, 180)
 layout_mode = 2
@@ -182,7 +199,7 @@ stretch_mode = 0
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_8qgpw")
 theme_override_font_sizes/font_size = 30
-text = "Presione enter para seleccionar un escenario"
+text = "Presione espacio para seleccionar un escenario"
 horizontal_alignment = 1
 
 [node name="Label" type="Label" parent="." unique_id=1261061884]

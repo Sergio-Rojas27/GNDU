@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cdhdaffr8xa2k" path="res://assets/Menus/Menu_Principal/Rectangle 87 (1).png" id="6_u81vn"]
 [ext_resource type="Texture2D" uid="uid://cvqox1tdwag3b" path="res://assets/Menus/Menu_Principal/Rectangle 88.png" id="7_cywbx"]
 [ext_resource type="Texture2D" uid="uid://y6s7t1qthia8" path="res://assets/Menus/Menu_Principal/Rectangle 89 1.png" id="9_cywbx"]
+[ext_resource type="Texture2D" uid="uid://c01d7p7n7a5xj" path="res://assets/Menus/Menu_Principal/Rectangle 89 1 (1).png" id="10_6e3he"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_luoes"]
 texture = ExtResource("6_u81vn")
@@ -235,4 +236,20 @@ offset_right = -197.64001
 offset_bottom = 79.76001
 mouse_filter = 2
 texture = ExtResource("9_cywbx")
+expand_mode = 1
+
+[node name="CursorP2" type="TextureRect" parent="." unique_id=1621528394]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.39900002
+anchor_top = 0.282
+anchor_right = 0.492
+anchor_bottom = 0.303
+offset_left = -166.24005
+offset_top = 67.44
+offset_right = -264.80005
+offset_bottom = 124.76001
+mouse_filter = 2
+texture = ExtResource("10_6e3he")
 expand_mode = 1
