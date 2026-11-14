@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://cby71ng3fyrna"]
+
+[ext_resource type="Texture2D" uid="uid://bxb6kpfoctjst" path="res://assets/Escenarios/Escenario_Jungla/Fondo_Jungla.jpeg" id="1_c3rjo"]
+[ext_resource type="Texture2D" uid="uid://byb61ah6xd770" path="res://assets/Escenarios/Escenario_Jungla/Escalera_Jungla.png" id="3_3aq0c"]
+[ext_resource type="Texture2D" uid="uid://tt5q2q2muc63" path="res://assets/Escenarios/Escenario_Jungla/Piso_Jungla.png" id="3_jrbgf"]
+[ext_resource type="Texture2D" uid="uid://30ghc18ikoj" path="res://assets/Escenarios/Escenario_Jungla/Tronco_Jungla.png" id="4_c3rjo"]
+[ext_resource type="Texture2D" uid="uid://cbqxro12vsshk" path="res://assets/Escenarios/Escenario_Jungla/Estatua_Jungla.png" id="7_u868g"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4c1vw"]
+size = Vector2(3534, 99.5)
+
+[node name="EscenarioJungla" type="Node2D" unique_id=1390029187]
+
+[node name="Fondo" type="Sprite2D" parent="." unique_id=156275250]
+position = Vector2(583.1911, 527)
+scale = Vector2(1.3504311, 1.6923076)
+texture = ExtResource("1_c3rjo")
+
+[node name="Fondo" type="Sprite2D" parent="Fondo" unique_id=1595958730]
+position = Vector2(1994.0366, -12.27269)
+scale = Vector2(1.3504311, 0.9673659)
+texture = ExtResource("1_c3rjo")
+flip_h = true
+
+[node name="Casita" type="Sprite2D" parent="." unique_id=1716259]
+position = Vector2(51.95409, 784.81464)
+scale = Vector2(0.519205, 0.55743414)
+texture = ExtResource("3_3aq0c")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1796844314]
+
+[node name="Piso" type="Sprite2D" parent="StaticBody2D" unique_id=984297740]
+position = Vector2(657.00006, 879.9047)
+scale = Vector2(1.0255873, 0.95890707)
+texture = ExtResource("3_jrbgf")
+
+[node name="Piso" type="Sprite2D" parent="StaticBody2D/Piso" unique_id=489976873]
+position = Vector2(1959.0337, 11.329666)
+scale = Vector2(0.6339133, 0.9418878)
+texture = ExtResource("3_jrbgf")
+flip_h = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=12983790]
+position = Vector2(1079, 1008.75)
+shape = SubResource("RectangleShape2D_4c1vw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D" unique_id=376985883]
+position = Vector2(-1541, -1748.5001)
+rotation = -1.5767212
+shape = SubResource("RectangleShape2D_4c1vw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D/CollisionShape2D" unique_id=1919351335]
+position = Vector2(-23.134775, 2891.9136)
+rotation = -3.1427755
+shape = SubResource("RectangleShape2D_4c1vw")
+
+[node name="Maticas6" type="Sprite2D" parent="." unique_id=664315475]
+position = Vector2(1022.50006, 221.31264)
+scale = Vector2(1.8448576, 0.72015184)
+texture = ExtResource("4_c3rjo")
+flip_h = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=907388690]
+position = Vector2(-220, 536)
+scale = Vector2(0.29641688, 0.32059813)
+texture = ExtResource("7_u868g")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sprite2D" unique_id=467782061]
+position = Vector2(8079.5957, 583.28625)
+scale = Vector2(1.0958998, 1.0143238)
+texture = ExtResource("7_u868g")

@@ -31,9 +31,9 @@ expand_mode = 1
 
 [node name="TimerLabel" type="Label" parent="." unique_id=1840701084]
 offset_left = 852.0
-offset_top = 348.0
+offset_top = 292.0
 offset_right = 1086.0
-offset_bottom = 443.0
+offset_bottom = 387.0
 theme_override_colors/font_color = Color(0.3560642, 0.35606438, 0.35606432, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
@@ -44,15 +44,16 @@ text = "Pausa"
 
 [node name="Reanudar" type="TextureButton" parent="." unique_id=52334884]
 custom_minimum_size = Vector2(100, 0)
-offset_left = 716.0
-offset_top = 469.0
-offset_right = 1213.0
-offset_bottom = 588.0
+offset_left = 718.0
+offset_top = 419.0
+offset_right = 1215.0
+offset_bottom = 538.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture_normal = ExtResource("5_25hhs")
 texture_pressed = ExtResource("6_xbqkg")
 texture_hover = ExtResource("7_25hhs")
+texture_focused = ExtResource("7_25hhs")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -71,32 +72,31 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Opciones" type="TextureButton" parent="." unique_id=1059845029]
-visible = false
 custom_minimum_size = Vector2(100, 0)
 offset_left = 718.0
-offset_top = 538.0
+offset_top = 549.0
 offset_right = 1215.0
-offset_bottom = 657.0
+offset_bottom = 668.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture_normal = ExtResource("5_25hhs")
 texture_pressed = ExtResource("6_xbqkg")
 texture_hover = ExtResource("7_25hhs")
+texture_focused = ExtResource("7_25hhs")
 ignore_texture_size = true
 stretch_mode = 0
 
 [node name="Label" type="Label" parent="Opciones" unique_id=611401804]
-visible = false
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 0
-offset_left = 12.0
-offset_top = 11.0
-offset_right = 481.0
-offset_bottom = 112.0
+offset_left = 16.0
+offset_top = 9.0
+offset_right = 485.0
+offset_bottom = 110.0
 size_flags_vertical = 3
 theme_override_fonts/font = ExtResource("2_j2d2c")
 theme_override_font_sizes/font_size = 40
-text = "Configuración"
+text = "Movimientos"
 horizontal_alignment = 1
 vertical_alignment = 1
 justification_flags = 35
@@ -104,23 +104,23 @@ justification_flags = 35
 [node name="Salir" type="TextureButton" parent="." unique_id=1678054532]
 custom_minimum_size = Vector2(100, 0)
 offset_left = 718.0
-offset_top = 603.0
+offset_top = 680.0
 offset_right = 1215.0
-offset_bottom = 722.0
+offset_bottom = 799.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture_normal = ExtResource("5_25hhs")
 texture_pressed = ExtResource("6_xbqkg")
 texture_hover = ExtResource("7_25hhs")
+texture_focused = ExtResource("7_25hhs")
 ignore_texture_size = true
 stretch_mode = 0
 
 [node name="Label2" type="Label" parent="Salir" unique_id=422125035]
 layout_mode = 0
 offset_left = 13.0
-offset_top = 2.0
 offset_right = 484.0
-offset_bottom = 122.0
+offset_bottom = 120.0
 theme_override_fonts/font = ExtResource("2_j2d2c")
 theme_override_font_sizes/font_size = 40
 text = "Volver al menú"

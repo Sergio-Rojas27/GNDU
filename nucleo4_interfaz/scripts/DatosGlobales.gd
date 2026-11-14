@@ -6,7 +6,8 @@ enum AppState {
 	MENU_PRINCIPAL,
 	MENU_SELECCION_ESCENARIO,
 	MENU_SELECCION_PERSONAJES,
-	COMBATE
+	COMBATE,
+	RESULTADO
 }
 
 signal on_state_change(event_data: Dictionary)

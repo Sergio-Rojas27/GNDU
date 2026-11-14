@@ -15,10 +15,29 @@ func _ready() -> void:
 func _on_combate_finalizado(ganador_id_recibido: String) -> void:
 	# 1. Guardamos quién ganó en el Singleton
 	DatosGlobales.ganador_id = ganador_id_recibido
-	
-	# 2. Cambiamos completamente a la escena de victoria
-	# Revisa que la ruta coincida con la ubicación real de tu archivo
-	get_tree().change_scene_to_file("res://nucleo4_interfaz/scenes/Pantalla_Ganador.tscn")
+
+	# 2. Cambiar estado a RESULTADO (desactiva físicas y emite on_state_change)
+	DatosGlobales.cambiar_estado(DatosGlobales.AppState.RESULTADO)
+
+	# 3. Preparamos una variable para la escena que vamos a cargar
+	var escena_resultado: PackedScene
+
+	# 4. Decidimos qué escena cargar según el resultado
+	if ganador_id_recibido == "empate":
+		escena_resultado = load("res://nucleo4_interfaz/scenes/Pantalla_Empate.tscn")
+	else:
+		escena_resultado = load("res://nucleo4_interfaz/scenes/Pantalla_Ganador.tscn")
+
+	# 5. Instanciamos la escena elegida
+	var instancia_resultado = escena_resultado.instantiate()
+
+	# 6. Creamos un CanvasLayer por código para asegurarnos de que la pantalla
+	#    aparezca por encima de los personajes, el escenario y el HUD.
+	var capa_superior = CanvasLayer.new()
+	capa_superior.layer = 100 # Un número alto para que quede sobre todo lo demás
+
+	capa_superior.add_child(instancia_resultado)
+	add_child(capa_superior)
 
 func _on_logica_combete_daño_recibido(datos_evento: Dictionary) -> void:
 	# El escenario reenvía el evento hacia el HUD instanciado

@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://wc2hlpas8w2r" path="res://assets/Escenarios/Escenario_Espacio/Planeta2_Espacio.png" id="3_hdg7b"]
 [ext_resource type="Texture2D" uid="uid://cr84p82fh3gih" path="res://assets/Escenarios/Escenario_Espacio/Piso_Espacio.png" id="4_q36pn"]
 [ext_resource type="Texture2D" uid="uid://r16425opn850" path="res://assets/Escenarios/Escenario_Espacio/Planeta3_espacio.png" id="5_mrs51"]
-[ext_resource type="Texture2D" uid="uid://dhtmdtcmf51qg" path="res://assets/Escenarios/Escenario_Espacio/piedra2_Espacio.png" id="5_v87bc"]
 [ext_resource type="Texture2D" uid="uid://0d46w8kacre4" path="res://assets/Escenarios/Escenario_Espacio/piedra1_Espacio.png" id="6_ffkqx"]
 [ext_resource type="Texture2D" uid="uid://b2udj4ssbyjx" path="res://assets/Escenarios/Escenario_Espacio/Estrella_Espacio/Estrella4_Espacio.png" id="8_xhhrc"]
 [ext_resource type="Texture2D" uid="uid://j7npv71hcass" path="res://assets/Escenarios/Escenario_Espacio/Estrella_Espacio/Estrella3_Espacio.png" id="9_upq8k"]
@@ -62,9 +61,9 @@ scale = Vector2(1.1875, 0.9990575)
 texture = ExtResource("1_sw0lt")
 
 [node name="PlanetaRojo" type="Sprite2D" parent="." unique_id=252502035]
-position = Vector2(1901, 589.00006)
+position = Vector2(1773.9999, 596.9999)
 rotation = 0.61361116
-scale = Vector2(1.0227115, 0.98492897)
+scale = Vector2(0.8662272, 0.8667603)
 texture = ExtResource("2_sw0lt")
 
 [node name="PlanetaAzul" type="Sprite2D" parent="." unique_id=346721715]
@@ -75,8 +74,8 @@ texture = ExtResource("3_hdg7b")
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1278477132]
 
 [node name="Piso1" type="Sprite2D" parent="StaticBody2D" unique_id=1222731288]
-position = Vector2(100.99994, 783.99994)
-scale = Vector2(0.9399538, 1.0236485)
+position = Vector2(100.99994, 736)
+scale = Vector2(0.9399538, 1.016892)
 texture = ExtResource("4_q36pn")
 
 [node name="Piso2" type="Sprite2D" parent="StaticBody2D/Piso1" unique_id=2040465401]
@@ -86,11 +85,11 @@ texture = ExtResource("4_q36pn")
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1552286168]
-position = Vector2(1044, 1050.5)
+position = Vector2(1044, 1001.5)
 shape = SubResource("RectangleShape2D_t0fkw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D" unique_id=1801969656]
-position = Vector2(-1728.0001, -1720.5001)
+position = Vector2(-1670.0001, -1720.5002)
 rotation = -1.5767212
 shape = SubResource("RectangleShape2D_t0fkw")
 
@@ -100,8 +99,8 @@ rotation = -3.1427755
 shape = SubResource("RectangleShape2D_t0fkw")
 
 [node name="PlanetaVerde" type="Sprite2D" parent="." unique_id=490522664]
-position = Vector2(253.99997, 445)
-scale = Vector2(0.5481837, 0.5678424)
+position = Vector2(428.00003, 484)
+scale = Vector2(0.44600904, 0.45659074)
 texture = ExtResource("5_mrs51")
 
 [node name="Estrellas" type="AnimatedSprite2D" parent="." unique_id=861426765]
@@ -146,18 +145,8 @@ animation = &"estrella"
 autoplay = "estrella"
 frame_progress = 0.99457526
 
-[node name="PiedraRoja" type="Sprite2D" parent="." unique_id=1752925291]
-position = Vector2(515, 683)
-scale = Vector2(0.74603176, 0.732)
-texture = ExtResource("5_v87bc")
-
-[node name="Sprite2D2" type="Sprite2D" parent="PiedraRoja" unique_id=76095924]
-position = Vector2(2415.447, -562.84155)
-scale = Vector2(0.74603176, 0.732)
-texture = ExtResource("5_v87bc")
-
 [node name="PiedraMorada" type="Sprite2D" parent="." unique_id=1437829362]
-position = Vector2(-320, 435)
+position = Vector2(-157, 421.00003)
 scale = Vector2(1.1637931, 0.93534464)
 texture = ExtResource("6_ffkqx")
 
@@ -172,5 +161,5 @@ scale = Vector2(0.65053767, 0.7563674)
 texture = ExtResource("6_ffkqx")
 
 [node name="PiedraMorada2" type="Sprite2D" parent="." unique_id=2136246041]
-position = Vector2(2729, 510)
+position = Vector2(2284, 303)
 texture = ExtResource("6_ffkqx")
