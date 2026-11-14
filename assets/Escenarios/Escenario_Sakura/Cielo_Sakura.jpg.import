@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ddbwe20eekbe5"
-path="res://.godot/imported/Planta8_Desieto.png-551a89ee69022f43515c55e7bc5e5d2f.ctex"
+uid="uid://cdy53npiot4p1"
+path="res://.godot/imported/Cielo_Sakura.jpg-464afb120ac644c3526ae4a5a9c610d7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenarios/Escenario_Desierto/Planta8_Desieto.png"
-dest_files=["res://.godot/imported/Planta8_Desieto.png-551a89ee69022f43515c55e7bc5e5d2f.ctex"]
+source_file="res://assets/Escenarios/Escenario_Sakura/Cielo_Sakura.jpg"
+dest_files=["res://.godot/imported/Cielo_Sakura.jpg-464afb120ac644c3526ae4a5a9c610d7.ctex"]
 
 [params]
 

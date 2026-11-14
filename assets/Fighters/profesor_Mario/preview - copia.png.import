@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d332m3w21j0yi"
-path="res://.godot/imported/Roca5_Desierto.png-c822b5440513de9dd1363a29f16727c7.ctex"
+uid="uid://fw8kqjhl0dj2"
+path="res://.godot/imported/preview - copia.png-dc0985d8aec5e9a8bc5cf5ed48d711aa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenarios/Escenario_Desierto/Roca5_Desierto.png"
-dest_files=["res://.godot/imported/Roca5_Desierto.png-c822b5440513de9dd1363a29f16727c7.ctex"]
+source_file="res://assets/Fighters/profesor_Mario/preview - copia.png"
+dest_files=["res://.godot/imported/preview - copia.png-dc0985d8aec5e9a8bc5cf5ed48d711aa.ctex"]
 
 [params]
 

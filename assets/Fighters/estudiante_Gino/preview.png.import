@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tnygos4n7ov2"
-path="res://.godot/imported/Montaña2_Desierto.png-29aee7f3fb6354aa3dd757893f13cba6.ctex"
+uid="uid://207feqkp4pyj"
+path="res://.godot/imported/preview.png-f9ef723a7b3c296ecc95bc4d7761ba27.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenarios/Escenario_Desierto/Montaña2_Desierto.png"
-dest_files=["res://.godot/imported/Montaña2_Desierto.png-29aee7f3fb6354aa3dd757893f13cba6.ctex"]
+source_file="res://assets/Fighters/estudiante_Gino/preview.png"
+dest_files=["res://.godot/imported/preview.png-f9ef723a7b3c296ecc95bc4d7761ba27.ctex"]
 
 [params]
 

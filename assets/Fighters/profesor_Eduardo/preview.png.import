@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b6hdplvoex07j"
-path="res://.godot/imported/Planta2_Desierto.png-542844748754c6746dcd1f7e2905062f.ctex"
+uid="uid://bhqviv7j3d7cy"
+path="res://.godot/imported/preview.png-468548d47be3c77a7ef0c9c040dc6f12.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenarios/Escenario_Desierto/Planta2_Desierto.png"
-dest_files=["res://.godot/imported/Planta2_Desierto.png-542844748754c6746dcd1f7e2905062f.ctex"]
+source_file="res://assets/Fighters/profesor_Eduardo/preview.png"
+dest_files=["res://.godot/imported/preview.png-468548d47be3c77a7ef0c9c040dc6f12.ctex"]
 
 [params]
 

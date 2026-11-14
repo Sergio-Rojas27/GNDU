@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwl5u4irpol1x"
-path="res://.godot/imported/Captus_Pequeño_Desierto.png-6126667fbe5e7a5eeca2e7dd76af0136.ctex"
+uid="uid://bhb0tkkcff2nw"
+path="res://.godot/imported/petalo_1.png-9aa851d08831edcc5284d386ff1fb823.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenarios/Escenario_Desierto/Captus_Pequeño_Desierto.png"
-dest_files=["res://.godot/imported/Captus_Pequeño_Desierto.png-6126667fbe5e7a5eeca2e7dd76af0136.ctex"]
+source_file="res://assets/Escenarios/Escenario_Sakura/petalo_1.png"
+dest_files=["res://.godot/imported/petalo_1.png-9aa851d08831edcc5284d386ff1fb823.ctex"]
 
 [params]
 

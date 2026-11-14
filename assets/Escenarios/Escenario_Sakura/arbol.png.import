@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7ssk8x7wvac3"
-path="res://.godot/imported/Planta1_Desierto.png-9f987326622df3a8d4524eb27c9983fe.ctex"
+uid="uid://m5yu3euka3nr"
+path="res://.godot/imported/arbol.png-8073efd711e9283c71236573de0d4e4f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenarios/Escenario_Desierto/Planta1_Desierto.png"
-dest_files=["res://.godot/imported/Planta1_Desierto.png-9f987326622df3a8d4524eb27c9983fe.ctex"]
+source_file="res://assets/Escenarios/Escenario_Sakura/arbol.png"
+dest_files=["res://.godot/imported/arbol.png-8073efd711e9283c71236573de0d4e4f.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dadrhwgxkw4fa"
-path="res://.godot/imported/Roca3_Desierto.png-0f8940b5640289ddfd01f2e9166ae97c.ctex"
+uid="uid://ddmu51bet7n5w"
+path="res://.godot/imported/petalo_2.png-c4c5cab4810d744c147bb49046330111.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenarios/Escenario_Desierto/Roca3_Desierto.png"
-dest_files=["res://.godot/imported/Roca3_Desierto.png-0f8940b5640289ddfd01f2e9166ae97c.ctex"]
+source_file="res://assets/Escenarios/Escenario_Sakura/petalo_2.png"
+dest_files=["res://.godot/imported/petalo_2.png-c4c5cab4810d744c147bb49046330111.ctex"]
 
 [params]
 

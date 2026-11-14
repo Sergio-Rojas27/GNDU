@@ -1,7 +1,16 @@
 [gd_scene format=3 uid="uid://btq5g6p1wlbcx"]
 
 [ext_resource type="Texture2D" uid="uid://q856odc3kegn" path="res://assets/Escenarios/Escenario_Desierto/Cielo_Desierto.jpg" id="1_3h1gd"]
-[ext_resource type="Texture2D" uid="uid://bobnepu8f0dlj" path="res://assets/Escenarios/Escenario_Desierto/Suelo_Desierto.png" id="3_qmfc4"]
+[ext_resource type="Texture2D" uid="uid://k4w3a2eyf5rj" path="res://assets/Escenarios/Escenario_Desierto/Suelo_Desierto.png" id="3_qmfc4"]
+[ext_resource type="Texture2D" uid="uid://cajridqc7vc6" path="res://assets/Escenarios/Escenario_Desierto/Montaña1_Desierto.png" id="4_ongwi"]
+[ext_resource type="Texture2D" uid="uid://b6etocat10cv1" path="res://assets/Escenarios/Escenario_Desierto/Captus_Grande_Desierto.png" id="6_2gkjr"]
+[ext_resource type="Texture2D" uid="uid://cgkau7hsx3c1g" path="res://assets/Escenarios/Escenario_Desierto/Riscos_Desierto.png" id="6_ongwi"]
+[ext_resource type="Texture2D" uid="uid://cout6x16uopo4" path="res://assets/Escenarios/Escenario_Desierto/Planta7_Desierto.png" id="6_t5cjj"]
+[ext_resource type="Texture2D" uid="uid://do4kf5cstvvl" path="res://assets/Escenarios/Escenario_Desierto/Planta9_Desierto.png" id="7_2gkjr"]
+[ext_resource type="Texture2D" uid="uid://co25gelmve2g8" path="res://assets/Escenarios/Escenario_Desierto/Roca1_Desierto.png" id="9_a2upx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ghrv1"]
+size = Vector2(3820, 150)
 
 [node name="Escenario_desierto" type="Node2D" unique_id=1627048202]
 
@@ -12,34 +21,272 @@ autoscroll = Vector2(20, 0)
 [node name="ParallaxLayer" type="ParallaxLayer" parent="Parallax2D" unique_id=2116793799]
 
 [node name="cielo" type="Sprite2D" parent="Parallax2D/ParallaxLayer" unique_id=218510232]
-position = Vector2(941.0795, 243.76662)
-scale = Vector2(1.3192738, 1.8103682)
+position = Vector2(432.50647, 243.767)
+scale = Vector2(1.3340317, 1.8103682)
 texture = ExtResource("1_3h1gd")
 
 [node name="cielo" type="Sprite2D" parent="Parallax2D/ParallaxLayer/cielo" unique_id=478288864]
-position = Vector2(1407.5322, -2.6329508)
-scale = Vector2(0.9920752, 0.99725085)
+position = Vector2(1405.9674, -2.6329508)
+scale = Vector2(0.99429005, 0.99725085)
 texture = ExtResource("1_3h1gd")
 flip_h = true
 
-[node name="suelo" type="Sprite2D" parent="." unique_id=1095520723]
-position = Vector2(-39.00003, 882.7936)
-scale = Vector2(3.0308328, 4.757726)
+[node name="Montaña1Desierto2" type="Sprite2D" parent="." unique_id=717872384]
+position = Vector2(1278.3435, 596.25916)
+scale = Vector2(0.42334312, 0.42334312)
+texture = ExtResource("4_ongwi")
+
+[node name="Montaña1Desierto2" type="Sprite2D" parent="Montaña1Desierto2" unique_id=1670722459]
+position = Vector2(-1361.4467, 91.637665)
+scale = Vector2(0.6397798, 0.63639015)
+texture = ExtResource("4_ongwi")
+
+[node name="Montaña1Desierto2" type="Sprite2D" parent="Montaña1Desierto2/Montaña1Desierto2" unique_id=58495417]
+position = Vector2(-1365.5142, 91.637665)
+scale = Vector2(0.63639015, 0.63639015)
+texture = ExtResource("4_ongwi")
+
+[node name="Montaña1Desierto2" type="Sprite2D" parent="Montaña1Desierto2/Montaña1Desierto2/Montaña1Desierto2" unique_id=466852474]
+position = Vector2(-1365.5142, 91.637665)
+scale = Vector2(0.63639015, 0.63639015)
+texture = ExtResource("4_ongwi")
+
+[node name="Montaña1Desierto3" type="Sprite2D" parent="Montaña1Desierto2/Montaña1Desierto2" unique_id=1201652567]
+position = Vector2(-1361.4467, 91.637665)
+scale = Vector2(0.6397798, 0.63639015)
+texture = ExtResource("4_ongwi")
+
+[node name="Montaña1Desierto2" type="Sprite2D" parent="Montaña1Desierto2/Montaña1Desierto2/Montaña1Desierto3" unique_id=615692586]
+position = Vector2(-2944.1982, -224.09915)
+scale = Vector2(1.9519602, 1.9519602)
+texture = ExtResource("4_ongwi")
+
+[node name="Montaña1Desierto2" type="Sprite2D" parent="Montaña1Desierto2/Montaña1Desierto2/Montaña1Desierto3/Montaña1Desierto2" unique_id=2010041762]
+position = Vector2(-1365.5142, 91.637665)
+scale = Vector2(0.63639015, 0.63639015)
+texture = ExtResource("4_ongwi")
+
+[node name="Montaña1Desierto4" type="Sprite2D" parent="Montaña1Desierto2" unique_id=1176970461]
+position = Vector2(1768.4388, 96.235916)
+scale = Vector2(0.63630253, 0.63630253)
+texture = ExtResource("4_ongwi")
+
+[node name="Montaña1Desierto4" type="Sprite2D" parent="Montaña1Desierto2/Montaña1Desierto4" unique_id=871270961]
+position = Vector2(1731.0776, 103.37366)
+scale = Vector2(0.63630253, 0.63630253)
+texture = ExtResource("4_ongwi")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=2001528203]
+
+[node name="suelo" type="Sprite2D" parent="StaticBody2D" unique_id=1095520723]
+position = Vector2(-16.000061, 832.6848)
+scale = Vector2(0.5637501, 0.5828778)
 texture = ExtResource("3_qmfc4")
 
-[node name="Sprite2D2" type="Sprite2D" parent="suelo" unique_id=792239716]
-position = Vector2(218.795, 0.19023216)
-scale = Vector2(0.99290216, 1.0044237)
-texture = ExtResource("3_qmfc4")
-flip_h = true
-
-[node name="Sprite2D3" type="Sprite2D" parent="suelo" unique_id=1891636668]
-position = Vector2(439.14307, 0.043563128)
-scale = Vector2(1.0152762, 0.9984192)
+[node name="suelo" type="Sprite2D" parent="StaticBody2D/suelo" unique_id=185269922]
+position = Vector2(2297.1172, -0.7463472)
+scale = Vector2(0.94484615, 1.001904)
 texture = ExtResource("3_qmfc4")
 
-[node name="Sprite2D2" type="Sprite2D" parent="suelo/Sprite2D3" unique_id=445310712]
-position = Vector2(218.54474, 0.19023216)
-scale = Vector2(0.99290216, 1.0044237)
+[node name="suelo" type="Sprite2D" parent="StaticBody2D/suelo/suelo" unique_id=390714167]
+position = Vector2(2297.1172, -0.7448721)
+scale = Vector2(0.94484615, 1.0019009)
 texture = ExtResource("3_qmfc4")
-flip_h = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1747517113]
+position = Vector2(1394, 1048)
+shape = SubResource("RectangleShape2D_ghrv1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D" unique_id=406856590]
+position = Vector2(1152, -4)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_ghrv1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D/CollisionShape2D" unique_id=130652177]
+position = Vector2(-639.9999, 2991)
+shape = SubResource("RectangleShape2D_ghrv1")
+
+[node name="rocas" type="Sprite2D" parent="." unique_id=824370671]
+position = Vector2(1576.0001, 480.00003)
+scale = Vector2(0.3876085, 0.38760847)
+texture = ExtResource("6_ongwi")
+
+[node name="rocas" type="Sprite2D" parent="rocas" unique_id=38135202]
+position = Vector2(-1006.2637, 255.87677)
+scale = Vector2(0.5659749, 0.5659749)
+texture = ExtResource("6_ongwi")
+
+[node name="cactus2" type="Sprite2D" parent="." unique_id=39413054]
+position = Vector2(1627, 630)
+scale = Vector2(0.08341719, 0.08341717)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus" type="Sprite2D" parent="cactus2" unique_id=1008242086]
+position = Vector2(392.70422, 545.792)
+scale = Vector2(0.5156127, 0.5156127)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus" type="Sprite2D" parent="cactus2/cactus" unique_id=1479020237]
+position = Vector2(-1510.3457, -219.45166)
+scale = Vector2(1.1889411, 1.1889412)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus2" type="Sprite2D" parent="cactus2" unique_id=683618877]
+position = Vector2(-3056.9243, 431.5656)
+scale = Vector2(0.535352, 0.5353518)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus2" type="Sprite2D" parent="cactus2/cactus2" unique_id=1590948526]
+position = Vector2(22952.445, -67.17764)
+scale = Vector2(1.405659, 1.0980698)
+texture = ExtResource("6_2gkjr")
+
+[node name="piedra" type="Sprite2D" parent="." unique_id=785819797]
+position = Vector2(1459, 695)
+scale = Vector2(0.040457595, 0.040457595)
+texture = ExtResource("9_a2upx")
+
+[node name="piedra" type="Sprite2D" parent="piedra" unique_id=1598776701]
+position = Vector2(-12323.332, 181.35428)
+scale = Vector2(0.49276847, 0.5058518)
+texture = ExtResource("9_a2upx")
+
+[node name="piedra2" type="Sprite2D" parent="piedra" unique_id=1508720782]
+position = Vector2(9466.703, 3757.0203)
+scale = Vector2(1.0400995, 1.0400995)
+texture = ExtResource("9_a2upx")
+
+[node name="piedra" type="Sprite2D" parent="piedra/piedra2" unique_id=812197804]
+position = Vector2(1259.5077, 546.5796)
+scale = Vector2(1.0650026, 1.0932791)
+texture = ExtResource("9_a2upx")
+
+[node name="mata" type="Sprite2D" parent="." unique_id=940722483]
+position = Vector2(114, 712.00006)
+scale = Vector2(0.10913087, 0.07724198)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata" type="Sprite2D" parent="mata" unique_id=249417434]
+position = Vector2(1018.2525, 71.97717)
+scale = Vector2(0.99218994, 0.7022643)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata" type="Sprite2D" parent="mata/mata" unique_id=1776632761]
+position = Vector2(1066.6384, 8.1171875)
+scale = Vector2(0.7881065, 1.1406397)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata3" type="Sprite2D" parent="mata" unique_id=517120412]
+position = Vector2(12764.5, -77.67871)
+scale = Vector2(0.41870075, 0.40611055)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata2" type="Sprite2D" parent="mata/mata3" unique_id=1237513515]
+position = Vector2(829.785, 133.62589)
+scale = Vector2(0.5015082, 0.87218857)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata2" type="Sprite2D" parent="mata" unique_id=2092446528]
+position = Vector2(13873.252, 90.623474)
+scale = Vector2(0.6245974, 0.61984813)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata2" type="Sprite2D" parent="mata/mata2" unique_id=1975948811]
+position = Vector2(829.785, 133.62589)
+scale = Vector2(0.5015082, 0.87218857)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata3" type="Sprite2D" parent="mata/mata2" unique_id=255351838]
+position = Vector2(1496.4165, -313.2943)
+scale = Vector2(0.6245974, 0.61984813)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata2" type="Sprite2D" parent="mata/mata2/mata3" unique_id=2140630798]
+position = Vector2(829.785, 133.62589)
+scale = Vector2(0.5015082, 0.87218857)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata3" type="Sprite2D" parent="mata/mata2/mata3" unique_id=550054956]
+position = Vector2(1691.1598, 741.3089)
+scale = Vector2(1.3928645, 1.3822736)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata2" type="Sprite2D" parent="mata/mata2/mata3/mata3" unique_id=297028358]
+position = Vector2(829.785, 133.62589)
+scale = Vector2(0.5015082, 0.87218857)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata4" type="Sprite2D" parent="mata" unique_id=269501088]
+position = Vector2(-3656.161, -155.3567)
+scale = Vector2(0.5710796, 0.61931854)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata" type="Sprite2D" parent="mata/mata4" unique_id=1860904241]
+position = Vector2(1018.2525, 71.97717)
+scale = Vector2(0.99218994, 0.7022643)
+texture = ExtResource("6_t5cjj")
+
+[node name="mata" type="Sprite2D" parent="mata/mata4/mata" unique_id=1919519893]
+position = Vector2(1066.6384, 8.1171875)
+scale = Vector2(0.7881065, 1.1406397)
+texture = ExtResource("6_t5cjj")
+
+[node name="cactus" type="Sprite2D" parent="." unique_id=1425694185]
+position = Vector2(218, 602.00006)
+scale = Vector2(0.15024035, 0.15024033)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus" type="Sprite2D" parent="cactus" unique_id=643311725]
+position = Vector2(392.70422, 545.792)
+scale = Vector2(0.5156127, 0.5156127)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus" type="Sprite2D" parent="cactus/cactus" unique_id=211120403]
+position = Vector2(-1510.3457, -219.45166)
+scale = Vector2(1.1889411, 1.1889412)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus2" type="Sprite2D" parent="cactus" unique_id=1351292057]
+position = Vector2(-3422.0525, 89.65265)
+scale = Vector2(0.68884546, 0.68884546)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus" type="Sprite2D" parent="cactus/cactus2" unique_id=1300051422]
+position = Vector2(392.70422, 545.792)
+scale = Vector2(0.5156127, 0.5156127)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus" type="Sprite2D" parent="cactus/cactus2/cactus" unique_id=765660276]
+position = Vector2(-1510.3457, -219.45166)
+scale = Vector2(1.1889411, 1.1889412)
+texture = ExtResource("6_2gkjr")
+
+[node name="cactus3" type="Sprite2D" parent="." unique_id=285938317]
+position = Vector2(319.00003, 720.00006)
+scale = Vector2(0.052915055, 0.05418713)
+texture = ExtResource("7_2gkjr")
+
+[node name="cactus2" type="Sprite2D" parent="cactus3" unique_id=193843833]
+position = Vector2(733.46484, 382.39355)
+scale = Vector2(0.54845506, 0.60643196)
+texture = ExtResource("7_2gkjr")
+
+[node name="cactus3" type="Sprite2D" parent="cactus3" unique_id=1569971027]
+position = Vector2(19446.262, -406.001)
+scale = Vector2(0.66427267, 0.6802417)
+texture = ExtResource("7_2gkjr")
+
+[node name="cactus2" type="Sprite2D" parent="cactus3/cactus3" unique_id=1074748100]
+position = Vector2(1109.5313, 406.93985)
+scale = Vector2(0.54845506, 0.60643196)
+texture = ExtResource("7_2gkjr")
+
+[node name="cactus3" type="Sprite2D" parent="cactus3/cactus3" unique_id=1523150844]
+position = Vector2(28705.527, -108.5202)
+scale = Vector2(1.060922, 1.0864265)
+texture = ExtResource("7_2gkjr")
+
+[node name="cactus2" type="Sprite2D" parent="cactus3/cactus3/cactus3" unique_id=757603168]
+position = Vector2(1109.5313, 406.93985)
+scale = Vector2(0.54845506, 0.60643196)
+texture = ExtResource("7_2gkjr")

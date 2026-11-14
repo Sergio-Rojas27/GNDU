@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxubsd0f5avco"
-path="res://.godot/imported/Roca4_Desierto.png-c0a33268f7dd5b249de2c36895c79d65.ctex"
+uid="uid://ee7ct3ytoqfb"
+path="res://.godot/imported/preview.png-2444d5fd52e9a26edefcc4e6350bd7e2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Escenarios/Escenario_Desierto/Roca4_Desierto.png"
-dest_files=["res://.godot/imported/Roca4_Desierto.png-c0a33268f7dd5b249de2c36895c79d65.ctex"]
+source_file="res://assets/Fighters/estudiante_Sebas/preview.png"
+dest_files=["res://.godot/imported/preview.png-2444d5fd52e9a26edefcc4e6350bd7e2.ctex"]
 
 [params]
 
