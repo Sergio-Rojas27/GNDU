@@ -2,26 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-<<<<<<<< HEAD:assets/General/black.png.import
-uid="uid://dthjqfrgnrvmn"
+uid="uid://che8bsfsuewkx"
 path="res://.godot/imported/black.png-2fd0dc55f12fa14e067d3ebb7d99f1f9.ctex"
-========
-uid="uid://3ml0eay2y1v6"
-path="res://.godot/imported/logo.png-b959ea70c7b0a5b261d3f5e9bd4aca64.ctex"
->>>>>>>> 40a6fc85443b7ac2a721bf9bb46d04ebd41d33cb:assets/Menus/Menu_Principal/logo.png.import
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-<<<<<<<< HEAD:assets/General/black.png.import
 source_file="res://assets/General/black.png"
 dest_files=["res://.godot/imported/black.png-2fd0dc55f12fa14e067d3ebb7d99f1f9.ctex"]
-========
-source_file="res://assets/Menus/Menu_Principal/logo.png"
-dest_files=["res://.godot/imported/logo.png-b959ea70c7b0a5b261d3f5e9bd4aca64.ctex"]
->>>>>>>> 40a6fc85443b7ac2a721bf9bb46d04ebd41d33cb:assets/Menus/Menu_Principal/logo.png.import
 
 [params]
 

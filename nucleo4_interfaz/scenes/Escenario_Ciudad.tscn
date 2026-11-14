@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://c6p4utoy54x25"]
+
+[ext_resource type="Texture2D" uid="uid://dklpxx0kvs74k" path="res://assets/Escenarios/Escenario_Uni/Fondo_Unimar.jpeg" id="1_ac23l"]
+[ext_resource type="Texture2D" uid="uid://baq6ohbtjvi8s" path="res://assets/Escenarios/Escenario_Ciudad/Suelo_Ciudad.png" id="2_u718f"]
+[ext_resource type="Texture2D" uid="uid://fybheu28iwcr" path="res://assets/Escenarios/Escenario_Ciudad/Ciudad_Edificios2.png" id="3_6xd2u"]
+[ext_resource type="Texture2D" uid="uid://c5l8tx4ydp8g5" path="res://assets/Escenarios/Escenario_Ciudad/Ciudad_Edificios1.png" id="4_ypfs8"]
+[ext_resource type="Texture2D" uid="uid://dl6dfowe5vsri" path="res://assets/Escenarios/Escenario_Ciudad/Street_ciudad.png" id="5_6yovm"]
+[ext_resource type="Texture2D" uid="uid://dn0rhwmti6lu6" path="res://assets/Escenarios/Escenario_Ciudad/Banquito_Ciudad.png" id="7_twqfb"]
+[ext_resource type="Texture2D" uid="uid://cxm7vxpj0lf1o" path="res://assets/Escenarios/Escenario_Ciudad/Matica4_Ciudad.png" id="8_v87ld"]
+[ext_resource type="Texture2D" uid="uid://ds74u508u2137" path="res://assets/Escenarios/Escenario_Ciudad/Parada_Ciudad.png" id="9_ftlyn"]
+[ext_resource type="Texture2D" uid="uid://k2bc8iiedftl" path="res://assets/Escenarios/Escenario_Ciudad/Poste2_Ciudad.png" id="10_8rjfs"]
+[ext_resource type="Script" uid="uid://78kr4it3c3ra" path="res://nucleo4_interfaz/scripts/camera_2d.gd" id="10_ac23l"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_43tgq"]
+size = Vector2(3870, 159)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5q25o"]
+size = Vector2(81, 1201)
+
+[node name="EscenarioCiudad" type="Node2D" unique_id=424915595]
+position = Vector2(-236, -40)
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1322676106]
+scroll_offset = Vector2(3299, 38)
+repeat_size = Vector2(1394, 0)
+autoscroll = Vector2(20, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=727731665]
+position = Vector2(760, 375)
+texture = ExtResource("1_ac23l")
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D/Sprite2D" unique_id=1108461193]
+position = Vector2(1392, -1)
+texture = ExtResource("1_ac23l")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=702936521]
+
+[node name="Piso" type="Sprite2D" parent="StaticBody2D" unique_id=42123500]
+position = Vector2(-81, 993.78986)
+scale = Vector2(1.2237569, 3.7742076)
+texture = ExtResource("2_u718f")
+
+[node name="Piso" type="Sprite2D" parent="StaticBody2D/Piso" unique_id=1553874459]
+position = Vector2(866.18506, -0.4562698)
+scale = Vector2(1.2237569, 1.0007023)
+texture = ExtResource("2_u718f")
+
+[node name="Piso2" type="Sprite2D" parent="StaticBody2D/Piso" unique_id=2012697412]
+position = Vector2(1832.8804, -0.47536802)
+scale = Vector2(1.2237569, 1.0089664)
+texture = ExtResource("2_u718f")
+
+[node name="Piso" type="Sprite2D" parent="StaticBody2D/Piso/Piso2" unique_id=1226775211]
+position = Vector2(866.18506, -0.4562698)
+scale = Vector2(1.2237569, 1.0007023)
+texture = ExtResource("2_u718f")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1052358975]
+position = Vector2(1503, 1034.5)
+shape = SubResource("RectangleShape2D_43tgq")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=1364757282]
+position = Vector2(-393.5, 506.5)
+shape = SubResource("RectangleShape2D_5q25o")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D2" unique_id=1175607915]
+position = Vector2(3397.5, -23.5)
+shape = SubResource("RectangleShape2D_5q25o")
+
+[node name="CiudadFondo" type="Sprite2D" parent="." unique_id=1323412217]
+position = Vector2(150.00003, 415)
+scale = Vector2(1.0725807, 1.6140894)
+texture = ExtResource("3_6xd2u")
+
+[node name="Iglesia" type="Sprite2D" parent="CiudadFondo" unique_id=1628771174]
+position = Vector2(963.33075, 10.532268)
+scale = Vector2(0.6842252, 0.39511073)
+texture = ExtResource("4_ypfs8")
+
+[node name="CiudadFondo" type="Sprite2D" parent="CiudadFondo" unique_id=2119978969]
+position = Vector2(1992.3909, 23.542692)
+scale = Vector2(1.3387097, 0.9827366)
+texture = ExtResource("3_6xd2u")
+flip_h = true
+
+[node name="Casas" type="Sprite2D" parent="." unique_id=2060529545]
+position = Vector2(1030.9375, 625.75)
+scale = Vector2(0.95606834, 1.2088608)
+texture = ExtResource("5_6yovm")
+
+[node name="Casas" type="Sprite2D" parent="Casas" unique_id=416622370]
+position = Vector2(-2136.7207, -1.5369568)
+scale = Vector2(0.8430578, 1.0074861)
+texture = ExtResource("5_6yovm")
+flip_h = true
+
+[node name="Casas" type="Sprite2D" parent="Casas/Casas" unique_id=307653075]
+position = Vector2(4988.576, 0.94485855)
+scale = Vector2(0.9739118, 0.9953013)
+texture = ExtResource("5_6yovm")
+flip_h = true
+
+[node name="Banquito" type="Sprite2D" parent="." unique_id=90026587]
+position = Vector2(2249.0005, 856)
+scale = Vector2(1.0818639, 1.1247718)
+texture = ExtResource("7_twqfb")
+
+[node name="Banquito" type="Sprite2D" parent="Banquito" unique_id=605290714]
+position = Vector2(-2240.5776, -8.001556)
+scale = Vector2(1.0818639, 1.1247718)
+texture = ExtResource("7_twqfb")
+
+[node name="Matica" type="Sprite2D" parent="." unique_id=1411834613]
+position = Vector2(514, 807)
+texture = ExtResource("8_v87ld")
+
+[node name="Matica" type="Sprite2D" parent="Matica" unique_id=379437558]
+position = Vector2(-889, 0)
+texture = ExtResource("8_v87ld")
+
+[node name="Matica2" type="Sprite2D" parent="." unique_id=75229835]
+position = Vector2(1966, 806)
+texture = ExtResource("8_v87ld")
+
+[node name="Matica3" type="Sprite2D" parent="." unique_id=69306640]
+position = Vector2(1223, 808)
+texture = ExtResource("8_v87ld")
+
+[node name="Parada" type="Sprite2D" parent="." unique_id=9162909]
+position = Vector2(2697, 809)
+texture = ExtResource("9_ftlyn")
+
+[node name="Poste" type="Sprite2D" parent="." unique_id=2069081451]
+position = Vector2(338, 704)
+scale = Vector2(0.16713408, 0.22741783)
+texture = ExtResource("10_8rjfs")
+
+[node name="Poste2" type="Sprite2D" parent="Poste" unique_id=840915241]
+position = Vector2(8251.734, -8.794434)
+scale = Vector2(1, 1.0000001)
+texture = ExtResource("10_8rjfs")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1921495033]
+position = Vector2(962, 611)
+zoom = Vector2(1.3, 1.3)
+script = ExtResource("10_ac23l")

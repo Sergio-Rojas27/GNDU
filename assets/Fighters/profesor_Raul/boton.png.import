@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cwxkp5q08hqaw"
-path="res://.godot/imported/boton.png-8b7b5c0ca21090f85164e21a0dbcaea4.ctex"
+path="res://.godot/imported/boton.png-b75a73c0c418095c81e92d7806e5ac84.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Fighters/Prueba_1/boton.png"
-dest_files=["res://.godot/imported/boton.png-8b7b5c0ca21090f85164e21a0dbcaea4.ctex"]
+source_file="res://assets/Fighters/profesor_Raul/boton.png"
+dest_files=["res://.godot/imported/boton.png-b75a73c0c418095c81e92d7806e5ac84.ctex"]
 
 [params]
 

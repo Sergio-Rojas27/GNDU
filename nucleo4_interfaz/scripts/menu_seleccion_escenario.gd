@@ -2,9 +2,10 @@ extends Control
 
 var stage_catalog: Array[Dictionary] = [
 	{
-		"id": "Escenario_Espacio",
-		"name": "Espacio",
-		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_espacio.png"
+		"id": "Escenario_CampoEntrenamiento",
+		"name": "Centro de entrenamiento",
+		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_CampoEntrenamiento.jpg"
+		
 	},
 	{
 		"id": "Escenario_Playa",
@@ -17,9 +18,26 @@ var stage_catalog: Array[Dictionary] = [
 		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_uni.png"
 	},
 	{
-		"id": "Escenario_CampoEntrenamiento",
-		"name": "Centro de entrenamiento",
-		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_CampoEntrenamiento.jpg"
+		"id": "Escenario_Ciudad",
+		"name": "Ciudad",
+		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_Ciudad.png"
+		
+	},
+	{
+		"id": "Escenario_Espacio",
+		"name": "Espacio",
+		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_espacio.png"
+		
+	},
+	{
+		"id": "Escenario_Jungla",
+		"name": "Jungla",
+		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_Jungla.png"
+	},
+	{
+		"id": "Escenario_Sakura",
+		"name": "Sakura",
+		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_sakura.png"
 	},
 	{
 		"id": "Escenario_Desierto",
@@ -30,21 +48,6 @@ var stage_catalog: Array[Dictionary] = [
 		"id": "Escenario_Navidad",
 		"name": "Navidad",
 		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_navidad.png"
-	},
-	{
-		"id": "Escenario_Sakura",
-		"name": "Sakura",
-		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_sakura.png"
-	},
-	{
-		"id": "Escenario_Ciudad",
-		"name": "Ciudad",
-		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_ciudad.png"
-	},
-	{
-		"id": "Escenario_Ring",
-		"name": "Ring",
-		"bg_path": "res://assets/Menus/PortadasEscenarios/portada_ring.png"
 	},
 	{
 		"id": "escenario_random",

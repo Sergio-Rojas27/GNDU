@@ -91,7 +91,7 @@ scale = Vector2(0.5451933, 0.5179007)
 texture = ExtResource("4_dngfl")
 
 [node name="Flor" type="Sprite2D" parent="Flor2" unique_id=1962750293]
-position = Vector2(-1328.2533, -53.697266)
+position = Vector2(-1328.2534, 0.3671875)
 scale = Vector2(1.1763468, 0.8663211)
 texture = ExtResource("4_dngfl")
 
@@ -106,7 +106,7 @@ scale = Vector2(0.88733107, 0.8663211)
 texture = ExtResource("4_dngfl")
 
 [node name="Montanas" type="Sprite2D" parent="." unique_id=340576315]
-position = Vector2(551, 344)
+position = Vector2(551, 372)
 scale = Vector2(1, 1.1286764)
 texture = ExtResource("5_liksh")
 
@@ -116,13 +116,13 @@ texture = ExtResource("5_liksh")
 flip_h = true
 
 [node name="Sendero2" type="Sprite2D" parent="." unique_id=116452056]
-position = Vector2(2488.3716, 711.99524)
+position = Vector2(2488.3716, 739.99524)
 rotation = 0.02057253
 scale = Vector2(1.8167526, 0.3546508)
 texture = ExtResource("6_66vmd")
 
 [node name="Arbusto2" type="Sprite2D" parent="." unique_id=1361016880]
-position = Vector2(-200, 633)
+position = Vector2(-200, 661)
 texture = ExtResource("7_c4rb0")
 
 [node name="Salones2" type="Sprite2D" parent="." unique_id=2032493750]
@@ -142,11 +142,11 @@ position = Vector2(196, 535)
 texture = ExtResource("9_vlgg8")
 
 [node name="Arbol1" type="Sprite2D" parent="Arbol1" unique_id=210115936]
-position = Vector2(2415, 64)
+position = Vector2(2415, 92)
 texture = ExtResource("9_vlgg8")
 
 [node name="Arbol2" type="Sprite2D" parent="." unique_id=1908785361]
-position = Vector2(2150, 565)
+position = Vector2(2150, 593)
 texture = ExtResource("10_06hws")
 
 [node name="Arbol2" type="Sprite2D" parent="Arbol2" unique_id=1990991202]
@@ -154,19 +154,19 @@ position = Vector2(-76, 60)
 texture = ExtResource("10_06hws")
 
 [node name="Arbol3" type="Sprite2D" parent="." unique_id=2040187672]
-position = Vector2(-180, 584)
+position = Vector2(-180, 612)
 texture = ExtResource("10_06hws")
 
 [node name="Arbusto" type="Sprite2D" parent="." unique_id=56561760]
-position = Vector2(-341, 639)
+position = Vector2(-341, 667)
 texture = ExtResource("7_c4rb0")
 
 [node name="Salones" type="Sprite2D" parent="." unique_id=1470926392]
-position = Vector2(969, 547)
+position = Vector2(969, 575)
 texture = ExtResource("8_v1kei")
 
 [node name="Flor" type="Sprite2D" parent="." unique_id=1289598590]
-position = Vector2(1709, 765.9999)
+position = Vector2(1709, 793.9999)
 scale = Vector2(0.7383721, 0.7196532)
 texture = ExtResource("4_dngfl")
 
@@ -191,17 +191,17 @@ scale = Vector2(0.8656945, 0.8947726)
 texture = ExtResource("4_dngfl")
 
 [node name="Flor3" type="Sprite2D" parent="." unique_id=1925090189]
-position = Vector2(1999.8494, 720.20264)
+position = Vector2(1999.8494, 748.20264)
 scale = Vector2(0.35900345, 0.41274953)
 texture = ExtResource("4_dngfl")
 
 [node name="Arbusto4" type="Sprite2D" parent="." unique_id=1871838193]
-position = Vector2(861, 752)
+position = Vector2(861, 780)
 scale = Vector2(0.514347, 0.6011106)
 texture = ExtResource("11_knjm0")
 
 [node name="Flor4" type="Sprite2D" parent="." unique_id=1426126050]
-position = Vector2(601, 751)
+position = Vector2(601, 779)
 scale = Vector2(0.54584926, 0.5061734)
 texture = ExtResource("4_dngfl")
 

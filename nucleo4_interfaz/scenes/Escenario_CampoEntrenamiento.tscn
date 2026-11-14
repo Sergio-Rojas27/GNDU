@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://cad6hwrm8euxv" path="res://assets/Escenarios/Escenario_CampoEntrenamiento/CampoEntrenamiento.jpg" id="1_4tlb7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tkx1d"]
-size = Vector2(3870, 112)
+size = Vector2(3870, 149)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0o3dj"]
 size = Vector2(81, 1201)
@@ -22,7 +22,7 @@ texture = ExtResource("1_4tlb7")
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=350347264]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=814886368]
-position = Vector2(1000, 1015)
+position = Vector2(1000, 996.5)
 shape = SubResource("RectangleShape2D_tkx1d")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=484882128]

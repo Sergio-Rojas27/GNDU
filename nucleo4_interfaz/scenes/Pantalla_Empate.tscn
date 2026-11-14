@@ -1,74 +1,158 @@
 [gd_scene format=3 uid="uid://dffa5301l7q0l"]
 
-[ext_resource type="Texture2D" uid="uid://dthjqfrgnrvmn" path="res://assets/General/black.png" id="1_7kqay"]
-[ext_resource type="Texture2D" uid="uid://2si1qo77b7wk" path="res://assets/Fighters/Prueba_1/Personaje1.png" id="2_q2o6o"]
-[ext_resource type="Texture2D" uid="uid://64y0dpyekeen" path="res://assets/Fighters/Prueba_1/winner.png" id="3_n33ja"]
+[ext_resource type="Texture2D" uid="uid://che8bsfsuewkx" path="res://assets/General/black.png" id="1_7kqay"]
+[ext_resource type="Script" uid="uid://cdcedorineod" path="res://nucleo4_interfaz/scripts/pantalla_empate.gd" id="1_q2o6o"]
+[ext_resource type="Texture2D" uid="uid://dnulcmeq12jii" path="res://assets/General/empate.png" id="3_n33ja"]
 [ext_resource type="Texture2D" uid="uid://co6qnjhu8t6dk" path="res://assets/General/boton.png" id="4_ik7ie"]
+[ext_resource type="Texture2D" uid="uid://b1oqjblt5dgph" path="res://assets/Fighters/estudiante_angel/preview.png" id="4_n33ja"]
+[ext_resource type="Texture2D" uid="uid://b6g200i00q3y6" path="res://assets/Fighters/estudiante_gabriel/preview.png" id="5_ik7ie"]
 [ext_resource type="Texture2D" uid="uid://q48hgmqcax81" path="res://assets/General/botonPressed.png" id="5_iw5uy"]
 [ext_resource type="Texture2D" uid="uid://cvd5r4vmium10" path="res://assets/General/botonHover.png" id="6_nynin"]
 [ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="7_c3swx"]
 
-[node name="PantallaEmpate" type="Control" unique_id=1366135524]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nynin"]
+
+[sub_resource type="Gradient" id="Gradient_n33ja"]
+
+[node name="PantallaEmpate" type="Control" unique_id=1789682172]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+script = ExtResource("1_q2o6o")
 
 [node name="fondo" type="TextureRect" parent="." unique_id=1443534470]
 modulate = Color(1, 1, 1, 0.7882353)
+material = SubResource("ShaderMaterial_nynin")
 layout_mode = 0
 offset_right = 1922.0
 offset_bottom = 1089.0
 texture = ExtResource("1_7kqay")
 
-[node name="Personaje" type="TextureRect" parent="." unique_id=833152269]
-layout_mode = 0
-offset_left = -67.0
-offset_top = 6.0
-offset_right = 997.0
-offset_bottom = 1649.0
-texture = ExtResource("2_q2o6o")
-
-[node name="Personaje" type="TextureRect" parent="Personaje" unique_id=482683398]
-layout_mode = 0
-offset_left = 985.0
-offset_top = -1.0
-offset_right = 2049.0
-offset_bottom = 1642.0
-texture = ExtResource("2_q2o6o")
-flip_h = true
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1099310555]
+amount = 500
+lifetime = 10.0
+explosiveness = 0.29
+emission_shape = 3
+emission_rect_extents = Vector2(2000, 1)
+direction = Vector2(0, 1)
+spread = 20.0
+initial_velocity_min = 50.0
+initial_velocity_max = 50.0
+scale_amount_min = 15.0
+scale_amount_max = 15.0
+color = Color(1, 1, 0.019607844, 1)
+color_initial_ramp = SubResource("Gradient_n33ja")
 
 [node name="TextureRect2" type="TextureRect" parent="." unique_id=273623833]
 layout_mode = 0
-offset_left = 502.0
-offset_top = 249.99997
-offset_right = 1528.0
-offset_bottom = 647.0
+offset_left = 504.9999
+offset_top = 34.999954
+offset_right = 1416.7773
+offset_bottom = 543.708
 rotation = -0.0022860286
 texture = ExtResource("3_n33ja")
+expand_mode = 1
 
-[node name="Salir" type="TextureButton" parent="." unique_id=908654929]
+[node name="Personaje1" type="TextureRect" parent="." unique_id=833152269]
+layout_mode = 0
+offset_left = -39.0
+offset_top = 47.0
+offset_right = 650.0
+offset_bottom = 1362.0
+texture = ExtResource("4_n33ja")
+expand_mode = 1
+
+[node name="Personaje2" type="TextureRect" parent="." unique_id=482683398]
+layout_mode = 0
+offset_left = 1279.0
+offset_top = 66.0
+offset_right = 1975.0
+offset_bottom = 1380.0
+texture = ExtResource("5_ik7ie")
+expand_mode = 1
+flip_h = true
+
+[node name="Revancha" type="TextureButton" parent="." unique_id=1174301014]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 0
-offset_left = 727.0
-offset_top = 729.0
-offset_right = 1224.0
-offset_bottom = 848.0
+offset_left = 729.0
+offset_top = 486.0
+offset_right = 1226.0
+offset_bottom = 605.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture_normal = ExtResource("4_ik7ie")
 texture_pressed = ExtResource("5_iw5uy")
 texture_hover = ExtResource("6_nynin")
+texture_focused = ExtResource("6_nynin")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="Label2" type="Label" parent="Salir" unique_id=895255379]
+[node name="Label" type="Label" parent="Revancha" unique_id=1120579929]
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 0
-offset_left = 17.0
+offset_left = 12.0
+offset_top = 3.0
+offset_right = 484.0
+offset_bottom = 116.0
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("7_c3swx")
+theme_override_font_sizes/font_size = 40
+text = "Revancha"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CambiarPersonaje" type="TextureButton" parent="." unique_id=2145574387]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_left = 734.0
+offset_top = 647.0
+offset_right = 1231.0
+offset_bottom = 766.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("4_ik7ie")
+texture_pressed = ExtResource("5_iw5uy")
+texture_hover = ExtResource("6_nynin")
+texture_focused = ExtResource("6_nynin")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="CambiarPersonaje" unique_id=62084408]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 481.0
+offset_bottom = 109.0
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("7_c3swx")
+theme_override_font_sizes/font_size = 40
+text = "Cambiar personaje"
+horizontal_alignment = 1
+vertical_alignment = 1
+justification_flags = 35
+
+[node name="Salir" type="TextureButton" parent="." unique_id=596975149]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_left = 734.0
+offset_top = 812.0
+offset_right = 1231.0
+offset_bottom = 931.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("4_ik7ie")
+texture_pressed = ExtResource("5_iw5uy")
+texture_hover = ExtResource("6_nynin")
+texture_focused = ExtResource("6_nynin")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Label2" type="Label" parent="Salir" unique_id=1916575168]
+layout_mode = 0
+offset_left = 13.0
 offset_top = -1.0
-offset_right = 488.0
+offset_right = 484.0
 offset_bottom = 119.0
 theme_override_fonts/font = ExtResource("7_c3swx")
 theme_override_font_sizes/font_size = 40
