@@ -4,6 +4,11 @@ extends CanvasLayer
 @onready var btn_opciones = $Opciones
 @onready var btn_salir = $Salir
 
+const ESCENA_INFO_CONTROLES := "res://nucleo4_interfaz/scenes/Pantalla_InfoControles.tscn"
+
+# True mientras la pantalla de controles está abierta encima del menú de pausa
+var info_abierta: bool = false
+
 # Lista de botones navegables con WASD
 var botones: Array = []
 var indice_actual: int = 0
@@ -33,6 +38,10 @@ func _al_cambiar_visibilidad() -> void:
 		botones[indice_actual].call_deferred("grab_focus")
 
 func _input(event: InputEvent) -> void:
+	# Mientras la pantalla de controles está abierta, ella maneja el teclado (ESC = volver)
+	if info_abierta:
+		return
+
 	# Bloquear ratón/trackpad mientras el menú de pausa está visible
 	if visible and (event is InputEventMouseButton or event is InputEventMouseMotion):
 		get_viewport().set_input_as_handled()
@@ -103,8 +112,19 @@ func _on_reanudar_pressed() -> void:
 	toggle_pausa()
 
 func _on_opciones_pressed() -> void:
-	get_tree().paused = false
-	#get_tree().change_scene_to_file("res://nucleo4_interfaz/scenes/Pantalla_InfoControles.tscn")
+	if info_abierta:
+		return
+	# Se abre como overlay (sin cambiar de escena) para conservar la partida en pausa
+	# y poder regresar a este menú con ESC o con el botón VOLVER.
+	var info: Control = load(ESCENA_INFO_CONTROLES).instantiate()
+	info_abierta = true
+	info.tree_exited.connect(_on_info_cerrada)
+	add_child(info)
+
+func _on_info_cerrada() -> void:
+	info_abierta = false
+	indice_actual = 1 # Opciones
+	botones[indice_actual].call_deferred("grab_focus")
 
 func _on_salir_pressed() -> void:
 	get_tree().paused = false

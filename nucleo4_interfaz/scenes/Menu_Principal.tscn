@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bn3d4xgh77fdx" path="res://assets/Menus/Menu_Principal/Fondo_menu.jpg" id="1_h4orl"]
 [ext_resource type="Texture2D" uid="uid://b46xkwn1so25e" path="res://assets/Menus/Menu_Principal/btn_jugar.png" id="2_7ijho"]
 [ext_resource type="Texture2D" uid="uid://db3i3qtm3jd1v" path="res://assets/Menus/Menu_Principal/btnjugar_presionado.png" id="3_c6rxo"]
-[ext_resource type="Texture2D" uid="uid://3ml0eay2y1v6" path="res://assets/Menus/Menu_Principal/logo.png" id="3_e8otj"]
+[ext_resource type="Texture2D" uid="uid://tfmscc8q8jwp" path="res://assets/Menus/Menu_Principal/logo.png" id="3_e8otj"]
 [ext_resource type="Texture2D" uid="uid://o2pagivk5g82" path="res://assets/Menus/Menu_Principal/btn_config.png" id="3_itph0"]
 [ext_resource type="Texture2D" uid="uid://b7qa8jp7q4nhy" path="res://assets/Menus/Menu_Principal/btn_config_pressed.png" id="4_voe4i"]
 [ext_resource type="Texture2D" uid="uid://b8f0jgtrltcv" path="res://assets/Menus/Menu_Principal/btn_salir.png" id="7_voe4i"]
@@ -26,9 +26,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1.0
-offset_right = -1.0
-offset_bottom = 10.0
+offset_left = 8.0
+offset_top = 9.0
+offset_right = 8.0
+offset_bottom = 19.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_h4orl")
@@ -93,3 +94,4 @@ texture_pressed = ExtResource("9_tjmon")
 texture_focused = ExtResource("9_tjmon")
 
 [connection signal="pressed" from="VBoxContainer/btn_jugar" to="." method="_on_btn_jugar_pressed"]
+[connection signal="pressed" from="VBoxContainer/btn_config" to="." method="_on_btn_config_pressed"]
