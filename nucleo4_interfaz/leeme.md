@@ -55,6 +55,8 @@ nucleo4_interfaz/
 │   ├── Escenario_Espacio.tscn
 │   ├── Escenario_Jungla.tscn
 │   └── Escenario_Playa.tscn
+│   └── Escenario_Sakura.tscn
+│   └── Escenario_Navidad.tscn
 └── scripts/
     ├── DatosGlobales.gd                 # Autoload: estado global y señales
     ├── event_bus.gd                     # Autoload: señal de pausa (Núcleo 2 → 4)
@@ -349,6 +351,8 @@ Los luchadores se cargan dinámicamente desde `assets/Fighters/`. Los disponible
 | `Escenario_Espacio` | Espacio |
 | `Escenario_Desierto` | Desierto |
 | `Escenario_Jungla` | Jungla |
+| `Escenario_Navidad` | Navidad |
+| `Escenario_Sakura` | Sakura |
 | `escenario_random` | Escenario Random (aleatorio) |
 
 ---
