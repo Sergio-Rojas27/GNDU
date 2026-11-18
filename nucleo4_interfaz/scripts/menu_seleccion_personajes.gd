@@ -445,104 +445,35 @@ func confirmar_p2() -> void:
 
 func verificar_inicio_combate() -> void:
 	if p1_confirmed and p2_confirmed:
+		# 1. Guardamos los IDs de los luchadores en el Singleton
 		DatosGlobales.p1_fighter_id = p1_fighter_id
 		DatosGlobales.p2_fighter_id = p2_fighter_id
 		
+		# 2. Emitimos el evento de inicio (opcionalmente puedes mover esto a la pantalla VS si prefieres que se emita justo antes de pelear)
 		emitir_evento_match_start()
 		
-		# 1. Ocultar SOLAMENTE las grillas y textos, MANTENIENDO visibles las previews de los luchadores
-		if has_node("CursorP1"): $CursorP1.visible = false
-		if has_node("CursorP2"): $CursorP2.visible = false
-		
-		var grillas_node = $MarginContainer/VBoxContainer/HBoxContainer.get_node_or_null("HBoxContainer")
-		if grillas_node:
-			grillas_node.visible = false
-		
-		if main_title_label:
-			main_title_label.visible = false
-			
-		if instructions_label:
-			instructions_label.visible = false
-		
-		# 2. Crear un CenterContainer overlay para centrar la imagen de VS exactamente en medio de las previews
-		if not has_node("VSOverlayContainer"):
-			var center_container = CenterContainer.new()
-			center_container.name = "VSOverlayContainer"
-			
-			# Ocupar toda la pantalla (Full Rect)
-			center_container.set_anchors_preset(Control.PRESET_FULL_RECT)
-			
-			var vs_texture = TextureRect.new()
-			vs_texture.name = "TextureVS"
-			
-			# --- TAMAÑO Y ESCALA ESTRICTOS ---
-			var tamano_deseado = Vector2(300, 300) 
-			
-			vs_texture.custom_minimum_size = tamano_deseado
-			vs_texture.size = tamano_deseado
-			
-			vs_texture.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-			vs_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			
-			var ruta_imagen_vs = "res://assets/Menus/Menu_Principal/vs.png" 
-			vs_texture.texture = load_texture_runtime(ruta_imagen_vs, "vs.png")
-			
-			center_container.add_child(vs_texture)
-			add_child(center_container)
-			
-			await get_tree().process_frame
-			
-			if is_instance_valid(vs_texture):
-				# --- ANIMACIÓN RECTA DE ALTO IMPACTO ---
-				vs_texture.pivot_offset = vs_texture.size / 2.0
-				vs_texture.scale = Vector2(3.5, 3.5)
-				vs_texture.modulate.a = 0.0
-				vs_texture.rotation_degrees = 0.0 
-				
-				var tween = create_tween()
-				tween.set_parallel(true)
-				
-				tween.tween_property(vs_texture, "scale", Vector2(1.0, 1.0), 0.35)\
-					.set_trans(Tween.TRANS_BACK)\
-					.set_ease(Tween.EASE_OUT)
-					
-				tween.tween_property(vs_texture, "modulate:a", 1.0, 0.1)\
-					.set_ease(Tween.EASE_IN)
-					
-				tween.chain()
-				tween.tween_property(vs_texture, "scale", Vector2(1.1, 1.1), 0.12)\
-					.set_trans(Tween.TRANS_SINE)\
-					.set_ease(Tween.EASE_OUT)
-				tween.tween_property(vs_texture, "scale", Vector2(1.0, 1.0), 0.15)\
-					.set_trans(Tween.TRANS_SINE)\
-					.set_ease(Tween.EASE_IN)
-		
-		# 3. Bloquear entradas y programar la transición suave al combate
+		# 3. Bloqueamos las entradas y detenemos el escaneo de carpetas
 		set_process_unhandled_input(false)
 		if scan_timer:
 			scan_timer.stop()
 			
-		# Esperar 2.0 segundos mostrando la animación y las previews, luego fundido a negro
-		var timer := get_tree().create_timer(2.0)
-		timer.timeout.connect(func():
-			# Crear un ColorRect negro a nivel de la raíz de la escena para tapar todo el fondo
-			var fade_rect = ColorRect.new()
-			fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-			fade_rect.color = Color(0, 0, 0, 0) # Comienza transparente
-			fade_rect.z_index = 4096 # Asegura que esté por encima de cualquier otro elemento visual
-			add_child(fade_rect)
-			
-			# Animar la opacidad a negro total
-			var fade_tween = create_tween()
-			fade_tween.tween_property(fade_rect, "color:a", 1.0, 0.4)
-			
-			# Esperar a que termine la animación de fundido y un frame extra antes de cambiar de escena
-			fade_tween.finished.connect(func():
-				await get_tree().process_frame
-				DatosGlobales.cambiar_estado(
-					DatosGlobales.AppState.COMBATE,
-					"res://nucleo4_interfaz/scenes/pantalla_combate.tscn"
-				)
+		# 4. Hacemos un pequeño fundido a negro rápido de salida (opcional pero recomendado)
+		var fade_rect = ColorRect.new()
+		fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+		fade_rect.color = Color(0, 0, 0, 0) 
+		fade_rect.z_index = 4096 
+		add_child(fade_rect)
+		
+		var fade_tween = create_tween()
+		fade_tween.tween_property(fade_rect, "color:a", 1.0, 0.3)
+		
+		# 5. Pasamos a tu NUEVA escena de VS
+		fade_tween.finished.connect(func():
+			await get_tree().process_frame
+			# Asegúrate de poner la ruta correcta a tu nueva escena de VS aquí:
+			DatosGlobales.cambiar_estado(
+				DatosGlobales.AppState.PANTALLA_VS, # O el estado equivalente que uses para VS
+				"res://nucleo4_interfaz/scenes/pantalla_vs.tscn" 
 			)
 		)
 		
