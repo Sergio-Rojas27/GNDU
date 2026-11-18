@@ -6,9 +6,6 @@ signal on_combat_event(evento: Dictionary)
 @export var jugador1: CharacterBody2D
 @export var jugador2: CharacterBody2D
 
-@export_group("Cámara")
-@export var camara: Camera2D
-
 @export_group("Elementos de UI")
 @export var texto_tiempo: Label
 @export var reloj_combate: Timer
@@ -36,7 +33,6 @@ var player_1_fighter_id: String = ""
 var player_2_fighter_id: String = ""
 var stage_id: String = ""
 
-var altura_fija_camara: float = 0.0
 var pos_inicial_j1: Vector2 = Vector2.ZERO
 var pos_inicial_j2: Vector2 = Vector2.ZERO
 var mostrar_hitboxes: bool = false
@@ -78,19 +74,11 @@ func _ready() -> void:
 		
 	_actualizar_labels_rounds()
 
-	if camara:
-		altura_fija_camara = camara.global_position.y
-
 	var bus = get_node_or_null("/root/EventBus")
 	if bus and bus.has_signal("on_match_start"):
 		bus.connect("on_match_start", Callable(self, "on_match_start"))
 
 func _process(_delta: float) -> void:
-	# --- LÓGICA DE CÁMARA DINÁMICA ---
-	if camara and jugador1 and jugador2:
-		var punto_medio_x = (jugador1.global_position.x + jugador2.global_position.x) / 2.0
-		camara.global_position = Vector2(punto_medio_x, altura_fija_camara)
-
 	if combate_finalizado:
 		return
 

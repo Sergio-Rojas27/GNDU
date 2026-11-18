@@ -15,9 +15,6 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_actualizar_camara(delta)
 
-func _process(delta: float) -> void:
-	_actualizar_camara(delta)
-
 func _actualizar_camara(delta: float) -> void:
 	if not jugador_1 or not jugador_2:
 		return

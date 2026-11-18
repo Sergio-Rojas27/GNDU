@@ -1,4 +1,4 @@
-# ⚔️ GNDU — Núcleo 3: Motor de Combate (`nucleo3_combate`)
+# ⚔️ GNDU — Núcleo 3: Motor de Combate
 
 El **Núcleo 3 (Combate)** es el módulo encargado de la simulación física en tiempo real, las mecánicas de pelea 2D, la máquina de estados de los luchadores, el sistema de colisiones (*Pushbox*, *Hurtboxes* y *Hitboxes*), las reglas de rondas/tiempo y la emisión de eventos de combate hacia el resto de los núcleos del proyecto GNDU.
 
@@ -11,10 +11,10 @@ El **Núcleo 3 (Combate)** es el módulo encargado de la simulación física en 
 1. [Arquitectura y Estructura del Directorio](#1-arquitectura-y-estructura-del-directorio)
 2. [Configuración del Proyecto y Controles](#2-configuración-del-proyecto-y-controles)
 3. [Escenas y Jerarquía de Nodos](#3-escenas-y-jerarquía-de-nodos)
-4. [Lógica del Luchador (`script/jugador.gd`)](#4-lógica-del-luchador-scriptjugadorgd)
-5. [Gestor de Escenario y Partida (`script/escenario.gd`)](#5-gestor-de-escenario-y-partida-scriptescenariogd)
-6. [Cámara Dinámica (`script/Camara.gd`)](#6-cámara-dinámica-scriptcamaragd)
-7. [Proyectil Hadoken (`script/proyectil_hadoken.gd`)](#7-proyectil-hadoken-scriptproyectil_hadokengd)
+4. [Lógica del Luchador (`scripts/jugador.gd`)](#4-lógica-del-luchador-scriptjugadorgd)
+5. [Gestor de Escenario y Partida (`scripts/escenario.gd`)](#5-gestor-de-escenario-y-partida-scriptescenariogd)
+6. [Cámara Dinámica (`scripts/Camara.gd`)](#6-cámara-dinámica-scriptcamaragd)
+7. [Proyectil Hadoken (`scripts/proyectil_hadoken.gd`)](#7-proyectil-hadoken-scriptproyectil_hadokengd)
 8. [Contratos e Integración con el Bus Central](#8-contratos-e-integración-con-el-bus-central-contracts)
 
 ---
@@ -22,23 +22,38 @@ El **Núcleo 3 (Combate)** es el módulo encargado de la simulación física en 
 ## 🏗️ 1. Arquitectura y Estructura del Directorio
 
 ```text
-nucleo3_combate/
-├── project.godot                        # Configuración de Godot 4.7, resolución (1920x1080) e Input Map
-├── escenas/
-│   ├── escenario.tscn                   # Escena principal del combate (escenario, HUD, cámara y 2 jugadores)
+GNDU/
+├── project.godot                        # Configuración unificada de Godot 4.7 (1920x1080, 60 Hz)
+├── controls_config.json                 # Mapeo configurable de teclado/mando y comandos de N2
+├── assets/
+│   ├── background/                      # Texturas de escenario y suelo de prueba
+│   └── sprites/                         # Hojas de sprites de movimiento, daño y especiales
+├── scenes/
+│   ├── escenario.tscn                   # Escena principal del combate (HUD, cámara y 2 jugadores)
 │   ├── jugador.tscn                     # Prefab del luchador con sprites, hurtboxes, hitboxes y pushbox
-│   └── proyectil_hadoken.tscn           # Escena instanciable para el proyectil de energía (Hadoken)
-├── script/
+│   ├── proyectil_hadoken.tscn           # Escena instanciable para el proyectil de energía (Hadoken)
+│   ├── diagnostic.tscn                  # Diagnóstico opcional de controles
+│   └── report_viewer.tscn               # Visor de reportes de entrada
+├── scripts/
 │   ├── jugador.gd                       # Controlador principal del luchador y mecánicas de combate
-│   ├── escenario.gd                     # Controlador de rondas, reloj, barras de vida y eventos de partida
+│   ├── escenario.gd                     # Rondas, reloj, barras de vida y eventos de partida
 │   ├── Camara.gd                        # Seguimiento dinámico del punto medio entre ambos jugadores
-│   └── proyectil_hadoken.gd             # Movimiento, alcance y detección de impacto del proyectil
-├── contracts/
-│   ├── on_combat_event.schema.json      # JSON Schema (Draft 2020-12) del contrato de salida hacia N4 y N5
-│   └── on_combat_event.example.json     # Ejemplo de payload válido emitido en un evento de combate
-└── assets/
-    ├── background/                      # Texturas de escenario y suelo de prueba
-    └── sprites/                         # Hojas de sprites para animaciones de ataque, movimiento, daño y especiales
+│   ├── proyectil_hadoken.gd             # Movimiento, alcance y detección de impacto del proyectil
+│   ├── controls_config.gd               # Autoload N2ControlsConfig
+│   ├── input_core.gd                    # Autoload N2InputCore
+│   ├── input_buffer.gd                  # Búfer circular de N2
+│   ├── command_recognizer.gd            # Reconocedor de comandos de N2
+│   ├── player_panel.gd                  # Panel de diagnóstico por jugador
+│   ├── diagnostic.gd                    # Escena de diagnóstico
+│   ├── report_viewer.gd                 # Visor JSON
+│   └── mock_consumer.gd                 # Validador del contrato de N2
+├── contracts/                           # Contratos de N2 y N3
+├── docs/
+│   ├── controles/                       # Documentación de N2
+│   └── combate/                         # Este documento
+└── tests/
+    ├── run_tests.gd                     # Pruebas automáticas de N2 y del proyecto unificado
+    └── joy_probe.gd                     # Sonda de mandos
 ```
 
 ---
@@ -48,29 +63,39 @@ nucleo3_combate/
 Definida en `project.godot`:
 - **Motor:** Godot 4.7 (modo de renderizado `gl_compatibility`).
 - **Resolución base:** 1920x1080 (`stretch/mode = "canvas_items"`, `stretch/aspect = "expand"`).
-- **Escena principal:** `res://escenas/escenario.tscn`.
+- **Escena principal:** `res://scenes/escenario.tscn`.
 
-### Mapa de Entradas Locales (Modo Demo / Pruebas)
-Cuando el Núcleo 2 (`N2InputCore`) no está presente en el árbol global, cada instancia de `jugador.gd` lee las acciones configuradas en el InputMap:
+> N3 ya no tiene un InputMap propio para el juego: cuando `N2InputCore` existe
+> (siempre en el proyecto unificado), `jugador.gd` usa exclusivamente el reporte
+> y el snapshot de N2. El InputMap de `project.godot` queda como respaldo para
+> abrir una escena de combate aislada.
 
-| Acción Lógica | Acción Jugador 1 (`p1_*`) | Tecla J1 | Acción Jugador 2 (`p2_*`) | Tecla J2 |
-| :--- | :--- | :---: | :--- | :---: |
-| Mover Izquierda | `p1_izquierda` | `A` | `p2_izquierda` | `Flecha Izquierda` |
-| Mover Derecha | `p1_derecha` | `D` | `p2_derecha` | `Flecha Derecha` |
-| Arriba (Apuntar) | `p1_arriba` | `W` | `p2_arriba` | `Flecha Arriba` |
-| Agacharse | `p1_agachar` | `S` | `p2_agachar` | `Flecha Abajo` |
-| Saltar | `p1_salto` | `Espacio` | `p2_salto` | `/` |
-| Puño | `p1_puno` | `H` | `p2_puno` | `Shift` |
-| Patada | `p1_patada` | `J` | `p2_patada` | `Enter` |
-| Bloquear | `p1_bloquear` | `K` | `p2_bloquear` | `Ctrl` |
-| Agarre | `p1_agarre` | `L` | `p2_agarre` | `Alt` |
+### Controles configurados en `controls_config.json`
+
+| Acción | J1 teclado | J2 teclado | Mando (ambos) |
+| :--- | :---: | :---: | :---: |
+| Mover izquierda | `A` | `←` | D-pad / stick izquierdo |
+| Mover derecha | `D` | `→` | D-pad / stick izquierdo |
+| Arriba (apuntar) | `W` | `↑` | D-pad / stick arriba |
+| Agacharse | `S` | `↓` | D-pad / stick abajo |
+| Saltar | `Espacio` | `/` | `X` / `Y` |
+| Puño | `H` | `Shift` | `A` (sur) |
+| Patada | `J` | `Enter` | `B` (este) |
+| Bloquear | `K` | `Ctrl` | `RB` / `R1` |
+| Agarre | `L` | `Alt` | `LB` / `L1` |
+| Pausa | `Esc` | `Backspace` | `Start` |
+
+El reporte JSON de N2 conserva seis claves (`move_x`, `move_y`, `punch`, `kick`,
+`block`, `pause`). El salto y el agarre se leen de
+`N2InputCore.get_last_snapshot(player_id)`, que expone `held`, `pressed` y
+`released`. Así se conserva el contrato v3 y se obtienen flancos exactos.
 
 ---
 
 ## 🎬 3. Escenas y Jerarquía de Nodos
 
-### `escenas/escenario.tscn`
-Escena raíz (`Node2D`) controlada por `script/escenario.gd`:
+### `scenes/escenario.tscn`
+Escena raíz (`Node2D`) controlada por `scripts/escenario.gd`:
 - **CanvasLayer/Control:** Interfaz de usuario de combate:
   - `Timer`: Reloj con `autostart = true` (intervalo de 1s).
   - `Label_tiempo`: Muestra los segundos restantes del round (inicia en 99).
@@ -81,10 +106,10 @@ Escena raíz (`Node2D`) controlada por `script/escenario.gd`:
   - `Texto Victoria`: Etiqueta central para anuncios de round, KO y ganador definitivo.
 - **ColisionEscenario (`StaticBody2D`):** Contiene `HitboxSuelo` (y = 1060), `HitboxParedIzquierda` (x = -22) y `HitboxParedDerecha` (x = 1932).
 - **Jugador y Jugador2:** Instancias de `jugador.tscn` cruzadas mediante la propiedad exportada `rival`.
-- **Camera2D:** Cámara con `zoom = Vector2(1.3, 1.3)` gobernada por `script/Camara.gd`.
+- **Camera2D:** Cámara con `zoom = Vector2(1.3, 1.3)` gobernada por `scripts/Camara.gd`.
 
-### `escenas/jugador.tscn`
-Escena del luchador (`CharacterBody2D`) controlada por `script/jugador.gd`:
+### `scenes/jugador.tscn`
+Escena del luchador (`CharacterBody2D`) controlada por `scripts/jugador.gd`:
 - **Pushbox (`CollisionShape2D`):** Colisionador físico del cuerpo para contacto con el suelo y paredes del escenario.
 - **AnimatedSprite2D:** Contiene todas las secuencias de `SpriteFrames` (*Reposo, Caminar_Adelante, Caminar_Atras, Agachado, Salto_Subida, Salto_Adelante, Salto_Atras, Dash_Adelante, Dash_Atras, Bloqueo_Alto, Bloqueo_Bajo, Golpear, Patada, Punio_Arriba, Patada_Arriba, Punio_Abajo, Patada_Abajo, Punio_Aire, Patada_Aire, Agarre, Agarrado, Stun, Tumbar, Hadoken, Shoryuken, Tatsumaki*).
 - **Hurtbox-Estandar (`Area2D`):** Caja vulnerable cuando el personaje está de pie o en el aire (150 x 247.75).
@@ -93,7 +118,7 @@ Escena del luchador (`CharacterBody2D`) controlada por `script/jugador.gd`:
 
 ---
 
-## 🧠 4. Lógica del Luchador (`script/jugador.gd`)
+## 🧠 4. Lógica del Luchador (`scripts/jugador.gd`)
 
 ### 4.1 Constantes y Parámetros de Balance
 
@@ -133,16 +158,20 @@ Cada ataque aplica un vector `Vector2(x, y)` al rival (la `x` se invierte autom�
 - **Aéreos:** `ataque_aire_punio` (200, 120), `ataque_aire_patada` (240, 100).
 - **Especiales:** `ataque_especial` (Shoryuken) (250, -750), `ataque_tatsumaki` (300, -100), Proyectil Hadoken (320, -140).
 
-### 4.2 Sistema de Entrada Dual (Local y Núcleo 2)
+### 4.2 Sistema de Entrada de N2
 El luchador abstrae sus controles en el diccionario `input_nucleo2` (`move_x`, `move_y`, `salto`, `punch`, `kick`, `block`, `grab`):
 
 1. **Integración con Núcleo 2 (`recibir_reporte_entrada`):**
-   - En `_ready()`, el jugador busca el autoload `/root/N2InputCore` y se conecta a su señal `report_emitted`.
+   - En `_ready()`, el jugador busca el autoload `/root/N2InputCore` y se conecta a su señal `report_emitted`. Si existe, `_n2_disponible = true`.
    - Acepta reportes tanto en formato Dictionary como String JSON, filtrando por `player_id`.
-   - Detecta flancos de subida (pulsaciones únicas) comparando con `_estado_previo_n2` para `salto`, `punch` y `kick`.
-   - Lee comandos compuestos desde `command_detected` (Dashes y Especiales).
-2. **Simulación Local (`_simular_entrada_nucleo2`):**
-   - Si no se recibió un reporte externo de N2 en el frame actual (`_usar_reporte_externo_n2 == false`), consulta directamente Input de Godot y registra las marcas de tiempo (`Time.get_ticks_msec()`) para detectar dobles toques y secuencias de ataques.
+   - Lee `move_x`, `move_y`, `punch`, `kick` y `block` del reporte v3.
+   - Lee `jump` y `grab` de `N2InputCore.get_last_snapshot(player_id)["pressed"]`, junto con los flancos de `punch`/`kick`.
+   - Lee comandos compuestos desde `command_detected` (todos los especiales y dashes canónicos).
+2. **Buffer corto de intención:**
+   - Salto, puño, patada y agarre se guardan ~0.12 s. Si el jugador pulsa durante recuperación, bloqueo o un ataque, la acción se ejecuta en cuanto el estado lo permite.
+   - N2 también captura pulsaciones en `_input`, así que un toque muy corto entre dos ticks de física no se pierde.
+3. **Simulación Local (`_simular_entrada_nucleo2`):**
+   - Solo se usa como respaldo si `N2InputCore` no está presente. En el proyecto unificado no se consulta InputMap durante el combate, evitando el doble polling y un frame extra de latencia.
 
 ### 4.3 Máquina de Estados del Luchador
 La variable `estado_actual` controla el comportamiento en `_physics_process(delta)`:
@@ -192,12 +221,20 @@ Cada ataque se clasifica en una de tres alturas al impactar:
 
 ### 4.7 Dash y Movimientos Especiales
 
-| Movimiento | Entrada Local (Mirando a la derecha) | Comando Núcleo 2 (`command_detected`) | Comportamiento en Código |
+| Movimiento | Entrada (mirando a la derecha) | Comando Núcleo 2 (`command_detected`) | Comportamiento en Código |
 | :--- | :--- | :--- | :--- |
 | **Dash** | `→ →` o `← ←` (<= 280 ms) | `DASH_RIGHT` / `DASH_LEFT` | Desplazamiento rápido 0.22s. |
-| **Hadoken** | `←` luego `→` + Puño (<= 500 ms) | `SPECIAL_ATTACK_1`, `HADOKEN` | Instancia `proyectil_hadoken.tscn` a los 0.35s (`4.0` de daño). |
-| **Shoryuken**| `↓` luego `→` + Puño (<= 500 ms) | `SPECIAL_ATTACK_2`, `SHORYUKEN` | Impulso diagonal ascendente con hitbox ALTA (`5.0` de daño). Permite encadenar **1 ataque aéreo** durante el vuelo manteniendo la penalización de castigo (`_castigo_shoryuken_pendiente`: desaceleración aérea, caída vulnerable y `COOLDOWN_ESPECIAL = 0.7s` al aterrizar). |
-| **Tatsumaki**| `←` luego `→` + Patada (<= 500 ms)| `COMBO_DOWN_RIGHT_B`, `TATSUMAKI` | Avanza a 1000 px/s con hitbox MEDIO (`4.0` de daño). |
+| **Hadoken** | `←, → + A` | `HADOKEN` | Instancia `proyectil_hadoken.tscn` a los 0.35s (`4.0` de daño). |
+| **Shoryuken**| `→, ↓, → + A` | `SHORYUKEN` | Impulso diagonal ascendente con hitbox ALTA (`5.0` de daño). Permite encadenar **1 ataque aéreo** durante el vuelo manteniendo la penalización de castigo (`_castigo_shoryuken_pendiente`: desaceleración aérea, caída vulnerable y `COOLDOWN_ESPECIAL = 0.7s` al aterrizar). |
+| **Abajo-Arriba** | `↓, ↑ + A` | `ABAJO_ARRIBA` | Ataque fuerte ascendente con retroceso. |
+| **Doble Patada** | `↓, → + B` | `DOBLE_PATADA` | Dos patadas ascendentes con hitbox ALTO/MEDIO (`3.5` de daño). |
+| **Embestida** | `→, ↓, → + B` | `EMBESTIDA` | Avance rompe-guardia con hitbox ALTO/MEDIO (`3.5` de daño). |
+| **Tatsumaki**| `←, → + B` | `TATSUMAKI` | Avanza a 1000 px/s con hitbox MEDIO (`4.0` de daño). |
+
+> N3 conserva alias antiguos (`SPECIAL_ATTACK_1`, `SPECIAL_ATTACK_2`,
+> `COMBO_DOWN_UP_A`, `COMBO_DOWN_RIGHT_B`, `COMBO_RIGHT_DOWN_RIGHT_B`,
+> `COMBO_LEFT_RIGHT_A`) para compatibilidad, pero la configuración oficial de
+> N2 emite los nombres canónicos de la tabla.
 
 ### 4.8 Sistema de Agarres, Lanzamientos y Rebotes
 1. **Inicio del Agarre (`intentar_agarre`):** Activa hitbox MEDIO en frame 1. Si conecta, el atacante pasa a `agarrando` y el defensor a `agarrado`.
@@ -221,7 +258,7 @@ Dibuja en tiempo real (conmutable desde el botón UI):
 
 ---
 
-## 🏟️ 5. Gestor de Escenario y Partida (`script/escenario.gd`)
+## 🏟️ 5. Gestor de Escenario y Partida (`scripts/escenario.gd`)
 Controla el ciclo de vida del encuentro y comunicación de alto nivel:
 - **Sistema de Rondas (`MAX_ROUNDS = 2`):** Al mejor de 3. Evalúa si hay KO o Doble KO. Espera 2.5s antes de reanudar.
 - **Reinicio Manual en Todo Momento (`Boton_Reiniciar` / `reiniciar_combate_completo`):** El botón `Reiniciar Partida` permanece visible durante todo el combate. Al pulsarlo en cualquier instante, invalida temporizadores previos mediante `_reinicio_seq`, elimina proyectiles activos en escena (`_limpiar_proyectiles_activos()`), restaura rondas, reloj y posiciones iniciales de ambos luchadores.
@@ -230,7 +267,7 @@ Controla el ciclo de vida del encuentro y comunicación de alto nivel:
 
 ---
 
-## 🎥 6. Cámara Dinámica (`script/Camara.gd`)
+## 🎥 6. Cámara Dinámica (`scripts/Camara.gd`)
 - **Seguimiento Horizontal:** Calcula el punto medio entre jugadores con *clamp* instantáneo al viewport.
 - **Seguimiento Vertical:** Suaviza el movimiento mediante interpolación lineal (`lerp`).
 
@@ -238,7 +275,7 @@ Controla el ciclo de vida del encuentro y comunicación de alto nivel:
 
 ---
 
-## ☄️ 7. Proyectil Hadoken (`script/proyectil_hadoken.gd`)
+## ☄️ 7. Proyectil Hadoken (`scripts/proyectil_hadoken.gd`)
 Controla la escena del proyectil:
 - **Velocidad:** 900.0 px/s.
 - **Daño:** `4.0` (configurable en el rango `1.5` a `5.0`).

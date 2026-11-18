@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gndu.local/nucleo2/input_report.schema.json",
+  "title": "Reporte de entrada del Nucleo 2",
+  "description": "Un reporte por jugador y por fotograma de fisica. El transporte real es la senal N2InputCore.report_emitted(report); este esquema describe el Dictionary que viaja por esa senal.",
+  "$comment": "No es un archivo que se escriba a disco en tiempo real. Los archivos .json y .jsonl de esta carpeta son ejemplos y material de prueba.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "player_id",
+    "frame",
+    "state",
+    "command_detected"
+  ],
+  "properties": {
+    "player_id": {
+      "type": "integer",
+      "description": "Jugador que emite el reporte.",
+      "enum": [1, 2]
+    },
+    "frame": {
+      "type": "integer",
+      "description": "Fotograma de fisica (Engine.get_physics_frames()). Crece con el tiempo.",
+      "minimum": 0
+    },
+    "state": {
+      "type": "object",
+      "description": "Estado mantenido del jugador en este fotograma.",
+      "additionalProperties": false,
+      "required": [
+        "move_x",
+        "move_y",
+        "punch",
+        "kick",
+        "block",
+        "pause"
+      ],
+      "properties": {
+        "move_x": {
+          "type": "integer",
+          "description": "-1 = izquierda, 0 = neutro, 1 = derecha.",
+          "enum": [-1, 0, 1]
+        },
+        "move_y": {
+          "type": "integer",
+          "description": "-1 = abajo/agachado, 0 = neutro, 1 = arriba/salto.",
+          "enum": [-1, 0, 1]
+        },
+        "punch": {
+          "type": "boolean",
+          "description": "Puno mantenido en este fotograma."
+        },
+        "kick": {
+          "type": "boolean",
+          "description": "Patada mantenida en este fotograma."
+        },
+        "block": {
+          "type": "boolean",
+          "description": "Bloqueo mantenido en este fotograma."
+        },
+        "pause": {
+          "type": "boolean",
+          "description": "Pausa mantenida en este fotograma."
+        }
+      }
+    },
+    "command_detected": {
+      "description": "Nombre del comando reconocido en este fotograma, o null si no hay comando.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    }
+  }
+}

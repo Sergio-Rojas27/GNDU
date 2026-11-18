@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="GNDU"
-run/main_scene="uid://dfslx3836snif"
+run/main_scene="res://scenes/escenario.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+N2ControlsConfig="*res://scripts/controls_config.gd"
+N2InputCore="*res://scripts/input_core.gd"
 
 [display]
 

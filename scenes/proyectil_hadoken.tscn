@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://0sfn7xf2eqmf"]
 
-[ext_resource type="Script" uid="uid://u87e4qel0mms" path="res://script/proyectil_hadoken.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://u87e4qel0mms" path="res://scripts/proyectil_hadoken.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://220arv8ec864" path="res://assets/sprites/Hadoken.png" id="2_tex"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bola"]

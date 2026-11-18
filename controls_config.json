@@ -1,0 +1,259 @@
+{
+  "version": 3,
+  "buffer_size_frames": 30,
+  "global_cooldown_frames": 2,
+  "players": {
+    "1": {
+      "device": {
+        "type": "hybrid",
+        "joypad_index": 0
+      },
+      "bindings": {
+        "left": [
+          { "type": "key", "code": "A" },
+          { "type": "joy_button", "button": "dpad_left" },
+          { "type": "joy_axis", "axis": "left_x", "direction": -1, "deadzone": 0.25 }
+        ],
+        "right": [
+          { "type": "key", "code": "D" },
+          { "type": "joy_button", "button": "dpad_right" },
+          { "type": "joy_axis", "axis": "left_x", "direction": 1, "deadzone": 0.25 }
+        ],
+        "up": [
+          { "type": "key", "code": "W" },
+          { "type": "joy_button", "button": "dpad_up" },
+          { "type": "joy_axis", "axis": "left_y", "direction": -1, "deadzone": 0.25 }
+        ],
+        "down": [
+          { "type": "key", "code": "S" },
+          { "type": "joy_button", "button": "dpad_down" },
+          { "type": "joy_axis", "axis": "left_y", "direction": 1, "deadzone": 0.25 }
+        ],
+        "jump": [
+          { "type": "key", "code": "Space" },
+          { "type": "joy_button", "button": "x" },
+          { "type": "joy_button", "button": "y" }
+        ],
+        "punch": [
+          { "type": "key", "code": "H" },
+          { "type": "joy_button", "button": "a" }
+        ],
+        "kick": [
+          { "type": "key", "code": "J" },
+          { "type": "joy_button", "button": "b" }
+        ],
+        "block": [
+          { "type": "key", "code": "K" },
+          { "type": "joy_button", "button": "right_shoulder" }
+        ],
+        "grab": [
+          { "type": "key", "code": "L" },
+          { "type": "joy_button", "button": "left_shoulder" }
+        ],
+        "pause": [
+          { "type": "key", "code": "Escape" },
+          { "type": "joy_button", "button": "start" }
+        ]
+      }
+    },
+    "2": {
+      "device": {
+        "type": "hybrid",
+        "joypad_index": 1
+      },
+      "bindings": {
+        "left": [
+          { "type": "key", "code": "Left" },
+          { "type": "joy_button", "button": "dpad_left" },
+          { "type": "joy_axis", "axis": "left_x", "direction": -1, "deadzone": 0.25 }
+        ],
+        "right": [
+          { "type": "key", "code": "Right" },
+          { "type": "joy_button", "button": "dpad_right" },
+          { "type": "joy_axis", "axis": "left_x", "direction": 1, "deadzone": 0.25 }
+        ],
+        "up": [
+          { "type": "key", "code": "Up" },
+          { "type": "joy_button", "button": "dpad_up" },
+          { "type": "joy_axis", "axis": "left_y", "direction": -1, "deadzone": 0.25 }
+        ],
+        "down": [
+          { "type": "key", "code": "Down" },
+          { "type": "joy_button", "button": "dpad_down" },
+          { "type": "joy_axis", "axis": "left_y", "direction": 1, "deadzone": 0.25 }
+        ],
+        "jump": [
+          { "type": "key", "code": "Slash" },
+          { "type": "joy_button", "button": "x" },
+          { "type": "joy_button", "button": "y" }
+        ],
+        "punch": [
+          { "type": "key", "code": "Shift" },
+          { "type": "joy_button", "button": "a" }
+        ],
+        "kick": [
+          { "type": "key", "code": "Enter" },
+          { "type": "joy_button", "button": "b" }
+        ],
+        "block": [
+          { "type": "key", "code": "Ctrl" },
+          { "type": "joy_button", "button": "right_shoulder" }
+        ],
+        "grab": [
+          { "type": "key", "code": "Alt" },
+          { "type": "joy_button", "button": "left_shoulder" }
+        ],
+        "pause": [
+          { "type": "key", "code": "Backspace" },
+          { "type": "joy_button", "button": "start" }
+        ]
+      }
+    }
+  },
+  "commands": [
+    {
+      "name": "HADOKEN",
+      "priority": 100,
+      "window_frames": 24,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "left", "mode": "press", "max_gap": 10 },
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "punch", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "SHORYUKEN",
+      "priority": 100,
+      "window_frames": 32,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "down", "mode": "press", "max_gap": 10 },
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "punch", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "ABAJO_ARRIBA",
+      "priority": 95,
+      "window_frames": 24,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "down", "mode": "press", "max_gap": 10 },
+        { "action": "up", "mode": "press", "max_gap": 10 },
+        { "action": "punch", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "DOBLE_PATADA",
+      "priority": 95,
+      "window_frames": 24,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "down", "mode": "press", "max_gap": 10 },
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "kick", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "EMBESTIDA",
+      "priority": 98,
+      "window_frames": 32,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "down", "mode": "press", "max_gap": 10 },
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "kick", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "TATSUMAKI",
+      "priority": 95,
+      "window_frames": 24,
+      "final_window": 2,
+      "cooldown": 12,
+      "steps": [
+        { "action": "left", "mode": "press", "max_gap": 10 },
+        { "action": "right", "mode": "press", "max_gap": 10 },
+        { "action": "kick", "mode": "press", "max_gap": 10 }
+      ]
+    },
+    {
+      "name": "DASH_RIGHT",
+      "priority": 50,
+      "window_frames": 18,
+      "final_window": 2,
+      "cooldown": 10,
+      "steps": [
+        { "action": "right", "mode": "press", "max_gap": 9 },
+        { "action": "right", "mode": "press", "max_gap": 9, "exclusive": true }
+      ]
+    },
+    {
+      "name": "DASH_LEFT",
+      "priority": 50,
+      "window_frames": 18,
+      "final_window": 2,
+      "cooldown": 10,
+      "steps": [
+        { "action": "left", "mode": "press", "max_gap": 9 },
+        { "action": "left", "mode": "press", "max_gap": 9, "exclusive": true }
+      ]
+    },
+    {
+      "name": "COMBO_AAA",
+      "priority": 80,
+      "window_frames": 30,
+      "final_window": 2,
+      "cooldown": 18,
+      "steps": [
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "punch", "mode": "press", "max_gap": 12 }
+      ]
+    },
+    {
+      "name": "COMBO_BBB",
+      "priority": 80,
+      "window_frames": 30,
+      "final_window": 2,
+      "cooldown": 18,
+      "steps": [
+        { "action": "kick", "mode": "press", "max_gap": 12 },
+        { "action": "kick", "mode": "press", "max_gap": 12 },
+        { "action": "kick", "mode": "press", "max_gap": 12 }
+      ]
+    },
+    {
+      "name": "COMBO_ABA",
+      "priority": 85,
+      "window_frames": 30,
+      "final_window": 2,
+      "cooldown": 18,
+      "steps": [
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "kick", "mode": "press", "max_gap": 12 },
+        { "action": "punch", "mode": "press", "max_gap": 12 }
+      ]
+    },
+    {
+      "name": "COMBO_AAB",
+      "priority": 85,
+      "window_frames": 30,
+      "final_window": 2,
+      "cooldown": 18,
+      "steps": [
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "punch", "mode": "press", "max_gap": 12 },
+        { "action": "kick", "mode": "press", "max_gap": 12 }
+      ]
+    }
+  ]
+}

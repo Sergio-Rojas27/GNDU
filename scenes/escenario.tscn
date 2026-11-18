@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://dfslx3836snif"]
 
-[ext_resource type="Script" uid="uid://7ty2lsuor6vi" path="res://script/escenario.gd" id="1_5uytk"]
+[ext_resource type="Script" uid="uid://7ty2lsuor6vi" path="res://scripts/escenario.gd" id="1_5uytk"]
 [ext_resource type="Texture2D" uid="uid://b6llimti5t3bd" path="res://assets/background/Test_Background.jpg" id="2_wynv6"]
 [ext_resource type="Texture2D" uid="uid://ociadvbfitqq" path="res://assets/background/Test_Ground.png" id="3_okbv4"]
-[ext_resource type="PackedScene" uid="uid://w5ixhbiumgws" path="res://escenas/jugador.tscn" id="4_1isoa"]
-[ext_resource type="Script" uid="uid://cft1m0fn21ily" path="res://script/Camara.gd" id="5_y8iie"]
+[ext_resource type="PackedScene" uid="uid://w5ixhbiumgws" path="res://scenes/jugador.tscn" id="4_1isoa"]
+[ext_resource type="Script" uid="uid://cft1m0fn21ily" path="res://scripts/Camara.gd" id="5_y8iie"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wddc5"]
 font_size = 60

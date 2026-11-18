@@ -5,7 +5,7 @@ signal on_combat_event(evento: Dictionary)
 const SPEED = 300.0
 const JUMP_VELOCITY = -750.0 
 
-const ESCENA_PROYECTIL_HADOKEN := preload("res://escenas/proyectil_hadoken.tscn")
+const ESCENA_PROYECTIL_HADOKEN := preload("res://scenes/proyectil_hadoken.tscn")
 
 # Límites y tabla de daño por ataque (rango permitido: 1.5 a 5.0)
 const DANIO_MINIMO := 1.5
@@ -195,11 +195,19 @@ var input_nucleo2: Dictionary = {
 	"move_x": 0, "move_y": 0, "salto": false,
 	"punch": false, "kick": false, "block": false, "grab": false
 }
-var _usar_reporte_externo_n2: bool = false
+var _n2_disponible: bool = false
 var _estado_previo_n2: Dictionary = {
 	"move_y": 0, "punch": false, "kick": false
 }
 var _comando_n2_pendiente: String = ""
+
+# Buffer corto de intencion: si el jugador pulsa durante recuperacion, bloqueo
+# o un ataque, la accion se conserva unos fotogramas y se ejecuta en cuanto el
+# estado lo permite. Esto elimina la sensacion de "el boton no responde".
+const BUFFER_ENTRADA := 0.12
+var _buffers_entrada: Dictionary = {
+	"salto": 0.0, "punch": 0.0, "kick": 0.0, "grab": 0.0
+}
 
 var depurador_label: Label
 var debug_overlay: Node2D
@@ -228,6 +236,7 @@ func _ready() -> void:
 	var n2_core = get_node_or_null("/root/N2InputCore")
 	if n2_core and n2_core.has_signal("report_emitted"):
 		n2_core.connect("report_emitted", Callable(self, "recibir_reporte_entrada"))
+		_n2_disponible = true
 		
 	depurador_label = Label.new()
 	add_child(depurador_label)
@@ -290,8 +299,9 @@ func _actualizar_hurtbox() -> void:
 		hurtbox_baja_collision.disabled = not esta_agachado
 
 func _simular_entrada_nucleo2() -> void:
-	if _usar_reporte_externo_n2:
-		_usar_reporte_externo_n2 = false
+	# Con N2 presente, la unica fuente de entrada es su reporte. El InputMap
+	# local solo se usa como respaldo si el autoload no esta disponible.
+	if _n2_disponible:
 		return
 
 	input_nucleo2["move_x"] = Input.get_axis(accion_izquierda, accion_derecha)
@@ -308,32 +318,47 @@ func _simular_entrada_nucleo2() -> void:
 	input_nucleo2["grab"] = Input.is_action_just_pressed(accion_agarre)
 	
 	var ahora := float(Time.get_ticks_msec())
-	if Input.is_action_just_pressed(accion_abajo):
-		if ahora - _tiempo_ultima_derecha <= VENTANA_ESPECIAL_MS:
-			_tiempo_derecha_antes_de_abajo = _tiempo_ultima_derecha
-		if ahora - _tiempo_ultima_izquierda <= VENTANA_ESPECIAL_MS:
-			_tiempo_izquierda_antes_de_abajo = _tiempo_ultima_izquierda
-		_tiempo_ultimo_abajo = ahora
-	elif Input.is_action_pressed(accion_abajo):
-		_tiempo_ultimo_abajo = ahora
+	if estado_actual not in ["intentar_agarre", "agarrando"]:
+		if Input.is_action_just_pressed(accion_abajo):
+			if ahora - _tiempo_ultima_derecha <= VENTANA_ESPECIAL_MS:
+				_tiempo_derecha_antes_de_abajo = _tiempo_ultima_derecha
+			if ahora - _tiempo_ultima_izquierda <= VENTANA_ESPECIAL_MS:
+				_tiempo_izquierda_antes_de_abajo = _tiempo_ultima_izquierda
+			_tiempo_ultimo_abajo = ahora
+		elif Input.is_action_pressed(accion_abajo) and _tiempo_ultimo_abajo > 0.0:
+			# Solo mantiene vivo el tiempo si la pulsación empezó fuera del agarre
+			_tiempo_ultimo_abajo = ahora
 
-	if Input.is_action_just_pressed(accion_arriba):
-		if ahora - _tiempo_ultimo_abajo <= VENTANA_ESPECIAL_MS:
-			_tiempo_abajo_antes_de_arriba = _tiempo_ultimo_abajo
-		_tiempo_ultimo_arriba = ahora
+		if Input.is_action_just_pressed(accion_arriba):
+			if ahora - _tiempo_ultimo_abajo <= VENTANA_ESPECIAL_MS:
+				_tiempo_abajo_antes_de_arriba = _tiempo_ultimo_abajo
+			_tiempo_ultimo_arriba = ahora
 
-	if Input.is_action_just_pressed(accion_izquierda):
-		if ahora - _tiempo_ultima_izquierda <= VENTANA_DOBLE_TOQUE_MS and _tiempo_ultimo_abajo < _tiempo_ultima_izquierda:
-			_doble_toque_pendiente = -1.0
-			_tiempo_ultima_izquierda = -1000.0
-		else:
-			_tiempo_ultima_izquierda = ahora
-	if Input.is_action_just_pressed(accion_derecha):
-		if ahora - _tiempo_ultima_derecha <= VENTANA_DOBLE_TOQUE_MS and _tiempo_ultimo_abajo < _tiempo_ultima_derecha:
-			_doble_toque_pendiente = 1.0
-			_tiempo_ultima_derecha = -1000.0
-		else:
-			_tiempo_ultima_derecha = ahora
+		if Input.is_action_just_pressed(accion_izquierda):
+			if ahora - _tiempo_ultima_izquierda <= VENTANA_DOBLE_TOQUE_MS and _tiempo_ultimo_abajo < _tiempo_ultima_izquierda:
+				_doble_toque_pendiente = -1.0
+				_tiempo_ultima_izquierda = -1000.0
+			else:
+				_tiempo_ultima_izquierda = ahora
+		if Input.is_action_just_pressed(accion_derecha):
+			if ahora - _tiempo_ultima_derecha <= VENTANA_DOBLE_TOQUE_MS and _tiempo_ultimo_abajo < _tiempo_ultima_derecha:
+				_doble_toque_pendiente = 1.0
+				_tiempo_ultima_derecha = -1000.0
+			else:
+				_tiempo_ultima_derecha = ahora
+
+func _actualizar_buffer_entrada(delta: float) -> void:
+	for accion in _buffers_entrada.keys():
+		var restante := float(_buffers_entrada[accion])
+		if restante <= 0.0:
+			continue
+		_buffers_entrada[accion] = maxf(0.0, restante - delta)
+
+func _buffer_activo(accion: String) -> bool:
+	return float(_buffers_entrada.get(accion, 0.0)) > 0.0
+
+func _consumir_buffer(accion: String) -> void:
+	_buffers_entrada[accion] = 0.0
 
 func recibir_reporte_entrada(reporte_raw: Variant) -> void:
 	var reporte: Dictionary = {}
@@ -355,63 +380,84 @@ func recibir_reporte_entrada(reporte_raw: Variant) -> void:
 	if typeof(estado) != TYPE_DICTIONARY:
 		return
 
-	_usar_reporte_externo_n2 = true
+	_n2_disponible = true
 	var move_x := int(estado.get("move_x", 0))
 	var move_y := int(estado.get("move_y", 0))
 	var punch_held := bool(estado.get("punch", false))
 	var kick_held := bool(estado.get("kick", false))
 	var block_held := bool(estado.get("block", false))
 
+	# Los flancos reales salen del snapshot interno de N2. Asi no se pierde una
+	# pulsacion rapida aunque el estado mantenido ya haya vuelto a false, y el
+	# salto/agarre no necesitan extenderse en el contrato JSON v3.
+	var n2_core = get_node_or_null("/root/N2InputCore")
+	var snapshot: Dictionary = {}
+	if n2_core and n2_core.has_method("get_last_snapshot"):
+		snapshot = n2_core.get_last_snapshot(player_id)
+	var flancos: Dictionary = snapshot.get("pressed", {})
+	var jump_pressed := bool(flancos.get("jump", false))
+	var grab_pressed := bool(flancos.get("grab", false))
+	var punch_pressed := bool(flancos.get("punch", false))
+	var kick_pressed := bool(flancos.get("kick", false))
+	if snapshot.is_empty():
+		# Respaldo por si el consumidor se conecta antes del primer reporte.
+		punch_pressed = punch_held and not bool(_estado_previo_n2.get("punch", false))
+		kick_pressed = kick_held and not bool(_estado_previo_n2.get("kick", false))
+
 	var ahora := float(Time.get_ticks_msec())
 	var prev_move_x := int(_estado_previo_n2.get("move_x", 0))
 	var prev_move_y := int(_estado_previo_n2.get("move_y", 0))
-	var prev_punch := bool(_estado_previo_n2.get("punch", false))
-	var prev_kick := bool(_estado_previo_n2.get("kick", false))
 
 	input_nucleo2["move_x"] = move_x
 	input_nucleo2["move_y"] = move_y
-	input_nucleo2["salto"] = (move_y == 1 and prev_move_y != 1)
-	input_nucleo2["punch"] = (punch_held and not prev_punch)
-	input_nucleo2["kick"] = (kick_held and not prev_kick)
+	input_nucleo2["salto"] = jump_pressed
+	input_nucleo2["punch"] = punch_pressed
+	input_nucleo2["kick"] = kick_pressed
 	input_nucleo2["block"] = block_held
-	input_nucleo2["grab"] = false
+	input_nucleo2["grab"] = grab_pressed
 
-	if move_y == -1 and prev_move_y != -1:
-		if ahora - _tiempo_ultima_derecha <= VENTANA_ESPECIAL_MS:
-			_tiempo_derecha_antes_de_abajo = _tiempo_ultima_derecha
-		if ahora - _tiempo_ultima_izquierda <= VENTANA_ESPECIAL_MS:
-			_tiempo_izquierda_antes_de_abajo = _tiempo_ultima_izquierda
-		_tiempo_ultimo_abajo = ahora
-	elif move_y == -1:
-		_tiempo_ultimo_abajo = ahora
+	# Registrar la intencion en el buffer para no perderla durante un ataque,
+	# bloqueo o recuperacion.
+	if jump_pressed and is_on_floor():
+		_buffers_entrada["salto"] = BUFFER_ENTRADA
+	if punch_pressed:
+		_buffers_entrada["punch"] = maxf(float(_buffers_entrada["punch"]), BUFFER_ENTRADA)
+	if kick_pressed:
+		_buffers_entrada["kick"] = maxf(float(_buffers_entrada["kick"]), BUFFER_ENTRADA)
+	if grab_pressed:
+		_buffers_entrada["grab"] = maxf(float(_buffers_entrada["grab"]), BUFFER_ENTRADA)
 
-	if estado_actual != "agarrando":
-		if Input.is_action_just_pressed(accion_abajo):
+	if estado_actual not in ["intentar_agarre", "agarrando"]:
+		if move_y == -1 and prev_move_y != -1:
 			if ahora - _tiempo_ultima_derecha <= VENTANA_ESPECIAL_MS:
 				_tiempo_derecha_antes_de_abajo = _tiempo_ultima_derecha
 			if ahora - _tiempo_ultima_izquierda <= VENTANA_ESPECIAL_MS:
 				_tiempo_izquierda_antes_de_abajo = _tiempo_ultima_izquierda
 			_tiempo_ultimo_abajo = ahora
-		elif Input.is_action_pressed(accion_abajo) and _tiempo_ultimo_abajo > 0.0:
+		elif move_y == -1 and _tiempo_ultimo_abajo > 0.0:
 			# Solo mantiene vivo el tiempo si la pulsación empezó fuera del agarre
 			_tiempo_ultimo_abajo = ahora
-	if move_y == 1 and prev_move_y != 1:
-		if ahora - _tiempo_ultimo_abajo <= VENTANA_ESPECIAL_MS:
-			_tiempo_abajo_antes_de_arriba = _tiempo_ultimo_abajo
-		_tiempo_ultimo_arriba = ahora
 
-	if move_x == -1 and prev_move_x != -1:
-		_tiempo_ultima_izquierda = ahora
-	elif move_x == 1 and prev_move_x != 1:
-		_tiempo_ultima_derecha = ahora
+		if move_y == 1 and prev_move_y != 1:
+			if ahora - _tiempo_ultimo_abajo <= VENTANA_ESPECIAL_MS:
+				_tiempo_abajo_antes_de_arriba = _tiempo_ultimo_abajo
+			_tiempo_ultimo_arriba = ahora
 
-	var cmd = reporte.get("command_detected", null)
-	if typeof(cmd) == TYPE_STRING and cmd != "":
-		_comando_n2_pendiente = cmd
-		if cmd == "DASH_LEFT":
-			_doble_toque_pendiente = -1.0
-		elif cmd == "DASH_RIGHT":
-			_doble_toque_pendiente = 1.0
+		if move_x == -1 and prev_move_x != -1:
+			_tiempo_ultima_izquierda = ahora
+		elif move_x == 1 and prev_move_x != 1:
+			_tiempo_ultima_derecha = ahora
+
+		var cmd = reporte.get("command_detected", null)
+		if typeof(cmd) == TYPE_STRING and cmd != "":
+			if cmd in ["COMBO_DOWN_UP_A", "ABAJO_ARRIBA"] and _tiempo_abajo_antes_de_arriba <= 0.0:
+				pass
+			else:
+				_comando_n2_pendiente = cmd
+				if cmd == "DASH_LEFT":
+					_doble_toque_pendiente = -1.0
+				elif cmd == "DASH_RIGHT":
+					_doble_toque_pendiente = 1.0
 
 	_estado_previo_n2 = {
 		"move_x": move_x,
@@ -959,6 +1005,7 @@ func reiniciar_contador_combo() -> void:
 
 func _physics_process(delta: float) -> void:
 	_simular_entrada_nucleo2()
+	_actualizar_buffer_entrada(delta)
 	_actualizar_hurtbox()
 	_verificar_colision_hitboxes_activas()
 	if is_on_floor():
@@ -1167,9 +1214,11 @@ func _physics_process(delta: float) -> void:
 			_cooldown_ataque = COOLDOWN_ESPECIAL
 			_castigo_shoryuken_pendiente = false
 				
-		if input_nucleo2["grab"]:
+		if input_nucleo2["grab"] or _buffer_activo("grab"):
+			_consumir_buffer("grab")
 			velocity.x = 0
 			_golpe_conectado_en_ataque = false
+			_limpiar_movimientos_especiales()
 			estado_actual = "intentar_agarre"
 			actualizar_animacion("Agarre")
 			desactivar_todas_hitboxes()
@@ -1187,13 +1236,15 @@ func _physics_process(delta: float) -> void:
 				actualizar_animacion("Bloqueo_Alto")
 		elif input_nucleo2["move_y"] == -1:
 			velocity.x = 0
-			if input_nucleo2["punch"] and _puede_iniciar_ataque():
+			if (input_nucleo2["punch"] or _buffer_activo("punch")) and _puede_iniciar_ataque():
+				_consumir_buffer("punch")
 				_reset_combo()
 				_golpe_conectado_en_ataque = false
 				estado_actual = "ataque_punio_abajo"
 				actualizar_animacion("Punio_Abajo")
 				desactivar_todas_hitboxes()
-			elif input_nucleo2["kick"] and _puede_iniciar_ataque():
+			elif (input_nucleo2["kick"] or _buffer_activo("kick")) and _puede_iniciar_ataque():
+				_consumir_buffer("kick")
 				_reset_combo()
 				_golpe_conectado_en_ataque = false
 				estado_actual = "ataque_patada_abajo"
@@ -1203,7 +1254,8 @@ func _physics_process(delta: float) -> void:
 				estado_actual = "agachado"
 				actualizar_animacion("Agachado")
 				desactivar_todas_hitboxes()
-		elif input_nucleo2["punch"] and _puede_iniciar_ataque():
+		elif (input_nucleo2["punch"] or _buffer_activo("punch")) and _puede_iniciar_ataque():
+			_consumir_buffer("punch")
 			velocity.x = 0
 			if _intentar_ejecutar_especial(mirando_derecha):
 				pass
@@ -1215,7 +1267,8 @@ func _physics_process(delta: float) -> void:
 				desactivar_todas_hitboxes()
 			else:
 				_iniciar_combo("punio")
-		elif input_nucleo2["kick"] and _puede_iniciar_ataque():
+		elif (input_nucleo2["kick"] or _buffer_activo("kick")) and _puede_iniciar_ataque():
+			_consumir_buffer("kick")
 			velocity.x = 0
 			if input_nucleo2["move_y"] == 1:
 				_reset_combo()
@@ -1225,7 +1278,8 @@ func _physics_process(delta: float) -> void:
 				desactivar_todas_hitboxes()
 			else:
 				_iniciar_combo("patada")
-		elif input_nucleo2["salto"]:
+		elif input_nucleo2["salto"] or _buffer_activo("salto"):
+			_consumir_buffer("salto")
 			_ataque_aereo_usado = false
 			desactivar_todas_hitboxes()
 			velocity.y = JUMP_VELOCITY
@@ -1507,6 +1561,7 @@ func _on_hitbox_area_entered(area_rival: Area2D) -> void:
 			var estaba_en_stun := estado_objetivo_antes == "dano"
 			var estados_no_agarrables = ["agarrado", "derrota", "en_suelo", "lanzado", "caida_rebote"]
 			if es_agarre and rival_atacado.is_on_floor() and rival_atacado.estado_actual not in estados_no_agarrables:
+				_limpiar_movimientos_especiales()
 				estado_actual = "agarrando"
 				rival_agarrado = rival_atacado
 				tiempo_agarre = 0.0

@@ -1,0 +1,13 @@
+{
+  "player_id": 1,
+  "frame": 1042,
+  "state": {
+    "move_x": 1,
+    "move_y": 0,
+    "punch": true,
+    "kick": false,
+    "block": false,
+    "pause": false
+  },
+  "command_detected": "SPECIAL_ATTACK_1"
+}
