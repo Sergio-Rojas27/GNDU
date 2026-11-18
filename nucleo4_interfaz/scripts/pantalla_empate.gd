@@ -2,7 +2,9 @@ extends Control
 
 @onready var personaje1_rect = $Personaje1
 @onready var personaje2_rect = $Personaje2
-@onready var btn_menu = $Salir
+@onready var btn_revancha = $Revancha
+@onready var btn_cambiar_pj = $CambiarPersonaje
+@onready var btn_menu = $Salir # O $MenuPrincipal según cómo lo hayas nombrado en esta escena
 
 # Lista de botones navegables con WASD
 var botones: Array = []
@@ -12,11 +14,19 @@ func _ready():
 	# Deshabilitar trackpad/ratón en esta pantalla
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
-	# Registrar botones navegables
+	# Configurar y registrar los tres botones navegables
+	for btn in [btn_revancha, btn_cambiar_pj, btn_menu]:
+		if btn:
+			btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			btn.focus_mode = Control.FOCUS_ALL
+			botones.append(btn)
+
+	# Conectar las señales de cada botón
+	if btn_revancha:
+		btn_revancha.pressed.connect(_on_btn_revancha_pressed)
+	if btn_cambiar_pj:
+		btn_cambiar_pj.pressed.connect(_on_btn_cambiar_pj_pressed)
 	if btn_menu:
-		btn_menu.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		btn_menu.focus_mode = Control.FOCUS_ALL
-		botones = [btn_menu]
 		btn_menu.pressed.connect(_on_btn_menu_pressed)
 
 	# Dar foco al primer botón
@@ -62,8 +72,19 @@ func _cambiar_foco(direccion: int) -> void:
 	indice_actual = wrapi(indice_actual + direccion, 0, botones.size())
 	botones[indice_actual].grab_focus()
 
+func _on_btn_revancha_pressed() -> void:
+	DatosGlobales.cambiar_estado(
+		DatosGlobales.AppState.COMBATE,
+		"res://nucleo4_interfaz/scenes/pantalla_combate.tscn"
+	)
+
+func _on_btn_cambiar_pj_pressed() -> void:
+	DatosGlobales.cambiar_estado(
+		DatosGlobales.AppState.MENU_SELECCION_PERSONAJES,
+		"res://nucleo4_interfaz/scenes/menu_seleccion_personajes.tscn"
+	)
+
 func _on_btn_menu_pressed() -> void:
-	# Emitir on_state_change antes de cambiar de pantalla
 	DatosGlobales.cambiar_estado(
 		DatosGlobales.AppState.MENU_PRINCIPAL,
 		"res://nucleo4_interfaz/scenes/Menu_Principal.tscn"

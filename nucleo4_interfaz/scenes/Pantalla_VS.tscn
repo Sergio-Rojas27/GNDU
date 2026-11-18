@@ -1,0 +1,129 @@
+[gd_scene format=3 uid="uid://dqnq3n1dsq37q"]
+
+[ext_resource type="Script" uid="uid://b0asic8232hu" path="res://nucleo4_interfaz/scripts/pantalla_vs.gd" id="1_83l26"]
+[ext_resource type="Texture2D" uid="uid://bn3d4xgh77fdx" path="res://assets/Menus/Menu_Principal/Fondo_menu.jpg" id="2_eqhq3"]
+[ext_resource type="Texture2D" uid="uid://che8bsfsuewkx" path="res://assets/General/black.png" id="3_wo6x5"]
+[ext_resource type="Texture2D" uid="uid://b1oqjblt5dgph" path="res://assets/Fighters/estudiante_angel/preview.png" id="4_gtdsg"]
+[ext_resource type="Texture2D" uid="uid://b6g200i00q3y6" path="res://assets/Fighters/estudiante_gabriel/preview.png" id="5_ha1ev"]
+[ext_resource type="FontFile" uid="uid://cubcw4s6wqvgo" path="res://assets/General/VCR_OSD_MONO_1.001.ttf" id="6_avmq1"]
+[ext_resource type="Texture2D" uid="uid://ba25nwx3lsooa" path="res://assets/Menus/Menu_Principal/divisor.png" id="6_eqhq3"]
+[ext_resource type="Texture2D" uid="uid://dq84pe4iac0s1" path="res://assets/Menus/Menu_Principal/vs.png" id="7_0gi4v"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_34xpg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cpldw"]
+
+[node name="PantallaVs" type="Control" unique_id=945776377]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_83l26")
+
+[node name="fondo" type="TextureRect" parent="." unique_id=1437475740]
+modulate = Color(1, 1, 1, 0.7882353)
+material = SubResource("ShaderMaterial_34xpg")
+layout_mode = 0
+offset_right = 1922.0
+offset_bottom = 1089.0
+texture = ExtResource("2_eqhq3")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1318384106]
+layout_mode = 0
+offset_top = -91.0
+offset_right = 942.0
+offset_bottom = 1099.0
+color = Color(0.05000019, 0, 1, 0.12941177)
+
+[node name="ColorRect2" type="ColorRect" parent="." unique_id=1968417853]
+layout_mode = 0
+offset_left = 986.0
+offset_top = -73.0
+offset_right = 1928.0
+offset_bottom = 1097.0
+color = Color(1, 0, 0, 0.31764707)
+
+[node name="fondo2" type="TextureRect" parent="." unique_id=1178330030]
+visible = false
+modulate = Color(1, 1, 1, 0.28627452)
+material = SubResource("ShaderMaterial_cpldw")
+layout_mode = 0
+offset_right = 966.0
+offset_bottom = 1089.0
+texture = ExtResource("3_wo6x5")
+
+[node name="Personaje1" type="TextureRect" parent="." unique_id=725570229]
+layout_mode = 0
+offset_left = -114.0
+offset_top = -1.0
+offset_right = 899.0
+offset_bottom = 1830.0
+texture = ExtResource("4_gtdsg")
+expand_mode = 1
+
+[node name="Personaje2" type="TextureRect" parent="." unique_id=1768030799]
+layout_mode = 0
+offset_left = 1027.0
+offset_top = -1.0
+offset_right = 2039.0
+offset_bottom = 2061.0
+texture = ExtResource("5_ha1ev")
+expand_mode = 1
+flip_h = true
+
+[node name="ColorRect3" type="ColorRect" parent="." unique_id=1378919171]
+layout_mode = 0
+offset_top = 813.0
+offset_right = 1925.0
+offset_bottom = 943.0
+color = Color(0, 0, 0, 0.38431373)
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=359315475]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 1921.0
+offset_bottom = 1088.0
+texture = ExtResource("6_eqhq3")
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=1090770624]
+layout_mode = 0
+offset_left = 758.99994
+offset_top = 368.9999
+offset_right = 1162.5083
+offset_bottom = 695.31165
+rotation = -0.0022860286
+texture = ExtResource("7_0gi4v")
+expand_mode = 1
+
+[node name="Nombre2" type="Label" parent="." unique_id=626152564]
+layout_mode = 0
+offset_left = 1241.0
+offset_top = 800.0
+offset_right = 1804.0
+offset_bottom = 948.0
+size_flags_horizontal = 4
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 12
+theme_override_fonts/font = ExtResource("6_avmq1")
+theme_override_font_sizes/font_size = 60
+text = "Profesor"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Nombre1" type="Label" parent="." unique_id=78040997]
+layout_mode = 0
+offset_left = 130.0
+offset_top = 799.0
+offset_right = 693.0
+offset_bottom = 947.0
+size_flags_horizontal = 4
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 12
+theme_override_fonts/font = ExtResource("6_avmq1")
+theme_override_font_sizes/font_size = 60
+text = "Profesor"
+vertical_alignment = 1

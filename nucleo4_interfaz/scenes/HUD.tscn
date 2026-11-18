@@ -89,9 +89,9 @@ show_percentage = false
 
 [node name="TimerLabel" type="Label" parent="Control" unique_id=2054871434]
 layout_mode = 0
-offset_left = 907.0
+offset_left = 903.0
 offset_top = 58.0
-offset_right = 1033.0
+offset_right = 1029.0
 offset_bottom = 153.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
@@ -99,6 +99,7 @@ theme_override_constants/shadow_outline_size = 12
 theme_override_fonts/font = ExtResource("6_a3qfq")
 theme_override_font_sizes/font_size = 100
 text = "99"
+horizontal_alignment = 1
 
 [node name="PortraitP1" type="TextureRect" parent="Control" unique_id=822991234]
 layout_mode = 0
