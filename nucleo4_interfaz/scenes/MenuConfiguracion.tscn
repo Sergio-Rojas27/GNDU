@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://drqtjf2tvxegl"]
+
+[ext_resource type="Script" uid="uid://cuqdiqgymg3ut" path="res://nucleo4_interfaz/scripts/MenuConfiguracion.gd" id="1_fi5e5"]
+
+[node name="MenuConfiguracion" type="Control" unique_id=255357918]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fi5e5")

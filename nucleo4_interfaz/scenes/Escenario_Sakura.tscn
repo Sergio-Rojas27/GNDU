@@ -1,0 +1,293 @@
+[gd_scene format=3 uid="uid://dllldff3yu2x3"]
+
+[ext_resource type="Texture2D" uid="uid://cdy53npiot4p1" path="res://assets/Escenarios/Escenario_Sakura/Cielo_Sakura.jpg" id="1_m5n6b"]
+[ext_resource type="Texture2D" uid="uid://dlwxdjqo8ki6t" path="res://assets/Escenarios/Escenario_Sakura/Sakura_Sprites.png" id="2_pmdg3"]
+[ext_resource type="Texture2D" uid="uid://dgg7dv02r53qb" path="res://assets/Escenarios/Escenario_Sakura/Ciudad_Sakura.png" id="3_dg73m"]
+[ext_resource type="Texture2D" uid="uid://op5dp3xp5u6d" path="res://assets/Escenarios/Escenario_Sakura/plataforma.jpg" id="3_xkmu3"]
+[ext_resource type="Texture2D" uid="uid://m5yu3euka3nr" path="res://assets/Escenarios/Escenario_Sakura/arbol.png" id="5_dg73m"]
+[ext_resource type="Texture2D" uid="uid://citkoeb0x0evi" path="res://assets/Escenarios/Escenario_Sakura/silla.png" id="6_rm7ke"]
+[ext_resource type="Texture2D" uid="uid://dee7e77tric2l" path="res://assets/Escenarios/Escenario_Sakura/hojas.png" id="7_1xjgr"]
+[ext_resource type="Texture2D" uid="uid://bhb0tkkcff2nw" path="res://assets/Escenarios/Escenario_Sakura/petalo_1.png" id="8_sx87i"]
+[ext_resource type="Texture2D" uid="uid://ddmu51bet7n5w" path="res://assets/Escenarios/Escenario_Sakura/petalo_2.png" id="9_ausbr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rm7ke"]
+size = Vector2(3294, 112)
+
+[sub_resource type="Curve" id="Curve_1j7oq"]
+_data = [Vector2(1, 0.03759408), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[node name="EscenarioSakura" type="Node2D" unique_id=1877637757]
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1856039164]
+repeat_size = Vector2(4907, 0)
+autoscroll = Vector2(20, 0)
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Parallax2D" unique_id=1081786146]
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D/ParallaxLayer" unique_id=2173817]
+position = Vector2(578.9247, 376.0454)
+scale = Vector2(0.6543831, 0.7088475)
+texture = ExtResource("1_m5n6b")
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D/ParallaxLayer/Sprite2D" unique_id=2042756168]
+position = Vector2(3725.7617, -0.83335495)
+scale = Vector2(0.9998531, 0.9998533)
+texture = ExtResource("1_m5n6b")
+flip_h = true
+
+[node name="SakuraSprites" type="Sprite2D" parent="." unique_id=1789873280]
+position = Vector2(4481, -1109)
+texture = ExtResource("2_pmdg3")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1340865480]
+position = Vector2(1622, 506)
+scale = Vector2(0.87249666, 0.87249666)
+texture = ExtResource("3_dg73m")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sprite2D" unique_id=1157975944]
+position = Vector2(-2247.573, 28.653442)
+scale = Vector2(0.87249666, 0.87249666)
+texture = ExtResource("3_dg73m")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=2029948616]
+
+[node name="suelo" type="Sprite2D" parent="StaticBody2D" unique_id=1040985814]
+position = Vector2(370.02063, 967.9449)
+scale = Vector2(0.38625002, 0.7077049)
+skew = 0.7347836
+texture = ExtResource("3_xkmu3")
+
+[node name="suelo" type="Sprite2D" parent="StaticBody2D/suelo" unique_id=813644037]
+position = Vector2(5343.6895, 2.5889893)
+scale = Vector2(1.0021865, 1.0021865)
+texture = ExtResource("3_xkmu3")
+flip_h = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=170494714]
+position = Vector2(1014, 1069)
+shape = SubResource("RectangleShape2D_rm7ke")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D" unique_id=890238527]
+position = Vector2(-1580, -839.5)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_rm7ke")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D/CollisionShape2D" unique_id=1060956155]
+position = Vector2(-111.000244, -3163)
+shape = SubResource("RectangleShape2D_rm7ke")
+
+[node name="arbol" type="Sprite2D" parent="." unique_id=764429199]
+position = Vector2(322.00003, 483.00006)
+scale = Vector2(0.29891917, 0.32379842)
+texture = ExtResource("5_dg73m")
+flip_h = true
+
+[node name="silla" type="Sprite2D" parent="." unique_id=1384362649]
+position = Vector2(1724, 769.00006)
+scale = Vector2(0.12942484, 0.15186568)
+texture = ExtResource("6_rm7ke")
+flip_h = true
+
+[node name="hojas" type="Sprite2D" parent="." unique_id=1903922159]
+position = Vector2(312.99997, 816)
+scale = Vector2(0.23227216, 0.1721396)
+skew = 0.3525565
+texture = ExtResource("7_1xjgr")
+flip_h = true
+
+[node name="hojas" type="Sprite2D" parent="hojas" unique_id=568556839]
+position = Vector2(-650.4721, -3.662239)
+scale = Vector2(0.8307338, 0.7245741)
+skew = -0.15533431
+texture = ExtResource("7_1xjgr")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="." unique_id=191597500]
+position = Vector2(177.99994, 315.00003)
+scale = Vector2(0.1501429, 0.15898171)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo" unique_id=232840282]
+position = Vector2(182.41095, 314.5015)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo/petalo" unique_id=876241362]
+position = Vector2(526.31744, -395.73276)
+scale = Vector2(1.1093193, 1.1093194)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo2" type="Sprite2D" parent="petalo/petalo" unique_id=1065507459]
+position = Vector2(206.68715, -1084.1621)
+scale = Vector2(1.2190766, 1.6336554)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo/petalo/petalo2" unique_id=251205788]
+position = Vector2(373.5346, -400.8666)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo2" type="Sprite2D" parent="." unique_id=182250786]
+position = Vector2(122.00009, 858)
+scale = Vector2(0.1594093, 0.16879363)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo2" unique_id=1121933315]
+position = Vector2(182.41095, 314.5015)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo2/petalo" unique_id=79182998]
+position = Vector2(373.5346, -400.8666)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo2" type="Sprite2D" parent="petalo2/petalo" unique_id=260968327]
+position = Vector2(403.72745, -806.6519)
+scale = Vector2(1.1947112, 1.1947112)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo2/petalo/petalo2" unique_id=101711386]
+position = Vector2(373.5346, -400.8666)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo4" type="Sprite2D" parent="." unique_id=992682231]
+position = Vector2(480.09338, 864.00006)
+scale = Vector2(0.14861523, 0.15736412)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo4" unique_id=1979036117]
+position = Vector2(182.41095, 314.5015)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo4/petalo" unique_id=793506202]
+position = Vector2(373.5346, -400.8666)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo2" type="Sprite2D" parent="petalo4/petalo" unique_id=722977059]
+position = Vector2(403.72745, -806.6519)
+scale = Vector2(1.1947112, 1.1947112)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo4/petalo/petalo2" unique_id=2033012358]
+position = Vector2(373.5346, -400.8666)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo3" type="Sprite2D" parent="." unique_id=37306934]
+position = Vector2(1615.2665, 913.00006)
+scale = Vector2(0.2580813, 0.23816659)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo3" unique_id=1047191740]
+position = Vector2(182.41089, 167.54568)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo3/petalo" unique_id=426468994]
+position = Vector2(663.3346, -1118.417)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo3/petalo/petalo" unique_id=883767076]
+position = Vector2(-237.98645, 546.13477)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo2" type="Sprite2D" parent="petalo3/petalo" unique_id=888600905]
+position = Vector2(-114.17261, -1100.1748)
+scale = Vector2(0.87200856, 0.8720086)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo3/petalo/petalo2" unique_id=1564250003]
+position = Vector2(1170.669, -565.6909)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo2" type="Sprite2D" parent="petalo3/petalo/petalo2" unique_id=1857187229]
+position = Vector2(830.2461, 990.3325)
+scale = Vector2(0.87200856, 0.8720086)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo3/petalo/petalo2/petalo2" unique_id=1623266147]
+position = Vector2(1170.6691, -628.4597)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo2" type="Sprite2D" parent="petalo3/petalo/petalo2/petalo2" unique_id=1153159791]
+position = Vector2(830.2462, 1080.9976)
+scale = Vector2(0.87200856, 0.8720086)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo" type="Sprite2D" parent="petalo3/petalo/petalo2/petalo2/petalo2" unique_id=664624908]
+position = Vector2(1170.6691, -628.4597)
+scale = Vector2(0.6904075, 0.6904075)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo5" type="Sprite2D" parent="." unique_id=585850967]
+position = Vector2(263, 133)
+scale = Vector2(0.16616865, 0.15334636)
+texture = ExtResource("8_sx87i")
+flip_h = true
+
+[node name="petalo6" type="Sprite2D" parent="." unique_id=1195928644]
+position = Vector2(335, 131)
+scale = Vector2(0.1090721, 0.0928886)
+texture = ExtResource("9_ausbr")
+flip_h = true
+
+[node name="petalo6" type="Sprite2D" parent="petalo6" unique_id=786653803]
+position = Vector2(495.08502, -43.06241)
+scale = Vector2(0.4125421, 0.35133147)
+texture = ExtResource("9_ausbr")
+flip_h = true
+
+[node name="PetalosParticles" type="CPUParticles2D" parent="." unique_id=1669856567]
+position = Vector2(386, 234)
+amount = 40
+texture = ExtResource("9_ausbr")
+lifetime = 8.0
+emission_shape = 3
+emission_rect_extents = Vector2(66, 138)
+direction = Vector2(2, 1)
+spread = 60.14
+gravity = Vector2(50, 21)
+initial_velocity_min = 10.0
+initial_velocity_max = 15.0
+angular_velocity_min = -60.0
+angular_velocity_max = 60.0
+linear_accel_min = -5.0
+linear_accel_max = -2.0
+angle_max = 360.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+scale_amount_curve = SubResource("Curve_1j7oq")

@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bm2dr064oxxd0"]
+
+[ext_resource type="Script" uid="uid://5kwi484jw7sn" path="res://nucleo4_interfaz/scripts/pantalla_titulo.gd" id="1_7n441"]
+
+[node name="Pantalla_Titulo" type="Control" unique_id=1726455369]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7n441")
+
+[node name="Button" type="Button" parent="." unique_id=177951381]
+layout_mode = 0
+offset_left = 824.0
+offset_top = 626.0
+offset_right = 1201.0
+offset_bottom = 782.0
+text = "Comenzar"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

@@ -1,0 +1,152 @@
+[gd_scene format=3 uid="uid://dhrt6hhws8kmh"]
+
+[ext_resource type="Texture2D" uid="uid://brndvt6ebni1f" path="res://assets/Escenarios/Escenario_Navidad/fondo_navidad.jpg" id="1_5yyv8"]
+[ext_resource type="Texture2D" uid="uid://cbpjy1r7lej2d" path="res://assets/Escenarios/Escenario_Navidad/piso.jpg" id="2_rlruf"]
+[ext_resource type="Texture2D" uid="uid://b8vbffnp6s0d" path="res://assets/Escenarios/Escenario_Navidad/piso_2.jpg" id="3_2eokr"]
+[ext_resource type="Texture2D" uid="uid://sfjd07yehqcf" path="res://assets/Escenarios/Escenario_Navidad/casas_fondo.png" id="3_6wm36"]
+[ext_resource type="Texture2D" uid="uid://b4f40qlmc06ab" path="res://assets/Escenarios/Escenario_Navidad/casa.png" id="5_0e8lr"]
+[ext_resource type="Texture2D" uid="uid://dkgetruekr5wi" path="res://assets/Escenarios/Escenario_Navidad/faro.png" id="6_6na2s"]
+[ext_resource type="Texture2D" uid="uid://bmc0goh25q8pl" path="res://assets/Escenarios/Escenario_Navidad/arbol.png" id="7_xuvfx"]
+[ext_resource type="Texture2D" uid="uid://i6aqvhi4nmna" path="res://assets/Escenarios/Escenario_Navidad/copo.png" id="8_xuvfx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ffvw0"]
+size = Vector2(3539, 117)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_w6ekv"]
+
+[node name="EscenarioNavidad" type="Node2D" unique_id=322862260]
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1183363148]
+repeat_size = Vector2(3000, 0)
+autoscroll = Vector2(20, 0)
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Parallax2D" unique_id=2128265536]
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D/ParallaxLayer" unique_id=1817229749]
+position = Vector2(397.91937, 352.5)
+scale = Vector2(0.7268145, 0.7268145)
+texture = ExtResource("1_5yyv8")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=546356673]
+
+[node name="Sprite2D2" type="Sprite2D" parent="StaticBody2D" unique_id=236193312]
+visible = false
+position = Vector2(898.4248, 895.3401)
+scale = Vector2(0.72247916, 0.4374525)
+skew = -0.43982303
+texture = ExtResource("2_rlruf")
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=1811326541]
+position = Vector2(999.5664, 905.62524)
+scale = Vector2(0.39652365, 0.6675324)
+skew = -0.49218285
+texture = ExtResource("3_2eokr")
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/Sprite2D" unique_id=1998317060]
+position = Vector2(-3999.4656, -35.860855)
+scale = Vector2(0.54843986, 1.2588953)
+skew = -0.49218285
+texture = ExtResource("3_2eokr")
+flip_h = true
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/Sprite2D/Sprite2D" unique_id=1205079242]
+position = Vector2(14261.503, -40.64418)
+scale = Vector2(1.0177201, 1.2588953)
+skew = -0.49218285
+texture = ExtResource("3_2eokr")
+flip_h = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=143017568]
+position = Vector2(1030.5, 1102.5)
+shape = SubResource("RectangleShape2D_ffvw0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D" unique_id=1371851316]
+position = Vector2(1339.4999, -72)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_ffvw0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/CollisionShape2D/CollisionShape2D" unique_id=1957027367]
+position = Vector2(-606, 2807)
+shape = SubResource("RectangleShape2D_ffvw0")
+
+[node name="Sprite2D3" type="Sprite2D" parent="." unique_id=219549221]
+position = Vector2(842, 666)
+scale = Vector2(0.45751917, 0.4575193)
+texture = ExtResource("3_6wm36")
+
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=2021353217]
+position = Vector2(1544.602, 607.7256)
+scale = Vector2(0.45630684, 0.45630682)
+texture = ExtResource("5_0e8lr")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D2" unique_id=1485183608]
+position = Vector2(-2566.725, 8.037308)
+scale = Vector2(0.99408054, 0.99408054)
+texture = ExtResource("5_0e8lr")
+flip_h = true
+
+[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D2/Sprite2D2" unique_id=1326154652]
+position = Vector2(-1713.7961, 7.9517303)
+scale = Vector2(0.99408054, 0.99408054)
+texture = ExtResource("5_0e8lr")
+
+[node name="Sprite2D4" type="Sprite2D" parent="Sprite2D2" unique_id=1016897792]
+position = Vector2(1732.1636, -1.5900879)
+scale = Vector2(1.0178286, 1.0178286)
+texture = ExtResource("5_0e8lr")
+flip_h = true
+
+[node name="faro" type="Sprite2D" parent="Sprite2D2" unique_id=866654763]
+position = Vector2(474.2378, 228.51828)
+scale = Vector2(0.53169334, 0.43411723)
+texture = ExtResource("6_6na2s")
+
+[node name="arbol" type="Sprite2D" parent="Sprite2D2" unique_id=2036671399]
+position = Vector2(-1704.1211, 228.51855)
+scale = Vector2(0.20090675, 0.14735359)
+texture = ExtResource("7_xuvfx")
+
+[node name="arbol" type="Sprite2D" parent="Sprite2D2/arbol" unique_id=1539561371]
+position = Vector2(-1756.2014, 431.30048)
+scale = Vector2(1.4672567, 1.4621977)
+texture = ExtResource("7_xuvfx")
+
+[node name="arbol" type="Sprite2D" parent="Sprite2D2/arbol/arbol" unique_id=473027381]
+position = Vector2(-1756.2014, 431.30048)
+scale = Vector2(1.4672567, 1.4621977)
+texture = ExtResource("7_xuvfx")
+
+[node name="arbol2" type="Sprite2D" parent="Sprite2D2" unique_id=1096704000]
+position = Vector2(-873.53906, 235.0918)
+scale = Vector2(0.2150446, 0.1400219)
+texture = ExtResource("7_xuvfx")
+
+[node name="arbol" type="Sprite2D" parent="Sprite2D2/arbol2" unique_id=2121293382]
+position = Vector2(1773.225, 657.3494)
+scale = Vector2(1.4672567, 1.4621977)
+texture = ExtResource("7_xuvfx")
+
+[node name="arbol" type="Sprite2D" parent="Sprite2D2/arbol2/arbol" unique_id=279941228]
+position = Vector2(1869.9651, 545.8974)
+scale = Vector2(1.376353, 1.4621977)
+texture = ExtResource("7_xuvfx")
+
+[node name="CoposParticles" type="CPUParticles2D" parent="." unique_id=1690470369]
+material = SubResource("CanvasItemMaterial_w6ekv")
+position = Vector2(987, 10)
+amount = 150
+texture = ExtResource("8_xuvfx")
+lifetime = 10.0
+emission_shape = 3
+emission_rect_extents = Vector2(2000, 1)
+direction = Vector2(0, 0)
+spread = 60.0
+gravity = Vector2(40, 50)
+initial_velocity_min = 8.0
+initial_velocity_max = 10.0
+tangential_accel_min = -15.0
+tangential_accel_max = 15.0
+damping_min = 25.0
+damping_max = 25.0
+scale_amount_min = 0.03
+scale_amount_max = 0.05

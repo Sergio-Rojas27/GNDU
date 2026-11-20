@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://0sfn7xf2eqmf"]
+
+[ext_resource type="Script" uid="uid://u87e4qel0mms" path="res://scripts/proyectil_hadoken.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://220arv8ec864" path="res://assets/sprites/Hadoken.png" id="2_tex"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bola"]
+atlas = ExtResource("2_tex")
+region = Rect2(460, 690, 320, 170)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bola"]
+radius = 60.0
+
+[node name="ProyectilHadoken" type="Area2D" unique_id=484287721]
+collision_layer = 2
+script = ExtResource("1_script")
+
+[node name="Hadoken" type="Sprite2D" parent="." unique_id=1791185666]
+position = Vector2(-19.999996, 0)
+scale = Vector2(0.7, 0.7)
+texture = SubResource("AtlasTexture_bola")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1967428738]
+shape = SubResource("CircleShape2D_bola")
