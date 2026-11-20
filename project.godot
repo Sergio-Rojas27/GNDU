@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="GNDU"
-run/main_scene="res://scenes/escenario.tscn"
+run/main_scene="res://nucleo4_interfaz/scenes/Menu_Principal.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -19,6 +19,8 @@ config/icon="res://icon.svg"
 
 N2ControlsConfig="*res://scripts/controls_config.gd"
 N2InputCore="*res://scripts/input_core.gd"
+EventBus="*res://nucleo4_interfaz/scripts/event_bus.gd"
+DatosGlobales="*res://nucleo4_interfaz/scripts/DatosGlobales.gd"
 
 [display]
 

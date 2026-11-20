@@ -212,9 +212,21 @@ var _buffers_entrada: Dictionary = {
 var depurador_label: Label
 var debug_overlay: Node2D
 var fx_overlay: Node2D
+var limite_escenario_izq: float = 0.0
+var limite_escenario_der: float = 1920.0
+var controles_habilitados: bool = true
+var mostrar_etiquetas_locales: bool = false:
+	set(valor):
+		mostrar_etiquetas_locales = valor
+		if depurador_label:
+			depurador_label.visible = valor
+		if combo_label:
+			combo_label.visible = valor and (combo_actual > 0)
 var mostrar_cajas_debug: bool = false:
 	set(valor):
 		mostrar_cajas_debug = valor
+		if depurador_label:
+			depurador_label.visible = valor or mostrar_etiquetas_locales
 		if debug_overlay:
 			debug_overlay.queue_redraw()
 
@@ -242,6 +254,7 @@ func _ready() -> void:
 	add_child(depurador_label)
 	depurador_label.position = Vector2(-100, -120) 
 	depurador_label.add_theme_color_override("font_color", Color(1, 0, 0))
+	depurador_label.visible = mostrar_cajas_debug or mostrar_etiquetas_locales
 	
 	combo_label = Label.new()
 	add_child(combo_label)
@@ -299,6 +312,15 @@ func _actualizar_hurtbox() -> void:
 		hurtbox_baja_collision.disabled = not esta_agachado
 
 func _simular_entrada_nucleo2() -> void:
+	if not controles_habilitados:
+		input_nucleo2["move_x"] = 0
+		input_nucleo2["move_y"] = 0
+		input_nucleo2["salto"] = false
+		input_nucleo2["punch"] = false
+		input_nucleo2["kick"] = false
+		input_nucleo2["block"] = false
+		input_nucleo2["grab"] = false
+		return
 	# Con N2 presente, la unica fuente de entrada es su reporte. El InputMap
 	# local solo se usa como respaldo si el autoload no esta disponible.
 	if _n2_disponible:
@@ -361,6 +383,8 @@ func _consumir_buffer(accion: String) -> void:
 	_buffers_entrada[accion] = 0.0
 
 func recibir_reporte_entrada(reporte_raw: Variant) -> void:
+	if not controles_habilitados:
+		return
 	var reporte: Dictionary = {}
 	if typeof(reporte_raw) == TYPE_STRING:
 		var parsed = JSON.parse_string(reporte_raw)
@@ -982,7 +1006,7 @@ func _actualizar_contador_combo() -> void:
 		if est_rival != "dano" and est_rival != "derrota":
 			combo_actual = 0
 	if combo_label:
-		combo_label.visible = combo_actual > 0
+		combo_label.visible = mostrar_etiquetas_locales and (combo_actual > 0)
 		if combo_actual > 0:
 			combo_label.text = "%d HITS" % combo_actual
 
@@ -1715,8 +1739,16 @@ func _aplicar_limites_camara() -> void:
 	var zoom_cam = cam.zoom.x if cam else 1.3
 	var mitad_ancho_cam = (tam_vp.x / 2.0) / zoom_cam
 	var margen = 80.0
+
+	var escenario_izq: float = limite_escenario_izq
+	var escenario_der: float = limite_escenario_der
+	if cam:
+		if "limite_izquierdo" in cam:
+			escenario_izq = float(cam.limite_izquierdo)
+		if "limite_derecho" in cam:
+			escenario_der = float(cam.limite_derecho)
 	
-	# 1. Muro invisible cuando los rivales van en direcciones opuestas
+	# 1. Muro invisible cuando los rivales van en direcciones opuestas (no salirse de la vista de cámara)
 	if rival:
 		var distancia_maxima = (mitad_ancho_cam - margen) * 2.0
 		var delta_x = global_position.x - rival.global_position.x
@@ -1729,19 +1761,22 @@ func _aplicar_limites_camara() -> void:
 			if (delta_x > 0 and velocity.x > 0) or (delta_x < 0 and velocity.x < 0):
 				velocity.x = 0
 
-	# 2. Muro invisible para los bordes del visor de la cámara
-	var cam_x = cam.global_position.x if cam else 960.0
+	# 2. Muro invisible para los bordes del visor de la cámara y bordes reales del escenario
+	var cam_x = cam.global_position.x if cam else ((escenario_izq + escenario_der) * 0.5)
 	if rival:
 		var centro_estimado = (global_position.x + rival.global_position.x) / 2.0
-		var cam_tope_izq = 0.0 + mitad_ancho_cam
-		var cam_tope_der = 1920.0 - mitad_ancho_cam
-		cam_x = clamp(centro_estimado, cam_tope_izq, cam_tope_der)
+		var cam_tope_izq = escenario_izq + mitad_ancho_cam
+		var cam_tope_der = escenario_der - mitad_ancho_cam
+		if cam_tope_izq <= cam_tope_der:
+			cam_x = clamp(centro_estimado, cam_tope_izq, cam_tope_der)
+		else:
+			cam_x = (escenario_izq + escenario_der) * 0.5
 
 	var limite_izq = cam_x - mitad_ancho_cam + margen
 	var limite_der = cam_x + mitad_ancho_cam - margen
 	
-	limite_izq = max(limite_izq, 0.0 + margen)
-	limite_der = min(limite_der, 1920.0 - margen)
+	limite_izq = max(limite_izq, escenario_izq + margen)
+	limite_der = min(limite_der, escenario_der - margen)
 	
 	if global_position.x < limite_izq:
 		global_position.x = limite_izq
@@ -1875,6 +1910,12 @@ func reiniciar_para_round(posicion_inicial: Vector2) -> void:
 	_golpe_conectado_en_ataque = false
 	_reset_combo()
 	reiniciar_contador_combo()
+	for accion in _buffers_entrada.keys():
+		_buffers_entrada[accion] = 0.0
+	input_nucleo2 = {
+		"move_x": 0, "move_y": 0, "salto": false,
+		"punch": false, "kick": false, "block": false, "grab": false
+	}
 	desactivar_todas_hitboxes()
 	_actualizar_hurtbox()
 	actualizar_animacion("Reposo")

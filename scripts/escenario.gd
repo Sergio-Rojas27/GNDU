@@ -48,11 +48,13 @@ func _ready() -> void:
 	
 	if jugador1:
 		pos_inicial_j1 = jugador1.global_position
+		jugador1.mostrar_etiquetas_locales = true
 		barra_vida_j1.step = 0.1
 		barra_vida_j1.max_value = jugador1.max_hp
 		barra_vida_j1.value = jugador1.current_hp
 	if jugador2:
 		pos_inicial_j2 = jugador2.global_position
+		jugador2.mostrar_etiquetas_locales = true
 		barra_vida_j2.step = 0.1
 		barra_vida_j2.max_value = jugador2.max_hp
 		barra_vida_j2.value = jugador2.current_hp

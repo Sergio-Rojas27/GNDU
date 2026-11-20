@@ -545,16 +545,20 @@ func _test_snapshot_actions() -> void:
 
 func _test_project_root() -> void:
 	var main := str(ProjectSettings.get_setting("application/run/main_scene", ""))
-	_check(main == "res://scenes/escenario.tscn", "la escena principal es res://scenes/escenario.tscn")
+	_check(main in ["res://scenes/escenario.tscn", "res://nucleo4_interfaz/scenes/Menu_Principal.tscn"], "la escena principal es valida (%s)" % main)
 	for path in [
 		"res://scenes/escenario.tscn", "res://scenes/jugador.tscn",
 		"res://scenes/proyectil_hadoken.tscn", "res://scenes/diagnostic.tscn",
 		"res://scenes/report_viewer.tscn", "res://scripts/jugador.gd",
-		"res://controls_config.json", "res://icon.svg"
+		"res://controls_config.json", "res://icon.svg",
+		"res://nucleo4_interfaz/scenes/Menu_Principal.tscn",
+		"res://nucleo4_interfaz/scenes/pantalla_combate.tscn"
 	]:
 		_check(ResourceLoader.exists(path) or FileAccess.file_exists(path), "existe %s" % path)
 	_check(ProjectSettings.has_setting("autoload/N2InputCore"), "N2InputCore esta como autoload")
 	_check(ProjectSettings.has_setting("autoload/N2ControlsConfig"), "N2ControlsConfig esta como autoload")
+	_check(ProjectSettings.has_setting("autoload/EventBus"), "EventBus esta como autoload")
+	_check(ProjectSettings.has_setting("autoload/DatosGlobales"), "DatosGlobales esta como autoload")
 	for action in ["p1_salto", "p1_agarre", "p2_salto", "p2_agarre", "p1_puno", "p2_patada"]:
 		_check(InputMap.has_action(action), "el InputMap raiz define %s" % action)
 

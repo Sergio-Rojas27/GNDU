@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://bv0ie4eex3csu"]
+
+[ext_resource type="Script" uid="uid://d316ubs81bysw" path="res://nucleo4_interfaz/scripts/menu_principal.gd" id="1_cpqwx"]
+[ext_resource type="Texture2D" uid="uid://bn3d4xgh77fdx" path="res://assets/Menus/Menu_Principal/Fondo_menu.jpg" id="1_h4orl"]
+[ext_resource type="Texture2D" uid="uid://b46xkwn1so25e" path="res://assets/Menus/Menu_Principal/btn_jugar.png" id="2_7ijho"]
+[ext_resource type="Texture2D" uid="uid://db3i3qtm3jd1v" path="res://assets/Menus/Menu_Principal/btnjugar_presionado.png" id="3_c6rxo"]
+[ext_resource type="Texture2D" uid="uid://tfmscc8q8jwp" path="res://assets/Menus/Menu_Principal/logo.png" id="3_e8otj"]
+[ext_resource type="Texture2D" uid="uid://o2pagivk5g82" path="res://assets/Menus/Menu_Principal/btn_config.png" id="3_itph0"]
+[ext_resource type="Texture2D" uid="uid://b7qa8jp7q4nhy" path="res://assets/Menus/Menu_Principal/btn_config_pressed.png" id="4_voe4i"]
+[ext_resource type="Texture2D" uid="uid://b8f0jgtrltcv" path="res://assets/Menus/Menu_Principal/btn_salir.png" id="7_voe4i"]
+[ext_resource type="Texture2D" uid="uid://boyn6wh0sligr" path="res://assets/Menus/Menu_Principal/btn_personajes.png" id="8_de7xu"]
+[ext_resource type="Texture2D" uid="uid://dcdqhl5ino56x" path="res://assets/Menus/Menu_Principal/btn_salir_pressed.png" id="8_tjmon"]
+[ext_resource type="Texture2D" uid="uid://byac2ohx2oqpq" path="res://assets/Menus/Menu_Principal/btn_personajes_pressed.png" id="9_tjmon"]
+
+[node name="Menu_Principal" type="Control" unique_id=507999531]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cpqwx")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1932543665]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -6.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_h4orl")
+expand_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=62170161]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 630.0
+offset_top = 252.0
+offset_right = -622.93823
+offset_bottom = -551.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_e8otj")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1678779516]
+layout_mode = 0
+offset_left = 473.0
+offset_top = 582.0
+offset_right = 857.0
+offset_bottom = 887.0
+theme_override_constants/separation = 45
+alignment = 1
+
+[node name="btn_jugar" type="TextureButton" parent="VBoxContainer" unique_id=166880521]
+layout_mode = 2
+texture_normal = ExtResource("2_7ijho")
+texture_pressed = ExtResource("3_c6rxo")
+texture_hover = ExtResource("3_c6rxo")
+texture_focused = ExtResource("3_c6rxo")
+
+[node name="btn_config" type="TextureButton" parent="VBoxContainer" unique_id=10805458]
+layout_mode = 2
+texture_normal = ExtResource("3_itph0")
+texture_pressed = ExtResource("4_voe4i")
+texture_focused = ExtResource("4_voe4i")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="." unique_id=549745401]
+layout_mode = 0
+offset_left = 1036.0
+offset_top = 582.0
+offset_right = 1420.0
+offset_bottom = 888.0
+theme_override_constants/separation = 45
+alignment = 1
+
+[node name="btn_salir" type="TextureButton" parent="VBoxContainer2" unique_id=1446747153]
+layout_mode = 2
+texture_normal = ExtResource("7_voe4i")
+texture_pressed = ExtResource("8_tjmon")
+texture_hover = ExtResource("8_tjmon")
+texture_focused = ExtResource("8_tjmon")
+
+[node name="btn_personajes" type="TextureButton" parent="VBoxContainer2" unique_id=1067299683]
+layout_mode = 2
+texture_normal = ExtResource("8_de7xu")
+texture_pressed = ExtResource("9_tjmon")
+texture_focused = ExtResource("9_tjmon")
+
+[connection signal="pressed" from="VBoxContainer/btn_jugar" to="." method="_on_btn_jugar_pressed"]
+[connection signal="pressed" from="VBoxContainer/btn_config" to="." method="_on_btn_config_pressed"]
+[connection signal="pressed" from="VBoxContainer2/btn_salir" to="." method="_on_btn_salir_pressed"]
+[connection signal="pressed" from="VBoxContainer2/btn_personajes" to="." method="_on_btn_personajes_pressed"]
